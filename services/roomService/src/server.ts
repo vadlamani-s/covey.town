@@ -2,12 +2,22 @@ import Express from 'express';
 import * as http from 'http';
 import CORS from 'cors';
 import { AddressInfo } from 'net';
+import mongoose from 'mongoose';
+import { config } from 'dotenv';
 import addTownRoutes from './router/towns';
 import CoveyTownsStore from './lib/CoveyTownsStore';
+
+config();
 
 const app = Express();
 app.use(CORS());
 const server = http.createServer(app);
+
+const db = process.env.DB_URL;
+mongoose
+  .connect(db as string, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log('Mongo Connected...'  ))
+  .catch((err) => console.log(err));
 
 addTownRoutes(server, app);
 
