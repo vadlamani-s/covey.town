@@ -4,7 +4,7 @@ import { UserModel } from '../models/userSchema';
 
 let database: Mongoose.Connection;
 
-export async function newUserRegistration(newUser: IUserResponse): Promise<IUserResponse> {
+export async function newUserRegistration(newUser: IUser): Promise<IUserResponse> {
   const a = newUser;
   return {
     name: 'dummy',
