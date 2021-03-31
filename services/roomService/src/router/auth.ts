@@ -1,6 +1,6 @@
 import Router from 'express';
 import { json } from 'body-parser';
-import cors from 'cors';
+import cors, { CorsRequest } from 'cors';
 // import { OAuth2Client } from 'google-auth-library';
 import { sign, verify, JsonWebTokenError } from 'jsonwebtoken';
 import { config } from 'dotenv';
@@ -14,7 +14,7 @@ import { config } from 'dotenv';
 
 config();
 
-const routes = new Router();
+const routes = Router();
 
 const {JWT_SECRET} = process.env;
 
@@ -24,6 +24,7 @@ routes.use(cors({origin: uiServerOrigin, credentials: true }));
 routes.use(json());
 
 routes.post('/signin', async (req, res) => {
+
 //   const client = new OAuth2Client();
 //   const ticket = await client.verifyIdToken({ idToken: req.body.google_tokenId }).catch((e) => res.send(`Invalid Credentials: ${e}`));
 //   const tokenData = ticket.getPayload();
@@ -50,7 +51,7 @@ routes.post('/signout', async (req, res) => {
 const validateAPIRequest = (req, res) => {
   const validatetoken = req.cookies.jwt;
   try {
-    const validatedCredentials = verify(validatetoken, JWT_SECRET);
+    const validatedCredentials = verify(validatetoken, JWT_SECRET as string);
     console.log('validated credentials..........................................................................');
     return validatedCredentials;
   } catch (e) {
