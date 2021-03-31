@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
 import { Schema } from 'mongoose';
 import { userInfo } from 'os';
-import { IUser, IUserDocument } from '../types/user';
+import { IUser, IUserDocument } from '../types/IUser';
 
 const SALT_WORK_FACTOR = 10;
 
