@@ -1,6 +1,7 @@
 import bcrypt from 'bcryptjs';
 import { Schema } from 'mongoose';
-import { IUserDocument } from '../types/user';
+import { userInfo } from 'os';
+import { IUser, IUserDocument } from '../types/user';
 
 const SALT_WORK_FACTOR = 10;
 
@@ -11,20 +12,6 @@ const LoginSchema = new Schema({
   creationDate: { type: Date, default: new Date() },
 });
 
-// LoginSchema.pre('save', function (next) {
-//   if (!this.isModified('password')) return next();
-//   try {
-//     const salt = await bcrypt.genSalt(SALT_WORK_FACTOR);
-//     this.password = await bcrypt.hash(this.password, salt);
-//     return next();
-//   } catch (err) {
-//     return next(err);
-//   }
-// });
-
-// LoginSchema.pre('save', function (next) {
-//   return next();
-// });
 
 LoginSchema.pre('save', function (this: IUserDocument, next) {
   const user = this;
@@ -47,4 +34,11 @@ LoginSchema.pre('save', function (this: IUserDocument, next) {
   });
 });
 
+
+LoginSchema.methods.comparePassword = function(this: IUserDocument, candidatePassword, cb) {
+  bcrypt.compare(candidatePassword, this.password, function(err, isMatch) {
+      if (err) return cb(err);
+      cb(null, isMatch);
+  });
+};
 // export default LoginSchema;
