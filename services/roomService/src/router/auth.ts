@@ -1,5 +1,4 @@
 import { Express } from 'express';
-import { Server } from 'http';
 import { StatusCodes } from 'http-status-codes';
 import BodyParser, { json } from 'body-parser';
 
@@ -10,7 +9,7 @@ import {
   userLogoutRequestHandler,
 } from '../requestHandlers/UserAuthRequestHandler';
 
-export default function addTownRoutes(http: Server, app: Express): void {
+export default function addTownRoutes(app: Express): void {
   /*
    * Create a new user
    */
@@ -53,7 +52,7 @@ export default function addTownRoutes(http: Server, app: Express): void {
   });
 
   /*
-   * Login user
+   * Logout user
    */
   app.post('/logoutUser', BodyParser.json(), async (req, res) => {
     try {
