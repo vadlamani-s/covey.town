@@ -1,3 +1,4 @@
+/* eslint-disable */
 import bcrypt from 'bcryptjs';
 import { mongo, Mongoose, Schema, model } from 'mongoose';
 import { userInfo } from 'os';
