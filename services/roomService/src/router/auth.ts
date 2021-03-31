@@ -14,7 +14,7 @@ import { config } from 'dotenv';
 
 config();
 
-const routes = new Router();
+const routes = Router();
 
 const { JWT_SECRET } = process.env;
 
@@ -50,7 +50,7 @@ routes.post('/signout', async (req, res) => {
 const validateAPIRequest = (req, res) => {
   const validatetoken = req.cookies.jwt;
   try {
-    const validatedCredentials = verify(validatetoken, JWT_SECRET);
+    const validatedCredentials = verify(validatetoken, JWT_SECRET as string);
     console.log(
       'validated credentials..........................................................................',
     );
