@@ -1,10 +1,10 @@
 import * as Mongoose from 'mongoose';
 import {IUser, IUserResponse, IUserLoginRequest} from '../types/IUser';
-import User from '../types/User';
+import { UserModel } from '../models/userSchema';
 
 let database: Mongoose.Connection;
 
-export async function newUserRegistration(newUser: User): Promise<IUserResponse> {
+export async function newUserRegistration(newUser: IUserResponse): Promise<IUserResponse> {
   const a = newUser;
   return {
     name: 'dummy',
@@ -21,4 +21,6 @@ export async function userLogin(user: IUserLoginRequest): Promise<IUserResponse>
     emailId: 'aasd@asd.com',
   };
 }
+
+
 

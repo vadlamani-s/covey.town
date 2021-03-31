@@ -1,11 +1,11 @@
 import bcrypt from 'bcryptjs';
-import { Schema } from 'mongoose';
+import { mongo, Mongoose, Schema, model } from 'mongoose';
 import { userInfo } from 'os';
 import { IUser, IUserDocument } from '../types/IUser';
 
 const SALT_WORK_FACTOR = 10;
 
-const LoginSchema = new Schema({
+const LoginSchema = new Schema<IUserDocument>({
   name: { type: String, required: true },
   email: { type: String, required: true, index: { unique: true } },
   password: { type: String, required: true },
@@ -13,7 +13,7 @@ const LoginSchema = new Schema({
 });
 
 
-LoginSchema.pre('save', function (this: IUserDocument, next) {
+LoginSchema.pre('save', function (next) {
   const user = this;
 
   // only hash the password if it has been modified (or is new)
@@ -35,10 +35,11 @@ LoginSchema.pre('save', function (this: IUserDocument, next) {
 });
 
 
-LoginSchema.methods.comparePassword = function(this: IUserDocument, candidatePassword, cb) {
+LoginSchema.methods.comparePassword = function(candidatePassword, cb) {
   bcrypt.compare(candidatePassword, this.password, function(err, isMatch) {
       if (err) return cb(err);
       cb(null, isMatch);
   });
 };
-// export default LoginSchema;
+
+export const UserModel = model('user', LoginSchema);
