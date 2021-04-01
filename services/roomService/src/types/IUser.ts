@@ -22,5 +22,12 @@ export interface IUserLoginRequest {
   password: string;
 }
 
+export interface Credentials {
+  signedIn: boolean,
+  name?: string,
+  emailId?: string,
+  creationDate?: Date,
+}
+
 export interface IUserDocument extends IUser, Document {}
 export type IUserModel = Model<IUserDocument>;

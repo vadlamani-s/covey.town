@@ -1,7 +1,7 @@
 import * as Mongoose from 'mongoose';
 import {IUser, IUserResponse, IUserLoginRequest, IUserDocument} from '../types/IUser';
 import { UserModel } from '../models/userSchema';
-import User from '../types/user';
+import User from '../types/User';
 
 // export const disconnect = () => {
 //   if (!database) {
