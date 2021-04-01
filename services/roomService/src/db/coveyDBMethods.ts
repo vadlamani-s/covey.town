@@ -3,9 +3,6 @@ import {IUser, IUserResponse, IUserLoginRequest, IUserDocument} from '../types/I
 import { UserModel } from '../models/userSchema';
 import User from '../types/user';
 
-// let database: Mongoose.Connection;
-
-
 // export const disconnect = () => {
 //   if (!database) {
 //     return;
