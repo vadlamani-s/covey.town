@@ -5,6 +5,7 @@ import { AddressInfo } from 'net';
 import mongoose from 'mongoose';
 import { config } from 'dotenv';
 import addTownRoutes from './router/towns';
+import addAuthRoutes from './router/auth';
 import CoveyTownsStore from './lib/CoveyTownsStore';
 
 config();
@@ -20,6 +21,7 @@ mongoose
   .catch((err) => console.log(err));
 
 addTownRoutes(server, app);
+addAuthRoutes(app);
 
 server.listen(process.env.PORT || 8081, () => {
   const address = server.address() as AddressInfo;

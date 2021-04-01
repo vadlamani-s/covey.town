@@ -9,7 +9,7 @@ import {
   userLogoutRequestHandler,
 } from '../requestHandlers/UserAuthRequestHandler';
 
-export default function addTownRoutes(app: Express): void {
+export default function addAuthRoutes(app: Express): void {
   /*
    * Create a new user
    */
