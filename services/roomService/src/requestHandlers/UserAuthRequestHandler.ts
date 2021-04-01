@@ -4,7 +4,7 @@ import { sign, verify, JsonWebTokenError } from 'jsonwebtoken';
 import { config } from 'dotenv';
 import { json } from 'body-parser';
 
-import User from '../types/User';
+import User from '../types/user';
 import {newUserRegistration, userLogin} from '../db/coveyDBMethods';
 
 /**

@@ -109,12 +109,12 @@ export default function addTownRoutes(http: Server, app: Express): io.Server {
   });
 
 
-  /**
-   * Dummy api for backend testing
-   */
-  app.post('/users', BodyParser.json(), async (req, res) => {
+  // /**
+  //  * Dummy api for backend testing
+  //  */
+  // app.post('/users', BodyParser.json(), async (req, res) => {
     
-  });
+  // });
 
 
   const socketServer = new io.Server(http, { cors: { origin: '*' } });

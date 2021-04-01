@@ -2,10 +2,13 @@ import Express from 'express';
 import * as http from 'http';
 import CORS from 'cors';
 import { AddressInfo } from 'net';
-import mongoose from 'mongoose';
 import { config } from 'dotenv';
+// import * as mongoose from 'mongoose';
+import mongoose from 'mongoose';
 import addTownRoutes from './router/towns';
 import CoveyTownsStore from './lib/CoveyTownsStore';
+
+
 
 config();
 
@@ -13,11 +16,38 @@ const app = Express();
 app.use(CORS());
 const server = http.createServer(app);
 
-const db = process.env.DB_URL;
-mongoose
-  .connect(db as string, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log('Mongo Connected...'  ))
-  .catch((err) => console.log(err));
+let database: mongoose.Connection;
+const connect = () => {
+  const uri = process.env.MONGODB_URI as string;
+
+  if (database) {
+    return;
+  }
+  
+  mongoose.connect(uri, {
+    useNewUrlParser: true,
+    useFindAndModify: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+  });
+
+  database = mongoose.connection;
+
+  database.once('open', async () => {
+    console.log('Connected to database');
+  });
+  database.on('error', () => {
+    console.log('Error connecting to database');
+  });
+};
+
+// const db = process.env.DB_URL;
+// mongoose
+//   .connect(db as string, { useNewUrlParser: true, useUnifiedTopology: true })
+//   .then(() => console.log('Mongo Connected...'  ))
+//   .catch((err) => console.log(err));
+
+connect();
 
 addTownRoutes(server, app);
 
