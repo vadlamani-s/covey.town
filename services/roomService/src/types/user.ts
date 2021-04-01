@@ -15,6 +15,19 @@ export default class User {
   private readonly _creationDate: Date;
 
   constructor(name: string, emailId: string, password: string) {
+    if (name.length === 0) {
+      throw new Error('Name field is empty');
+    }
+
+    if (password.length < 8) {
+      throw new Error('Password is less than 8 characters');
+    }
+
+    const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (!emailRegex.test(emailId)) {
+      throw new Error('Email is not in the right format');
+    }
+
     this._name = name;
     this._emailId = emailId;
     this._password = password;
