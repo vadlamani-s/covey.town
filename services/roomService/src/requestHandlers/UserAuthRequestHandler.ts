@@ -14,6 +14,7 @@ export interface UserRegisterRequest {
   emailId: string;
   password: string;
   name: string;
+  creationDate: Date;
 }
   
 /**
