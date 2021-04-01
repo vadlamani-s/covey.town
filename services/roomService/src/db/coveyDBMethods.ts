@@ -1,7 +1,7 @@
 import * as Mongoose from 'mongoose';
-import {IUser, IUserResponse, IUserLoginRequest} from '../types/IUser';
+import { IUser, IUserResponse, IUserLoginRequest } from '../types/IUser';
 import { UserModel } from '../models/userSchema';
-import User from '../types/user';
+import User from '../types/User';
 
 // let database: Mongoose.Connection;
 

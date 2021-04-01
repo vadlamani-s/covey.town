@@ -11,8 +11,20 @@ import {
   townUpdateHandler,
 } from '../requestHandlers/CoveyTownRequestHandlers';
 import { logError } from '../Utils';
+import { validateAPIRequest } from './auth';
+import { Credentials } from '../types/IUser';
 
 export default function addTownRoutes(http: Server, app: Express): io.Server {
+
+  app.use('/', (req, res, next) => {
+    const userCredentials: Credentials = validateAPIRequest(req.cookies.jwt) as Credentials;
+    if (userCredentials.signedIn) {
+      next();
+    } else {
+      res.status(400).json({message: 'Invalid Request'});
+    }
+  });
+
   /*
    * Create a new session (aka join a town)
    */

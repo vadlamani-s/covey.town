@@ -1,11 +1,6 @@
-import cors from 'cors';
-// import { OAuth2Client } from 'google-auth-library';
-import { sign, verify, JsonWebTokenError } from 'jsonwebtoken';
 import { config } from 'dotenv';
-import { json } from 'body-parser';
-
-import User from '../types/user';
-import {newUserRegistration, userLogin} from '../db/coveyDBMethods';
+import User from '../types/User';
+import { newUserRegistration, userLogin} from '../db/coveyDBMethods';
 
 /**
  * Payload sent by client to create a Town in Covey.Town
@@ -58,19 +53,27 @@ export async function userRegistrationRequestHandler(requestData: UserRegisterRe
 }
 
 export async function userLoginRequestHandler(requestData: UserLoginRequest): Promise<ResponseEnvelope<UserResponse>> {
-  const registrationResponse = await userLogin(requestData);
+  const loginResponse = await userLogin(requestData);
+  if (loginResponse) {
+    return {
+      isOK: true,
+      response: {
+        name: loginResponse.name,
+        emailId: loginResponse.emailId,
+        creationDate: loginResponse.creationDate,
+      },
+    };
+  } 
   return {
-    isOK: true,
-    response: {
-      name: registrationResponse.name,
-      emailId: registrationResponse.emailId,
-      creationDate: registrationResponse.creationDate,
-    },
+    isOK: false,
+    message: 'Login failed',
   };
+  
+  
 }
 
 export async function userLogoutRequestHandler(userSessionData: string): Promise<ResponseEnvelope<Record<string, null>>> {
-  const logoutSuccess = !userSessionData;
+  const logoutSuccess = !!userSessionData;
   return {
     isOK: logoutSuccess,
     response: {},
