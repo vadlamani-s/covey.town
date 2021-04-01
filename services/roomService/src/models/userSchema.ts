@@ -8,7 +8,7 @@ const SALT_WORK_FACTOR = 10;
 
 const LoginSchema = new Schema<IUserDocument>({
   name: { type: String, required: true },
-  email: { type: String, required: true, index: { unique: true } },
+  emailId: { type: String, required: true, index: { unique: true } },
   password: { type: String, required: true },
   creationDate: { type: Date, default: new Date() },
 });
@@ -36,11 +36,13 @@ LoginSchema.pre('save', function (next) {
 });
 
 
-LoginSchema.methods.comparePassword = function(candidatePassword, cb) {
-  bcrypt.compare(candidatePassword, this.password, function(err, isMatch) {
-      if (err) return cb(err);
-      cb(null, isMatch);
-  });
+LoginSchema.methods.comparePassword = async function(candidatePassword) {
+  try {
+    const isMatch = await bcrypt.compare(candidatePassword, this.password);
+    return isMatch;
+  } catch (err) {
+    throw Error(err);
+  }
 };
 
 export const UserModel = model('user', LoginSchema, "users");

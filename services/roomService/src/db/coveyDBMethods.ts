@@ -1,5 +1,5 @@
 import * as Mongoose from 'mongoose';
-import { IUser, IUserResponse, IUserLoginRequest } from '../types/IUser';
+import {IUser, IUserResponse, IUserLoginRequest, IUserDocument} from '../types/IUser';
 import { UserModel } from '../models/userSchema';
 import User from '../types/User';
 
@@ -14,37 +14,44 @@ import User from '../types/User';
 // };
 
 export async function newUserRegistration(newUser: User): Promise<IUserResponse> {
-  const retrivedResult = await UserModel.findOne({emailId: newUser.emailId}) as IUser;
+  const retrivedResult = UserModel.findOne({emailId: newUser.emailId}) as IUser;
   if (retrivedResult) {
-    throw new Error('User is already registered');
+    throw Error('User is already registered');
   }
 
   try {
-    const createResponse =  UserModel.create({
+    const createResponse = await UserModel.create({
       name: newUser.name,
       emailId: newUser.emailId,
       password: newUser.password,   
-      creationDate: new Date(),
-    }) as Promise<IUser>;
-    
+      creationDate: new Date().toLocaleString('en-US'),
+    });
+
+    return {
+      name: createResponse.name,
+      creationDate: createResponse.creationDate,
+      emailId: createResponse.emailId,
+    };
   } catch (err) {
     return err;
   }
-  return {
-    name: newUser.name,
-    creationDate: new Date(),
-    emailId: 'aasd@asd.com',
-  };
 }
 
 export async function userLogin(user: IUserLoginRequest): Promise<IUserResponse> {
-  const a = user;
+  const retrivedResult = await UserModel.findOne({emailId: user.emailId});
+  if (!retrivedResult) {
+    throw Error('Email or Password Incorrect');
+  }
+
+  const isMatch = await retrivedResult.comparePassword(user.password);
+  if (!isMatch) {
+    throw Error('Email or Password Incorrect');
+  }
+
   return {
-    name: 'dummy',
-    creationDate: new Date(),
-    emailId: 'aasd@asd.com',
+    name: retrivedResult.name,
+    creationDate: retrivedResult.creationDate,
+    emailId: retrivedResult.emailId,
   };
 }
-
-
 
