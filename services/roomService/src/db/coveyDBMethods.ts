@@ -11,25 +11,26 @@ import User from '../types/User';
 // };
 
 export async function newUserRegistration(newUser: User): Promise<IUserResponse> {
-  const retrivedResult = UserModel.findOne({emailId: newUser.emailId}) as IUser;
+  const retrivedResult = await UserModel.findOne({emailId: newUser.emailId});
   if (retrivedResult) {
     throw Error('User is already registered');
   }
 
   try {
-    const createResponse = await UserModel.create({
+    const createRequest = new UserModel({
       name: newUser.name,
       emailId: newUser.emailId,
       password: newUser.password,   
       creationDate: new Date().toLocaleString('en-US'),
     });
-
+    const createResponse = await createRequest.save();
     return {
       name: createResponse.name,
       creationDate: createResponse.creationDate,
       emailId: createResponse.emailId,
     };
   } catch (err) {
+    console.log(err);
     return err;
   }
 }

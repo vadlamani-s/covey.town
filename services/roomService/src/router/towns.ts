@@ -1,5 +1,5 @@
-import { Express } from 'express';
-import BodyParser from 'body-parser';
+import { Express, Router, json } from 'express';
+import cookieParser from 'cookie-parser';
 import io from 'socket.io';
 import { Server } from 'http';
 import { StatusCodes } from 'http-status-codes';
@@ -14,9 +14,13 @@ import { logError } from '../Utils';
 import { validateAPIRequest } from './auth';
 import { Credentials } from '../types/IUser';
 
-export default function addTownRoutes(http: Server, app: Express): io.Server {
+const router = Router();
 
-  app.use('/', (req, res, next) => {
+export default function addTownRoutes(http: Server, app: Express): io.Server {
+  app.use(cookieParser());
+  app.use('/api', router);
+
+  router.use('/', (req, res, next) => {
     const userCredentials: Credentials = validateAPIRequest(req.cookies.jwt) as Credentials;
     if (userCredentials.signedIn) {
       next();
@@ -28,7 +32,7 @@ export default function addTownRoutes(http: Server, app: Express): io.Server {
   /*
    * Create a new session (aka join a town)
    */
-  app.post('/sessions', BodyParser.json(), async (req, res) => {
+  router.post('/sessions', json(), async (req, res) => {
     try {
       const result = await townJoinHandler({
         userName: req.body.userName,
@@ -48,7 +52,7 @@ export default function addTownRoutes(http: Server, app: Express): io.Server {
   /**
    * Delete a town
    */
-  app.delete('/towns/:townID/:townPassword', BodyParser.json(), async (req, res) => {
+  router.delete('/towns/:townID/:townPassword', json(), async (req, res) => {
     try {
       const result = await townDeleteHandler({
         coveyTownID: req.params.townID,
@@ -68,7 +72,7 @@ export default function addTownRoutes(http: Server, app: Express): io.Server {
   /**
    * List all towns
    */
-  app.get('/towns', BodyParser.json(), async (_req, res) => {
+  router.get('/towns', json(), async (_req, res) => {
     try {
       const result = await townListHandler();
       res.status(StatusCodes.OK)
@@ -85,7 +89,7 @@ export default function addTownRoutes(http: Server, app: Express): io.Server {
   /**
    * Create a town
    */
-  app.post('/towns', BodyParser.json(), async (req, res) => {
+  app.post('/towns', json(), async (req, res) => {
     try {
       const result = await townCreateHandler(req.body);
       res.status(StatusCodes.OK)
@@ -101,7 +105,7 @@ export default function addTownRoutes(http: Server, app: Express): io.Server {
   /**
    * Update a town
    */
-  app.patch('/towns/:townID', BodyParser.json(), async (req, res) => {
+  router.patch('/towns/:townID', json(), async (req, res) => {
     try {
       const result = await townUpdateHandler({
         coveyTownID: req.params.townID,
