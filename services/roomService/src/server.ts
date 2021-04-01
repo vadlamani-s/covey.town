@@ -6,7 +6,7 @@ import { config } from 'dotenv';
 // import * as mongoose from 'mongoose';
 import mongoose from 'mongoose';
 import addTownRoutes from './router/towns';
-import addAuthRoutes from './router/auth';
+import {addAuthRoutes} from './router/auth';
 import CoveyTownsStore from './lib/CoveyTownsStore';
 
 
