@@ -43,4 +43,4 @@ LoginSchema.methods.comparePassword = function(candidatePassword, cb) {
   });
 };
 
-export const UserModel = model('user', LoginSchema);
+export const UserModel = model('user', LoginSchema, "users");
