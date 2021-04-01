@@ -11,10 +11,14 @@ export default class User {
   /** The player's password set at creation* */
   private readonly _password: string;
 
+  /** The date of creation* */
+  private readonly _creationDate: Date;
+
   constructor(name: string, emailId: string, password: string) {
     this._name = name;
     this._emailId = emailId;
     this._password = password;
+    this._creationDate = new Date();
 
   }
 
@@ -28,6 +32,10 @@ export default class User {
 
   get password(): string {
     return this._password;
+  }
+
+  get creationDate(): Date {
+    return this._creationDate;
   }
 
 }
