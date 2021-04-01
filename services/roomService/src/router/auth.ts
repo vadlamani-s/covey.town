@@ -47,21 +47,25 @@ export function addAuthRoutes(app: Express): void {
         emailId: req.body.emailId,
         password: req.body.password,
       });
-      const { response: loginResponse } = response;
-      const credentials: Credentials = {
-        signedIn: true,
-        name: loginResponse?.name,
-        emailId: loginResponse?.emailId,
-        creationDate: loginResponse?.creationDate,
-      };
 
-      const token = sign(credentials, JWT_SECRET as string);
-      console.log(token);
-      /* Uncomment below line so that it works on your localhost and comment the line next to it */
-      res.cookie('jwt', token, { httpOnly: true });
-      /* This following line is critical for production phase, uncomment this line while deploying */
-      // res.cookie('jwt', token, { httpOnly: true, secure: true }); // Critical line needed in production phase
-      res.status(StatusCodes.OK).json(credentials);
+      if (response.isOK) {
+        const { response: loginResponse } = response;
+        const credentials: Credentials = {
+          signedIn: true,
+          name: loginResponse?.name,
+          emailId: loginResponse?.emailId,
+          creationDate: loginResponse?.creationDate,
+        };
+
+        const token = sign(credentials, JWT_SECRET as string);
+        /* Uncomment below line so that it works on your localhost and comment the line next to it */
+        res.cookie('jwt', token, { httpOnly: true });
+        /* This following line is critical for production phase, uncomment this line while deploying */
+        // res.cookie('jwt', token, { httpOnly: true, secure: true }); // Critical line needed in production phase
+        res.status(StatusCodes.OK).json(credentials);
+      } else {
+        res.status(StatusCodes.OK).json(response);
+      }
     } catch (err) {
       logError(err);
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({

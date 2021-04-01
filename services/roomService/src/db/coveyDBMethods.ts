@@ -3,19 +3,12 @@ import {IUser, IUserResponse, IUserLoginRequest, IUserDocument} from '../types/I
 import { UserModel } from '../models/userSchema';
 import User from '../types/User';
 
-// export const disconnect = () => {
-//   if (!database) {
-//     return;
-//   }
-//   Mongoose.disconnect();
-// };
 
 export async function newUserRegistration(newUser: User): Promise<IUserResponse> {
   const retrivedResult = await UserModel.findOne({emailId: newUser.emailId});
   if (retrivedResult) {
     throw Error('User is already registered');
   }
-
   try {
     const createRequest = new UserModel({
       name: newUser.name,
