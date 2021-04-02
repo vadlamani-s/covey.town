@@ -5,7 +5,7 @@ const HistorySchema = new Schema({
   emailId: { type: String, required: true, index: { unique: true } },
   loginDate: { type: Date, default: new Date() },
   RoomName: {type: String, required: true},
-  RoomID: {type: String},
+  RoomId: {type: String},
 });
   
 const HistoryModel = model('logininfo', HistorySchema, 'Login');

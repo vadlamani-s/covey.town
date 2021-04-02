@@ -4,3 +4,10 @@ export interface JoinTownResponse {
   providerVideoToken: string,
   providerRoomID: string
 }
+
+export interface RoomLogin {
+  emailId: string, 
+  loginDate: Date,
+  RoomName: string, 
+  RoomId: string
+}

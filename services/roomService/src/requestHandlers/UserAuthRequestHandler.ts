@@ -1,5 +1,5 @@
 import { config } from 'dotenv';
-import User from '../types/User';
+import User from '../types/user';
 import { newUserRegistration, userLogin} from '../db/coveyDBMethods';
 
 /**

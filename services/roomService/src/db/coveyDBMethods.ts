@@ -1,7 +1,9 @@
 import * as Mongoose from 'mongoose';
 import {IUser, IUserResponse, IUserLoginRequest, IUserDocument} from '../types/IUser';
 import { UserModel } from '../models/userSchema';
-import User from '../types/User';
+import User from '../types/user';
+import { RoomLogin } from '../types/payloads';
+import { HistoryModel } from '../models/historySchema';
 
 
 export async function newUserRegistration(newUser: User): Promise<IUserResponse> {
@@ -46,3 +48,18 @@ export async function userLogin(user: IUserLoginRequest): Promise<IUserResponse>
   };
 }
 
+export function loginHistory(loginDetails: RoomLogin): void {
+  try {
+    const createRequest = new HistoryModel({
+      emailId: loginDetails.emailId,
+      loginDate: new Date().toLocaleString('en-US'),
+      RoomName: loginDetails.RoomName,
+      RoomId: loginDetails.RoomId,
+    });
+
+    const createResponse = createRequest.save();
+    return createResponse;
+  } catch (err) {
+    return err;
+  }
+}
