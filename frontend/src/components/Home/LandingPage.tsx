@@ -1,5 +1,4 @@
 import React from 'react';
-import ProfilePage from './ProfilePage';
 
 const LandingPage: React.FunctionComponent = () => {
     

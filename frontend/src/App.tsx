@@ -34,6 +34,7 @@ type CoveyAppUpdate =
   | { action: 'playerDisconnect'; player: Player }
   | { action: 'weMoved'; location: UserLocation }
   | { action: 'disconnect' }
+  | { action: 'playerLoggedIn'; userName: string }
   ;
 
 function defaultAppState(): CoveyAppState {
@@ -138,6 +139,11 @@ function appStateReducer(state: CoveyAppState, update: CoveyAppUpdate): CoveyApp
         nextState.nearbyPlayers = state.nearbyPlayers;
       }
       break;
+
+    case 'playerLoggedIn':
+      nextState.userName = update.userName;
+      break;
+
     case 'disconnect':
       state.socket?.disconnect();
       return defaultAppState();
@@ -202,7 +208,6 @@ async function GameController(initData: TownJoinResponse,
 
 function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefined>> }) {
   const [appState, dispatchAppUpdate] = useReducer(appStateReducer, defaultAppState());
-  localStorage.setItem('isLoggedIn', "false");
 
   const setupGameController = useCallback(async (initData: TownJoinResponse) => {
     await GameController(initData, dispatchAppUpdate);
@@ -218,13 +223,20 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
     });
   }, [dispatchAppUpdate, setOnDisconnect]);
 
+  const loginHandler = useCallback((userName: string) => {
+
+    dispatchAppUpdate({action: 'playerLoggedIn', userName})
+    return true;
+  }, [dispatchAppUpdate])
   const page = useMemo(() => {
-    if (localStorage.getItem('isLoggedIn') === "false") {
-      return <LoginPage/>;
+    if (!appState.userName) {
+        return <LoginPage loginHandler={loginHandler} />
+    }    
+    // setVarjj(localStorage.getItem('isLoggedIn')) 
+    if (!appState.sessionToken && appState.userName) {
+        return <Login doLogin={setupGameController} />
     }
-    if (!appState.sessionToken && localStorage.getItem('isLoggedIn') === "true") { 
-      return <Login doLogin={setupGameController} />;
-    } if (!videoInstance) {
+     if (!videoInstance) {
       return <div>Loading...</div>;
     }
     return (
@@ -233,7 +245,7 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
         <VideoOverlay preferredMode="fullwidth" />
       </div>
     );
-  }, [setupGameController, appState.sessionToken, videoInstance]);
+  }, [setupGameController, appState.sessionToken, videoInstance, loginHandler, appState.userName]);
   return (
 
     <CoveyAppContext.Provider value={appState}>

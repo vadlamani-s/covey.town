@@ -14,7 +14,12 @@ import {
 import RegistrationPage from './RegistrationPage';
 import useCoveyAppState from '../../hooks/useCoveyAppState';
 
-const LoginPage: React.FunctionComponent = () => {
+interface LoginProps {
+    loginHandler: (userName: string) => boolean
+}
+
+// const LoginPage: React.FunctionComponent = ({loginHandler}) => {
+export default function LoginPage({loginHandler} : LoginProps): JSX.Element {
 
     const [registrationState, setRegistrationState] = useState(false);
     const [emailID, setEmailID] = useState<string>('');
@@ -25,17 +30,19 @@ const LoginPage: React.FunctionComponent = () => {
     const processLogin = async () =>{
        try{
 
-           await apiClient.loginUser({
+           const log = await apiClient.loginUser({
                emailId: emailID,
                password: userPassword
             });
+            
+            console.log(log.credentials.name);
+            loginHandler(log.credentials.name);
 
             toast({
                 title: 'Login Successful',
                 status: 'success'
             })
             
-            localStorage.setItem('isLoggedIn', "true");
 
        }catch(err){
             setEmailID(' ');
@@ -57,8 +64,11 @@ const LoginPage: React.FunctionComponent = () => {
         <Flex align="center" justify="center" boxSize="xl" backgroundColor="red" padding="xl">
             <Box p={8} maxW="500px" maxH="500px">
                 Welcome To Covey.Town!
+                { !registrationState &&
+                <div>
                 <Box textAlign="center"> <Heading> Login </Heading> </Box>
  
+                
                 <Box my={4} textAlign="left" boxSize="xl">
                     
                     <FormControl id="email" isRequired>
@@ -76,11 +86,17 @@ const LoginPage: React.FunctionComponent = () => {
                     <Button colorScheme="blue" onClick={processLogin} disabled={!emailID || !userPassword}> Login </Button>
 
                 </Box>
+                        
 
                 <Box>
                     <Button colorScheme="blue" onClick={processRegistration}> Create Account </Button>
-                    { registrationState && <RegistrationPage/>}
+                    
                 </Box>
+
+                </div>
+                }   
+
+                { registrationState && <RegistrationPage/>}
 
             </Box>
         </Flex>
@@ -89,4 +105,4 @@ const LoginPage: React.FunctionComponent = () => {
 
 }
               
-export default LoginPage;
+// export default LoginPage;

@@ -98,9 +98,12 @@ export interface UserLoginRequest {
 }
 
 export interface UserLoginResponse {
-  name: string;
-  emailId: string;
-  creationDate: Date;
+  credentials: {
+      signedIn: boolean,
+      name: string,
+      emailId: string,
+      creationDate: Date,
+  }
 }
 
 export interface UserLogoutRequest {
