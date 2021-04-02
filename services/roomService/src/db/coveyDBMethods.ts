@@ -3,7 +3,7 @@ import {IUser, IUserResponse, IUserLoginRequest, IUserDocument} from '../types/I
 import { UserModel } from '../models/userSchema';
 import User from '../types/user';
 import { RoomLogin } from '../types/payloads';
-import { HistoryModel } from '../models/historySchema';
+import HistoryModel from '../models/historySchema';
 
 
 export async function newUserRegistration(newUser: User): Promise<IUserResponse> {
@@ -52,9 +52,10 @@ export function loginHistory(loginDetails: RoomLogin): void {
   try {
     const createRequest = new HistoryModel({
       emailId: loginDetails.emailId,
+      userName: loginDetails.userName,
       loginDate: new Date().toLocaleString('en-US'),
-      RoomName: loginDetails.RoomName,
-      RoomId: loginDetails.RoomId,
+      friendlyName: loginDetails.friendlyName,
+      coveyTownId: loginDetails.coveyTownID,
     });
 
     const createResponse = createRequest.save();

@@ -128,10 +128,15 @@ export async function townJoinHandler(requestData: TownJoinRequest): Promise<Res
 }
 
 export async function storeMeetingRequest(request: RoomLogin): Promise<ResponseEnvelope<Record<string, null>>> {
-  const a = request;
+  const historyDetails = loginHistory({
+    emailId: request.emailId,
+    friendlyName: request.friendlyName,
+    coveyTownID: request.coveyTownID,
+    userName: request.userName,
+  });
   return {
     isOK: true,
-    message: 'assadads',
+    message: 'Successful',
   };
 }
 

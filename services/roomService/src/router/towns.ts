@@ -41,10 +41,11 @@ export default function addTownRoutes(http: Server, app: Express): io.Server {
         coveyTownID: req.body.coveyTownID,
       });
       const { response: joinResponse } = result;
+      let historyResponse = null;
       if (joinResponse?.coveyUserID) {
         const userCredentials: Credentials = validateAPIRequest(req.cookies.jwt) as Credentials;
         if (userCredentials.signedIn) {
-          const historyResponse = await storeMeetingRequest({
+          historyResponse = await storeMeetingRequest({
             emailId: userCredentials.emailId,
             friendlyName: joinResponse.friendlyName,
             coveyTownID: req.body.coveyTownID,
@@ -52,7 +53,11 @@ export default function addTownRoutes(http: Server, app: Express): io.Server {
           });
         }
       }
-      res.status(StatusCodes.OK).json(result);
+      if (historyResponse?.isOK === false) {
+        res.status(StatusCodes.OK).json(historyResponse.message);
+      } else {
+        res.status(StatusCodes.OK).json(result);
+      }
     } catch (err) {
       logError(err);
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
