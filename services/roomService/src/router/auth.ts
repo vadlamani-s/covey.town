@@ -79,7 +79,7 @@ export function addAuthRoutes(app: Express): void {
    */
   router.post('/logoutUser', json(), async (req, res) => {
     try {
-      const result = await userLogoutRequestHandler(req.cookies.userSession);
+      const result = await userLogoutRequestHandler(req.cookies.jwt);
       res.clearCookie('jwt');
       res.status(StatusCodes.OK).json(result);
     } catch (err) {
