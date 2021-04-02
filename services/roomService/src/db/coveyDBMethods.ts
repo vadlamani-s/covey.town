@@ -48,8 +48,9 @@ export async function userLogin(user: IUserLoginRequest): Promise<IUserResponse>
   };
 }
 
-export function loginHistory(loginDetails: RoomLogin): void {
+export async function loginHistory(loginDetails: RoomLogin): Promise<RoomLogin> {
   try {
+    console.log(loginDetails);
     const createRequest = new HistoryModel({
       emailId: loginDetails.emailId,
       userName: loginDetails.userName,
@@ -58,7 +59,7 @@ export function loginHistory(loginDetails: RoomLogin): void {
       coveyTownId: loginDetails.coveyTownID,
     });
 
-    const createResponse = createRequest.save();
+    const createResponse = await createRequest.save();
     return createResponse;
   } catch (err) {
     return err;

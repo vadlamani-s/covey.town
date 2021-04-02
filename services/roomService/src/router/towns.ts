@@ -23,7 +23,9 @@ export default function addTownRoutes(http: Server, app: Express): io.Server {
   app.use('/api', router);
 
   router.use('/', (req, res, next) => {
+    console.log(req.cookies);
     const userCredentials: Credentials = validateAPIRequest(req.cookies.jwt) as Credentials;
+    console.log(userCredentials);
     if (userCredentials.signedIn) {
       next();
     } else {
@@ -44,6 +46,7 @@ export default function addTownRoutes(http: Server, app: Express): io.Server {
       let historyResponse = null;
       if (joinResponse?.coveyUserID) {
         const userCredentials: Credentials = validateAPIRequest(req.cookies.jwt) as Credentials;
+        console.log(userCredentials);
         if (userCredentials.signedIn) {
           historyResponse = await storeMeetingRequest({
             emailId: userCredentials.emailId,
@@ -102,7 +105,7 @@ export default function addTownRoutes(http: Server, app: Express): io.Server {
   /**
    * Create a town
    */
-  app.post('/towns', json(), async (req, res) => {
+  router.post('/towns', json(), async (req, res) => {
     try {
       const result = await townCreateHandler(req.body);
       res.status(StatusCodes.OK).json(result);

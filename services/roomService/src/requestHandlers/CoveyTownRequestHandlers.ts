@@ -134,11 +134,19 @@ export async function storeMeetingRequest(request: RoomLogin): Promise<ResponseE
     coveyTownID: request.coveyTownID,
     userName: request.userName,
   });
+  if (historyDetails) {
+    return {
+      isOK: true,
+      message: 'Successful',
+    };
+  }
   return {
-    isOK: true,
-    message: 'Successful',
+    isOK: false,
+    message: 'Failed',
   };
+    
 }
+
 
 export async function townListHandler(): Promise<ResponseEnvelope<TownListResponse>> {
   const townsStore = CoveyTownsStore.getInstance();
