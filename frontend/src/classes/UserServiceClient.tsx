@@ -72,17 +72,17 @@ export default class UserServiceClient {
   }
 
   async loginUser(requestData: UserLoginRequest): Promise<UserLoginResponse> {
-    const responseWrapper = await this._axios.post<ResponseEnvelope<UserLoginResponse>>('/loginUser', requestData);
+    const responseWrapper = await this._axios.post<ResponseEnvelope<UserLoginResponse>>('/auth/loginUser', requestData);
     return UserServiceClient.unwrapOrThrowError(responseWrapper);
   }
 
   async logoutUser(requestData: UserLogoutRequest): Promise<UserLogoutResponse> {
-    const responseWrapper = await this._axios.post<ResponseEnvelope<UserLoginResponse>>('/logoutUser', requestData);
+    const responseWrapper = await this._axios.post<ResponseEnvelope<UserLoginResponse>>('/auth/logoutUser', requestData);
     return UserServiceClient.unwrapOrThrowError(responseWrapper);
   }
 
   async registerUser(requestData: UserRegisterRequest): Promise<UserRegisterResponse> {
-    const responseWrapper = await this._axios.post<ResponseEnvelope<UserRegisterResponse>>('/registerUser', requestData);
+    const responseWrapper = await this._axios.post<ResponseEnvelope<UserRegisterResponse>>('/auth/registerUser', requestData);
     return UserServiceClient.unwrapOrThrowError(responseWrapper);
   }
 

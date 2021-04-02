@@ -14,6 +14,10 @@ import {
     AlertDescription  
 } from '@chakra-ui/react';
 
+import useUserAppState from '../../hooks/useUserAppState';
+import App from '../../App';
+import RegistrationPage from './RegistrationPage';
+
 
 const LoginPage: React.FunctionComponent = () => {
 
@@ -21,15 +25,18 @@ const LoginPage: React.FunctionComponent = () => {
     const [emailID, setEmailID] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [error, setError] = useState('');
+    const {apiClient} = useUserAppState();
 
     const toast = useToast()
     const processLogin = async () =>{
        try{
-            // apiClient Login
+            await apiClient.loginUser({'emailId': emailID, 'password': password});
+
             toast({
                 title: 'Login Successful',
                 status: 'success'
             })
+            
        }catch(err){
             setError('Invalid email ID or password');
             setEmailID(' ');
@@ -41,6 +48,10 @@ const LoginPage: React.FunctionComponent = () => {
             });
        }
     };  
+
+    const processRegistration = () => {
+        setRegistrationState(true);
+    }
 
     function ErrorMessage({message} : { message: string }) {
         return (
@@ -78,6 +89,11 @@ const LoginPage: React.FunctionComponent = () => {
 
                     <Button colorScheme="blue" onClick={processLogin} disabled={!emailID || !password}> Login </Button>
 
+                </Box>
+
+                <Box>
+                    <Button colorScheme="blue" onClick={processRegistration}> Create Account </Button>
+                    { registrationState && <RegistrationPage/>}
                 </Box>
 
             </Box>
