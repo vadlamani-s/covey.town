@@ -12,3 +12,7 @@ export interface RoomLogin {
   coveyTownID: string,
   userName: string
 }
+
+export interface LogListResponse {
+  logs: RoomLogin[]
+}
