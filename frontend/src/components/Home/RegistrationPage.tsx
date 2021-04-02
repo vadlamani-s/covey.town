@@ -24,7 +24,7 @@ const RegistrationPage: React.FunctionComponent = () => {
     const toast = useToast()
     const processRegistration = async () =>{
        try{
-            apiClient.registerUser({
+            await apiClient.registerUser({
                 emailId: emailID,
                 password: userPassword,
                 name: fullName,
