@@ -133,12 +133,12 @@ export default function addTownRoutes(http: Server, app: Express): io.Server {
   });
 
   /**
-   * Fetch all the logs for a given email
+   * Fetch all the logs for a user
    */
-  router.get('/fetchlogs', json(), async (req, res) => {
+  router.get('/fetchlogs', json(), async (_req, res) => {
     try {
       const result = await meetingLogs({
-        emailId: req.body.emailId,
+        emailId: userCredentials.emailId as string,
       });
       res.status(StatusCodes.OK).json(result);
     } catch (err) {
