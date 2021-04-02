@@ -6,8 +6,9 @@ export interface JoinTownResponse {
 }
 
 export interface RoomLogin {
-  emailId: string, 
-  loginDate: Date,
-  RoomName: string, 
-  RoomId: string
+  emailId?: string, 
+  loginDate?: Date,
+  friendlyName: string, 
+  coveyTownID: string,
+  userName: string
 }

@@ -5,6 +5,7 @@ import { CoveyTownList, UserLocation } from '../CoveyTypes';
 import CoveyTownListener from '../types/CoveyTownListener';
 import CoveyTownsStore from '../lib/CoveyTownsStore';
 import { loginHistory } from '../db/coveyDBMethods';
+import {RoomLogin} from '../types/payloads';
 
 /**
  * The format of a request to join a Town in Covey.Town, as dispatched by the server middleware
@@ -123,6 +124,14 @@ export async function townJoinHandler(requestData: TownJoinRequest): Promise<Res
       friendlyName: coveyTownController.friendlyName,
       isPubliclyListed: coveyTownController.isPubliclyListed,
     },
+  };
+}
+
+export async function storeMeetingRequest(request: RoomLogin): Promise<ResponseEnvelope<Record<string, null>>> {
+  const a = request;
+  return {
+    isOK: true,
+    message: 'assadads',
   };
 }
 
