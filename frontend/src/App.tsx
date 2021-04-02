@@ -25,6 +25,7 @@ import { Callback } from './components/VideoCall/VideoFrontend/types';
 import Player, { ServerPlayer, UserLocation } from './classes/Player';
 import TownsServiceClient, { TownJoinResponse } from './classes/TownsServiceClient';
 import Video from './classes/Video/Video';
+import LoginPage from './components/Home/LoginPage';
 
 type CoveyAppUpdate =
   | { action: 'doConnect'; data: { userName: string, townFriendlyName: string, townID: string,townIsPubliclyListed:boolean, sessionToken: string, myPlayerID: string, socket: Socket, players: Player[], emitMovement: (location: UserLocation) => void } }
@@ -201,6 +202,7 @@ async function GameController(initData: TownJoinResponse,
 
 function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefined>> }) {
   const [appState, dispatchAppUpdate] = useReducer(appStateReducer, defaultAppState());
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false); // T1
 
   const setupGameController = useCallback(async (initData: TownJoinResponse) => {
     await GameController(initData, dispatchAppUpdate);
@@ -217,7 +219,10 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
   }, [dispatchAppUpdate, setOnDisconnect]);
 
   const page = useMemo(() => {
-    if (!appState.sessionToken) {
+    if (!isLoggedIn) {
+      return <LoginPage/>;
+    }
+    if (!appState.sessionToken && isLoggedIn) { 
       return <Login doLogin={setupGameController} />;
     } if (!videoInstance) {
       return <div>Loading...</div>;
@@ -228,7 +233,7 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
         <VideoOverlay preferredMode="fullwidth" />
       </div>
     );
-  }, [setupGameController, appState.sessionToken, videoInstance]);
+  }, [setupGameController, appState.sessionToken, videoInstance, isLoggedIn]);
   return (
 
     <CoveyAppContext.Provider value={appState}>

@@ -92,6 +92,35 @@ export type CoveyTownInfo = {
   maximumOccupancy: number
 };
 
+export interface UserLoginRequest {
+  emailId: string;
+  password: string;
+}
+
+export interface UserLoginResponse {
+  name: string;
+  emailId: string;
+  creationDate: Date;
+}
+
+export interface UserLogoutRequest {
+  userSessionData: string;
+}
+
+export interface UserRegisterRequest {
+  emailId: string;
+  password: string;
+  name: string;
+  creationDate: Date;
+}
+
+export interface UserRegisterResponse {
+  emailId: string;
+  name: string;
+  creationDate: Date;
+}
+
+
 export default class TownsServiceClient {
   private _axios: AxiosInstance;
 
@@ -107,6 +136,7 @@ export default class TownsServiceClient {
   }
 
   static unwrapOrThrowError<T>(response: AxiosResponse<ResponseEnvelope<T>>, ignoreResponse = false): T {
+    console.log("respone ", response);
     if (response.data.isOK) {
       if (ignoreResponse) {
         return {} as T;
@@ -141,5 +171,23 @@ export default class TownsServiceClient {
     const responseWrapper = await this._axios.post('/sessions', requestData);
     return TownsServiceClient.unwrapOrThrowError(responseWrapper);
   }
+
+  async loginUser(requestData: UserLoginRequest): Promise<UserLoginResponse> {
+    console.log("req data ", requestData);
+    const responseWrapper = await this._axios.post<ResponseEnvelope<UserLoginResponse>>('/auth/loginUser', requestData);
+    return TownsServiceClient.unwrapOrThrowError(responseWrapper);
+  }
+
+  async logoutUser(requestData: UserLogoutRequest): Promise<void> {
+    const responseWrapper = await this._axios.post<ResponseEnvelope<void>>('/auth/logoutUser', requestData);
+    return TownsServiceClient.unwrapOrThrowError(responseWrapper);
+  }
+
+  async registerUser(requestData: UserRegisterRequest): Promise<UserRegisterResponse> {
+    console.log("req data ", requestData);
+    const responseWrapper = await this._axios.post<ResponseEnvelope<UserRegisterResponse>>('/auth/registerUser', requestData);
+    return TownsServiceClient.unwrapOrThrowError(responseWrapper);
+  }
+
 
 }

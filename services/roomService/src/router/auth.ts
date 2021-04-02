@@ -62,7 +62,13 @@ export function addAuthRoutes(app: Express): void {
         res.cookie('jwt', token, { httpOnly: true });
         /* This following line is critical for production phase, uncomment this line while deploying */
         // res.cookie('jwt', token, { httpOnly: true, sameSite: 'none', secure: true }); // Critical line needed in production phase
-        res.status(StatusCodes.OK).json(credentials);
+        const response1 = {
+          isOK: true,
+          response: {
+            credentials
+          }
+        }
+        res.status(StatusCodes.OK).json(response1);
       } else {
         res.status(StatusCodes.OK).json(response);
       }

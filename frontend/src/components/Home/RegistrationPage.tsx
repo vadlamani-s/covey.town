@@ -9,31 +9,34 @@ import {
     useToast,
     Input,
     Heading,
-    Alert,
-    AlertIcon,
-    AlertDescription  
 } from '@chakra-ui/react';
+
+import useCoveyAppState from '../../hooks/useCoveyAppState';
 
 const RegistrationPage: React.FunctionComponent = () => {
 
     const [fullName, setFullName] = useState<string>('');
     const [emailID, setEmailID] = useState<string>('');
-    const [password, setPassword] = useState<string>('');
+    const [userPassword, setUserPassword] = useState<string>('');
     const [reEnteredPassword, setReEnteredPassword] = useState<string>('');
-    const [error, setError] = useState('');
+    const {apiClient} = useCoveyAppState();
 
     const toast = useToast()
     const processRegistration = async () =>{
        try{
-            // apiClient Registration
+            apiClient.registerUser({
+                emailId: emailID,
+                password: userPassword,
+                name: fullName,
+                creationDate: new Date()
+            });
             toast({
                 title: 'Registration Successful',
                 status: 'success'
             })
        }catch(err){
-            setError('Invalid email ID or passwords doesn\'t match');
             setEmailID(' ');
-            setPassword(' ');
+            setUserPassword(' ');
             toast({
                title: 'Unable to login',
                description: err.toString(),
@@ -41,17 +44,6 @@ const RegistrationPage: React.FunctionComponent = () => {
             });
        }
     };  
-
-    function ErrorMessage({message} : { message: string }) {
-        return (
-            <Box my={4}>
-              <Alert status="error" borderRadius={4}>
-                <AlertIcon />
-                <AlertDescription>{message}</AlertDescription>
-              </Alert>
-            </Box>
-          );
-    }
     
     return<>
 
@@ -61,8 +53,6 @@ const RegistrationPage: React.FunctionComponent = () => {
                 <Box textAlign="center"> <Heading> Register </Heading> </Box>
 
                 <Box my={4} textAlign="left" boxSize="xl">
-
-                    {error && <ErrorMessage message={error}/>}
 
                     <FormControl id="name" isRequired>
                         <FormLabel> Enter your Full name</FormLabel>
@@ -79,7 +69,7 @@ const RegistrationPage: React.FunctionComponent = () => {
                     <FormControl id="password" isRequired>
                         <FormLabel> Enter your password</FormLabel>
                         <Input type="password" placeholder="*******"
-                        size="lg" onChange={(e) => setPassword(e.target.value)}/>
+                        size="lg" onChange={(e) => setUserPassword(e.target.value)}/>
                     </FormControl>
 
                     <FormControl id="reEnterPassword" isRequired>
@@ -88,7 +78,7 @@ const RegistrationPage: React.FunctionComponent = () => {
                         size="lg" onChange={(e) => setReEnteredPassword(e.target.value)}/>
                     </FormControl>
 
-                    <Button colorScheme="blue" onClick={processRegistration} disabled={!emailID || !password || !fullName || reEnteredPassword !== password }> Register </Button>
+                    <Button colorScheme="blue" onClick={processRegistration} disabled={!emailID || !userPassword || !fullName || reEnteredPassword !== userPassword }> Register </Button>
 
                 </Box>
 
