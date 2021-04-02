@@ -2,7 +2,7 @@ import * as Mongoose from 'mongoose';
 import {IUser, IUserResponse, IUserLoginRequest, IUserDocument} from '../types/IUser';
 import { UserModel } from '../models/userSchema';
 import User from '../types/user';
-import { RoomLogin } from '../types/payloads';
+import { LogListResponse, RoomLogin } from '../types/payloads';
 import HistoryModel from '../models/historySchema';
 
 
@@ -25,7 +25,6 @@ export async function newUserRegistration(newUser: User): Promise<IUserResponse>
       emailId: createResponse.emailId,
     };
   } catch (err) {
-    console.log(err);
     return err;
   }
 }
@@ -50,7 +49,6 @@ export async function userLogin(user: IUserLoginRequest): Promise<IUserResponse>
 
 export async function loginHistory(loginDetails: RoomLogin): Promise<RoomLogin> {
   try {
-    console.log(loginDetails);
     const createRequest = new HistoryModel({
       emailId: loginDetails.emailId,
       userName: loginDetails.userName,
@@ -64,4 +62,9 @@ export async function loginHistory(loginDetails: RoomLogin): Promise<RoomLogin> 
   } catch (err) {
     return err;
   }
+}
+
+export async function getAllLogs(email: string): Promise<RoomLogin[]> {
+  const retrievedLogs = await HistoryModel.find({emailId: email});
+  return retrievedLogs;
 }

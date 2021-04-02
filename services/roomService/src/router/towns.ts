@@ -4,6 +4,7 @@ import { Server } from 'http';
 import { StatusCodes } from 'http-status-codes';
 import io from 'socket.io';
 import {
+  meetingLogs,
   storeMeetingRequest,
   townCreateHandler,
   townDeleteHandler,
@@ -21,11 +22,10 @@ const router = Router();
 export default function addTownRoutes(http: Server, app: Express): io.Server {
   app.use(cookieParser());
   app.use('/api', router);
+  let userCredentials: Credentials;
 
   router.use('/', (req, res, next) => {
-    console.log(req.cookies);
-    const userCredentials: Credentials = validateAPIRequest(req.cookies.jwt) as Credentials;
-    console.log(userCredentials);
+    userCredentials = validateAPIRequest(req.cookies.jwt) as Credentials;
     if (userCredentials.signedIn) {
       next();
     } else {
@@ -45,16 +45,12 @@ export default function addTownRoutes(http: Server, app: Express): io.Server {
       const { response: joinResponse } = result;
       let historyResponse = null;
       if (joinResponse?.coveyUserID) {
-        const userCredentials: Credentials = validateAPIRequest(req.cookies.jwt) as Credentials;
-        console.log(userCredentials);
-        if (userCredentials.signedIn) {
-          historyResponse = await storeMeetingRequest({
-            emailId: userCredentials.emailId,
-            friendlyName: joinResponse.friendlyName,
-            coveyTownID: req.body.coveyTownID,
-            userName: req.body.userName,
-          });
-        }
+        historyResponse = await storeMeetingRequest({
+          emailId: userCredentials.emailId,
+          friendlyName: joinResponse.friendlyName,
+          coveyTownID: req.body.coveyTownID,
+          userName: req.body.userName,
+        });
       }
       if (historyResponse?.isOK === false) {
         res.status(StatusCodes.OK).json(historyResponse.message);
@@ -135,6 +131,24 @@ export default function addTownRoutes(http: Server, app: Express): io.Server {
       });
     }
   });
+
+  /**
+   * Fetch all the logs for a given email
+   */
+  router.get('/fetchlogs', json(), async (req, res) => {
+    try {
+      const result = await meetingLogs({
+        emailId: req.body.emailId,
+      });
+      res.status(StatusCodes.OK).json(result);
+    } catch (err) {
+      logError(err);
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        message: 'Internal server error, please see log in server for more details',
+      });
+    }
+  });
+  
 
   const socketServer = new io.Server(http, { cors: { origin: '*' } });
   socketServer.on('connection', townSubscriptionHandler);
