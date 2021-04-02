@@ -35,6 +35,8 @@ const LoginPage: React.FunctionComponent = () => {
                 status: 'success'
             })
             
+            localStorage.setItem('isLoggedIn', "true");
+
        }catch(err){
             setEmailID(' ');
             setUserPassword(' ');

@@ -202,7 +202,7 @@ async function GameController(initData: TownJoinResponse,
 
 function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefined>> }) {
   const [appState, dispatchAppUpdate] = useReducer(appStateReducer, defaultAppState());
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false); // T1
+  localStorage.setItem('isLoggedIn', "false");
 
   const setupGameController = useCallback(async (initData: TownJoinResponse) => {
     await GameController(initData, dispatchAppUpdate);
@@ -219,10 +219,10 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
   }, [dispatchAppUpdate, setOnDisconnect]);
 
   const page = useMemo(() => {
-    if (!isLoggedIn) {
+    if (localStorage.getItem('isLoggedIn') === "false") {
       return <LoginPage/>;
     }
-    if (!appState.sessionToken && isLoggedIn) { 
+    if (!appState.sessionToken && localStorage.getItem('isLoggedIn') === "true") { 
       return <Login doLogin={setupGameController} />;
     } if (!videoInstance) {
       return <div>Loading...</div>;
@@ -233,7 +233,7 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
         <VideoOverlay preferredMode="fullwidth" />
       </div>
     );
-  }, [setupGameController, appState.sessionToken, videoInstance, isLoggedIn]);
+  }, [setupGameController, appState.sessionToken, videoInstance]);
   return (
 
     <CoveyAppContext.Provider value={appState}>

@@ -136,7 +136,6 @@ export default class TownsServiceClient {
   }
 
   static unwrapOrThrowError<T>(response: AxiosResponse<ResponseEnvelope<T>>, ignoreResponse = false): T {
-    console.log("respone ", response);
     if (response.data.isOK) {
       if (ignoreResponse) {
         return {} as T;
@@ -173,7 +172,6 @@ export default class TownsServiceClient {
   }
 
   async loginUser(requestData: UserLoginRequest): Promise<UserLoginResponse> {
-    console.log("req data ", requestData);
     const responseWrapper = await this._axios.post<ResponseEnvelope<UserLoginResponse>>('/auth/loginUser', requestData);
     return TownsServiceClient.unwrapOrThrowError(responseWrapper);
   }
@@ -184,10 +182,8 @@ export default class TownsServiceClient {
   }
 
   async registerUser(requestData: UserRegisterRequest): Promise<UserRegisterResponse> {
-    console.log("req data ", requestData);
     const responseWrapper = await this._axios.post<ResponseEnvelope<UserRegisterResponse>>('/auth/registerUser', requestData);
     return TownsServiceClient.unwrapOrThrowError(responseWrapper);
   }
-
 
 }
