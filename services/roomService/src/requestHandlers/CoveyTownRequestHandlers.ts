@@ -4,6 +4,8 @@ import Player from '../types/Player';
 import { CoveyTownList, UserLocation } from '../CoveyTypes';
 import CoveyTownListener from '../types/CoveyTownListener';
 import CoveyTownsStore from '../lib/CoveyTownsStore';
+import { getAllLogs, loginHistory } from '../db/coveyDBMethods';
+import {LogListResponse, RoomLogin} from '../types/payloads';
 
 /**
  * The format of a request to join a Town in Covey.Town, as dispatched by the server middleware
@@ -110,6 +112,7 @@ export async function townJoinHandler(requestData: TownJoinRequest): Promise<Res
   }
   const newPlayer = new Player(requestData.userName);
   const newSession = await coveyTownController.addPlayer(newPlayer);
+
   assert(newSession.videoToken);
   return {
     isOK: true,
@@ -123,6 +126,35 @@ export async function townJoinHandler(requestData: TownJoinRequest): Promise<Res
     },
   };
 }
+
+export async function storeMeetingRequest(request: RoomLogin): Promise<ResponseEnvelope<Record<string, null>>> {
+  const historyDetails = await loginHistory({
+    emailId: request.emailId,
+    friendlyName: request.friendlyName,
+    coveyTownID: request.coveyTownID,
+    userName: request.userName,
+  });
+  if (historyDetails) {
+    return {
+      isOK: true,
+      message: 'Successful',
+    };
+  }
+  return {
+    isOK: false,
+    message: 'Failed',
+  };
+    
+}
+
+export async function meetingLogs(request:{ emailId: string}): Promise<ResponseEnvelope<LogListResponse>> {
+  const logList = await getAllLogs(request.emailId);
+  return {
+    isOK: true, 
+    response: { logs: logList },
+  };
+}
+
 
 export async function townListHandler(): Promise<ResponseEnvelope<TownListResponse>> {
   const townsStore = CoveyTownsStore.getInstance();

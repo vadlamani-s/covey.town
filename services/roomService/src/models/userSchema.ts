@@ -12,7 +12,7 @@ const LoginSchema = new Schema<IUserDocument>({
   password: { type: String, required: true },
   creationDate: { type: Date, default: new Date() },
 });
-
+ 
 
 LoginSchema.pre('save', function (next) {
   const user = this;

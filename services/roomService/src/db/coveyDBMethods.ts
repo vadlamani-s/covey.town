@@ -1,29 +1,24 @@
 import * as Mongoose from 'mongoose';
 import {IUser, IUserResponse, IUserLoginRequest, IUserDocument} from '../types/IUser';
 import { UserModel } from '../models/userSchema';
-import User from '../types/User';
+import User from '../types/user';
+import { LogListResponse, RoomLogin } from '../types/payloads';
+import HistoryModel from '../models/historySchema';
 
-// export const disconnect = () => {
-//   if (!database) {
-//     return;
-//   }
-//   Mongoose.disconnect();
-// };
 
 export async function newUserRegistration(newUser: User): Promise<IUserResponse> {
-  const retrivedResult = UserModel.findOne({emailId: newUser.emailId}) as IUser;
+  const retrivedResult = await UserModel.findOne({emailId: newUser.emailId});
   if (retrivedResult) {
     throw Error('User is already registered');
   }
-
   try {
-    const createResponse = await UserModel.create({
+    const createRequest = new UserModel({
       name: newUser.name,
       emailId: newUser.emailId,
       password: newUser.password,   
       creationDate: new Date().toLocaleString('en-US'),
     });
-
+    const createResponse = await createRequest.save();
     return {
       name: createResponse.name,
       creationDate: createResponse.creationDate,
@@ -52,3 +47,24 @@ export async function userLogin(user: IUserLoginRequest): Promise<IUserResponse>
   };
 }
 
+export async function loginHistory(loginDetails: RoomLogin): Promise<RoomLogin> {
+  try {
+    const createRequest = new HistoryModel({
+      emailId: loginDetails.emailId,
+      userName: loginDetails.userName,
+      loginDate: new Date().toLocaleString('en-US'),
+      friendlyName: loginDetails.friendlyName,
+      coveyTownId: loginDetails.coveyTownID,
+    });
+
+    const createResponse = await createRequest.save();
+    return createResponse;
+  } catch (err) {
+    return err;
+  }
+}
+
+export async function getAllLogs(email: string): Promise<RoomLogin[]> {
+  const retrievedLogs = await HistoryModel.find({emailId: email});
+  return retrievedLogs;
+}

@@ -1,5 +1,5 @@
 import { config } from 'dotenv';
-import User from '../types/User';
+import User from '../types/user';
 import { newUserRegistration, userLogin} from '../db/coveyDBMethods';
 
 /**
@@ -41,20 +41,27 @@ export interface ResponseEnvelope<T> {
 
 export async function userRegistrationRequestHandler(requestData: UserRegisterRequest): Promise<ResponseEnvelope<UserResponse>> {
   const newUser = new User(requestData.name, requestData.emailId, requestData.password);
-  const registrationResponse = await newUserRegistration(newUser);
-  return {
-    isOK: true,
-    response: {
-      name: registrationResponse.name,
-      emailId: registrationResponse.emailId,
-      creationDate: registrationResponse.creationDate,
-    },
-  };
+  try {
+    const registrationResponse = await newUserRegistration(newUser);
+    return {
+      isOK: true,
+      response: {
+        name: registrationResponse.name,
+        emailId: registrationResponse.emailId,
+        creationDate: registrationResponse.creationDate,
+      },
+    };
+  }  catch (err) {
+    return {
+      isOK: false,
+      message: 'User is already registered',
+    };
+  }
 }
 
 export async function userLoginRequestHandler(requestData: UserLoginRequest): Promise<ResponseEnvelope<UserResponse>> {
-  const loginResponse = await userLogin(requestData);
-  if (loginResponse) {
+  try {
+    const loginResponse = await userLogin(requestData);
     return {
       isOK: true,
       response: {
@@ -63,11 +70,12 @@ export async function userLoginRequestHandler(requestData: UserLoginRequest): Pr
         creationDate: loginResponse.creationDate,
       },
     };
-  } 
-  return {
-    isOK: false,
-    message: 'Login failed',
-  };
+  } catch (err) {
+    return {
+      isOK: false,
+      message: 'Login failed, Incorrect Email or Password',
+    };
+  }
   
   
 }

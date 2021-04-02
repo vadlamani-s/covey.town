@@ -50,8 +50,8 @@ const connect = () => {
 
 connect();
 
-addTownRoutes(server, app);
 addAuthRoutes(app);
+addTownRoutes(server, app);
 
 server.listen(process.env.PORT || 8081, () => {
   const address = server.address() as AddressInfo;
