@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { HStack, Box } from "@chakra-ui/react";
 import PreJoinScreens from '../VideoCall/VideoFrontend/components/PreJoinScreens/PreJoinScreens';
 import MediaErrorSnackbar
   from '../VideoCall/VideoFrontend/components/PreJoinScreens/MediaErrorSnackbar/MediaErrorSnackbar';
@@ -15,11 +16,17 @@ export default function Login({ doLogin }: LoginProps): JSX.Element {
   return (
     <>
       <MediaErrorSnackbar error={mediaError} dismissError={() => setMediaError(undefined)} />
-      <HistoryMeeting/>
-      <PreJoinScreens
-        doLogin={doLogin}
-        setMediaError={setMediaError}
-      />
+      <HStack spacing={8}>
+        <Box>
+          <HistoryMeeting />
+        </Box>
+        <Box>
+          <PreJoinScreens
+            doLogin={doLogin}
+            setMediaError={setMediaError}
+          />
+        </Box>
+      </HStack>
     </>
   );
 }
