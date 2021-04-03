@@ -228,11 +228,12 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
     dispatchAppUpdate({action: 'playerLoggedIn', userName})
     return true;
   }, [dispatchAppUpdate])
+
   const page = useMemo(() => {
     if (!appState.userName) {
         return <LoginPage loginHandler={loginHandler} />
     }    
-    // setVarjj(localStorage.getItem('isLoggedIn')) 
+    
     if (!appState.sessionToken && appState.userName) {
         return <Login doLogin={setupGameController} />
     }

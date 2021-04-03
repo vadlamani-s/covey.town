@@ -29,13 +29,12 @@ interface TownSelectionProps {
 }
 
 export default function TownSelection({ doLogin }: TownSelectionProps): JSX.Element {
-  const [userName, setUserName] = useState<string>(Video.instance()?.userName || '');
   const [newTownName, setNewTownName] = useState<string>('');
   const [newTownIsPublic, setNewTownIsPublic] = useState<boolean>(true);
   const [townIDToJoin, setTownIDToJoin] = useState<string>('');
   const [currentPublicTowns, setCurrentPublicTowns] = useState<CoveyTownInfo[]>();
   const { connect } = useVideoContext();
-  const { apiClient } = useCoveyAppState();
+  const { apiClient, userName } = useCoveyAppState();
   const toast = useToast();
 
   const updateTownListings = useCallback(() => {
@@ -145,9 +144,8 @@ export default function TownSelection({ doLogin }: TownSelectionProps): JSX.Elem
 
             <FormControl>
               <FormLabel htmlFor="name">Name</FormLabel>
-              <Input autoFocus name="name" placeholder="Your name"
+              <Input autoFocus name="name"
                      value={userName}
-                     onChange={event => setUserName(event.target.value)}
               />
             </FormControl>
           </Box>
