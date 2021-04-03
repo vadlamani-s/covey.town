@@ -1,5 +1,5 @@
-import { Express, Router, json } from 'express';
 import cookieParser from 'cookie-parser';
+import { Express, json, Router } from 'express';
 import { StatusCodes } from 'http-status-codes';
 // import { OAuth2Client } from 'google-auth-library';
 import { sign, verify } from 'jsonwebtoken';
@@ -65,9 +65,9 @@ export function addAuthRoutes(app: Express): void {
         const response1 = {
           isOK: true,
           response: {
-            credentials
-          }
-        }
+            credentials,
+          },
+        };
         res.status(StatusCodes.OK).json(response1);
       } else {
         res.status(StatusCodes.OK).json(response);

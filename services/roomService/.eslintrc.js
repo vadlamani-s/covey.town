@@ -7,7 +7,7 @@ module.exports = {
     'prettier',
   ],
   parserOptions: {
-    project: './services/roomService/tsconfig.json',
+    project: './tsconfig.json',
     warnOnUnsupportedTypeScriptVersion: false,
   },
   settings: {

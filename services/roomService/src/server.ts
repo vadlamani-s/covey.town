@@ -1,20 +1,19 @@
+import CORS from 'cors';
+import { config } from 'dotenv';
 import Express from 'express';
 import * as http from 'http';
-import CORS from 'cors';
-import { AddressInfo } from 'net';
-import { config } from 'dotenv';
 // import * as mongoose from 'mongoose';
 import mongoose from 'mongoose';
-import addTownRoutes from './router/towns';
-import {addAuthRoutes} from './router/auth';
+import { AddressInfo } from 'net';
 import CoveyTownsStore from './lib/CoveyTownsStore';
-
-
+import { addAuthRoutes } from './router/auth';
+import addTownRoutes from './router/towns';
 
 config();
 
 const app = Express();
-app.use(CORS());
+const uiServerOrigin = process.env.UI_SERVER_ORIGIN || 'http://localhost:3000';
+app.use(CORS({ origin: uiServerOrigin, credentials: true }));
 const server = http.createServer(app);
 
 let database: mongoose.Connection;
@@ -24,7 +23,7 @@ const connect = () => {
   if (database) {
     return;
   }
-  
+
   mongoose.connect(uri, {
     useNewUrlParser: true,
     useFindAndModify: true,
@@ -58,7 +57,6 @@ server.listen(process.env.PORT || 8081, () => {
   // eslint-disable-next-line no-console
   console.log(`Listening on ${address.port}`);
   if (process.env.DEMO_TOWN_ID) {
-    const newTown = CoveyTownsStore.getInstance()
-      .createTown(process.env.DEMO_TOWN_ID, false);
+    const newTown = CoveyTownsStore.getInstance().createTown(process.env.DEMO_TOWN_ID, false);
   }
 });

@@ -1,5 +1,5 @@
-import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import assert from 'assert';
+import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { ServerPlayer } from './Player';
 
 /**
@@ -89,7 +89,7 @@ export type CoveyTownInfo = {
   friendlyName: string;
   coveyTownID: string;
   currentOccupancy: number;
-  maximumOccupancy: number
+  maximumOccupancy: number;
 };
 
 export interface UserLoginRequest {
@@ -99,11 +99,11 @@ export interface UserLoginRequest {
 
 export interface UserLoginResponse {
   credentials: {
-      signedIn: boolean,
-      name: string,
-      emailId: string,
-      creationDate: Date,
-  }
+    signedIn: boolean;
+    name: string;
+    emailId: string;
+    creationDate: Date;
+  };
 }
 
 export interface UserLogoutRequest {
@@ -124,15 +124,15 @@ export interface UserRegisterResponse {
 }
 
 export interface RoomLogin {
-  emailId?: string, 
-  loginDate?: Date,
-  friendlyName: string, 
-  coveyTownID: string,
-  userName: string
+  emailId?: string;
+  loginDate?: Date;
+  friendlyName: string;
+  coveyTownID: string;
+  userName: string;
 }
 
 export interface FetchLogsResponse {
-  logs: RoomLogin[]
+  logs: RoomLogin[];
 }
 
 export default class TownsServiceClient {
@@ -146,10 +146,13 @@ export default class TownsServiceClient {
   constructor(serviceURL?: string) {
     const baseURL = serviceURL || process.env.REACT_APP_TOWNS_SERVICE_URL;
     assert(baseURL);
-    this._axios = axios.create({ baseURL });
+    this._axios = axios.create({ baseURL, withCredentials: true });
   }
 
-  static unwrapOrThrowError<T>(response: AxiosResponse<ResponseEnvelope<T>>, ignoreResponse = false): T {
+  static unwrapOrThrowError<T>(
+    response: AxiosResponse<ResponseEnvelope<T>>,
+    ignoreResponse = false,
+  ): T {
     if (response.data.isOK) {
       if (ignoreResponse) {
         return {} as T;
@@ -161,17 +164,25 @@ export default class TownsServiceClient {
   }
 
   async createTown(requestData: TownCreateRequest): Promise<TownCreateResponse> {
-    const responseWrapper = await this._axios.post<ResponseEnvelope<TownCreateResponse>>('/api/towns', requestData);
+    const responseWrapper = await this._axios.post<ResponseEnvelope<TownCreateResponse>>(
+      '/api/towns',
+      requestData,
+    );
     return TownsServiceClient.unwrapOrThrowError(responseWrapper);
   }
 
   async updateTown(requestData: TownUpdateRequest): Promise<void> {
-    const responseWrapper = await this._axios.patch<ResponseEnvelope<void>>(`/api/towns/${requestData.coveyTownID}`, requestData);
+    const responseWrapper = await this._axios.patch<ResponseEnvelope<void>>(
+      `/api/towns/${requestData.coveyTownID}`,
+      requestData,
+    );
     return TownsServiceClient.unwrapOrThrowError(responseWrapper, true);
   }
 
   async deleteTown(requestData: TownDeleteRequest): Promise<void> {
-    const responseWrapper = await this._axios.delete<ResponseEnvelope<void>>(`/api/towns/${requestData.coveyTownID}/${requestData.coveyTownPassword}`);
+    const responseWrapper = await this._axios.delete<ResponseEnvelope<void>>(
+      `/api/towns/${requestData.coveyTownID}/${requestData.coveyTownPassword}`,
+    );
     return TownsServiceClient.unwrapOrThrowError(responseWrapper, true);
   }
 
@@ -186,23 +197,33 @@ export default class TownsServiceClient {
   }
 
   async loginUser(requestData: UserLoginRequest): Promise<UserLoginResponse> {
-    const responseWrapper = await this._axios.post<ResponseEnvelope<UserLoginResponse>>('/auth/loginUser', requestData);
+    const responseWrapper = await this._axios.post<ResponseEnvelope<UserLoginResponse>>(
+      '/auth/loginUser',
+      requestData,
+    );
     return TownsServiceClient.unwrapOrThrowError(responseWrapper);
   }
 
   async logoutUser(requestData: UserLogoutRequest): Promise<void> {
-    const responseWrapper = await this._axios.post<ResponseEnvelope<void>>('/auth/logoutUser', requestData);
+    const responseWrapper = await this._axios.post<ResponseEnvelope<void>>(
+      '/auth/logoutUser',
+      requestData,
+    );
     return TownsServiceClient.unwrapOrThrowError(responseWrapper);
   }
 
   async registerUser(requestData: UserRegisterRequest): Promise<UserRegisterResponse> {
-    const responseWrapper = await this._axios.post<ResponseEnvelope<UserRegisterResponse>>('/auth/registerUser', requestData);
+    const responseWrapper = await this._axios.post<ResponseEnvelope<UserRegisterResponse>>(
+      '/auth/registerUser',
+      requestData,
+    );
     return TownsServiceClient.unwrapOrThrowError(responseWrapper);
   }
 
   async fetchLogs(): Promise<FetchLogsResponse> {
-    const responseWrapper = await this._axios.get<ResponseEnvelope<FetchLogsResponse>>('/api/fetchlogs');
+    const responseWrapper = await this._axios.get<ResponseEnvelope<FetchLogsResponse>>(
+      '/api/fetchlogs',
+    );
     return TownsServiceClient.unwrapOrThrowError(responseWrapper);
   }
-
 }
