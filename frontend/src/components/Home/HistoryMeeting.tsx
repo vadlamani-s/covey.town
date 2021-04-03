@@ -38,8 +38,7 @@ const HistoryMeeting: React.FunctionComponent = () => {
       }, [handleMeeting]);
     
     return<>
-
-
+    
         <Container maxH="500px" centerContent>
             <Heading p="4" as="h4" size="md">Meeting History</Heading>
             <Box maxH="500px" overflowY="scroll">
@@ -55,8 +54,6 @@ const HistoryMeeting: React.FunctionComponent = () => {
               </Table>
             </Box>
         </Container>
-        
-        
         
     </>
 
