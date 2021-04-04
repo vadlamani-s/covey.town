@@ -28,13 +28,14 @@ import Video from './classes/Video/Video';
 import LoginPage from './components/Home/LoginPage';
 
 type CoveyAppUpdate =
-  | { action: 'doConnect'; data: { userName: string, townFriendlyName: string, townID: string,townIsPubliclyListed:boolean, sessionToken: string, myPlayerID: string, socket: Socket, players: Player[], emitMovement: (location: UserLocation) => void } }
+  | { action: 'doConnect'; data: { userName: string, townFriendlyName: string, townID: string, townIsPubliclyListed: boolean, sessionToken: string, myPlayerID: string, socket: Socket, players: Player[], emitMovement: (location: UserLocation) => void } }
   | { action: 'addPlayer'; player: Player }
   | { action: 'playerMoved'; player: Player }
   | { action: 'playerDisconnect'; player: Player }
   | { action: 'weMoved'; location: UserLocation }
   | { action: 'disconnect' }
-  | { action: 'playerLoggedIn'; userName: string }
+  | { action: 'playerLoggedIn'; data: { userName: string, emailId: string } }
+  | { action: 'playerLoggedOut'; userName: string }
   ;
 
 function defaultAppState(): CoveyAppState {
@@ -47,6 +48,7 @@ function defaultAppState(): CoveyAppState {
     currentTownIsPubliclyListed: false,
     sessionToken: '',
     userName: '',
+    emailId: '',
     socket: null,
     currentLocation: {
       x: 0, y: 0, rotation: 'front', moving: false,
@@ -67,6 +69,7 @@ function appStateReducer(state: CoveyAppState, update: CoveyAppUpdate): CoveyApp
     currentLocation: state.currentLocation,
     nearbyPlayers: state.nearbyPlayers,
     userName: state.userName,
+    emailId: state.emailId,
     socket: state.socket,
     emitMovement: state.emitMovement,
     apiClient: state.apiClient,
@@ -141,6 +144,11 @@ function appStateReducer(state: CoveyAppState, update: CoveyAppUpdate): CoveyApp
       break;
 
     case 'playerLoggedIn':
+      nextState.userName = update.data.userName;
+      nextState.emailId = update.data.emailId;
+      break;
+
+    case 'playerLoggedOut':
       nextState.userName = update.userName;
       break;
 
@@ -223,21 +231,29 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
     });
   }, [dispatchAppUpdate, setOnDisconnect]);
 
-  const loginHandler = useCallback((userName: string) => {
+  const loginHandler = useCallback((userName: string, emailId: string) => {
 
-    dispatchAppUpdate({action: 'playerLoggedIn', userName})
+    dispatchAppUpdate({ action: 'playerLoggedIn', data: { userName, emailId } })
+    return true;
+  }, [dispatchAppUpdate])
+
+  const logoutHandler = useCallback((userName: string) => {
+
+    dispatchAppUpdate({ action: 'playerLoggedOut', userName })
     return true;
   }, [dispatchAppUpdate])
 
   const page = useMemo(() => {
     if (!appState.userName) {
-        return <LoginPage loginHandler={loginHandler} />
-    }    
-    
-    if (!appState.sessionToken && appState.userName) {
-        return <Login doLogin={setupGameController} />
+      return <LoginPage loginHandler={loginHandler} />
     }
-     if (!videoInstance) {
+
+    if (!appState.sessionToken && appState.userName) {
+      return <Login doLogin={setupGameController}
+        logoutHandler={logoutHandler}
+        emailId={appState.emailId} />
+    }
+    if (!videoInstance) {
       return <div>Loading...</div>;
     }
     return (
@@ -246,7 +262,7 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
         <VideoOverlay preferredMode="fullwidth" />
       </div>
     );
-  }, [setupGameController, appState.sessionToken, videoInstance, loginHandler, appState.userName]);
+  }, [setupGameController, appState.sessionToken, videoInstance, loginHandler, logoutHandler, appState.userName, appState.emailId]);
   return (
 
     <CoveyAppContext.Provider value={appState}>

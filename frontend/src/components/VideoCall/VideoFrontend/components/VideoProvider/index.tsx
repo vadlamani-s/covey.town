@@ -54,7 +54,7 @@ interface VideoProviderProps {
 }
 
 export function VideoProvider({
-  options, children, onError = () => {}, onDisconnect = () => {},
+  options, children, onError = () => { }, onDisconnect = () => { },
 }: VideoProviderProps) {
   const onErrorCallback = (error: TwilioError) => {
     // tslint:disable-next-line:no-console

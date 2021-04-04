@@ -6,6 +6,7 @@ import { sign, verify } from 'jsonwebtoken';
 import {
   userLoginRequestHandler,
   userLogoutRequestHandler,
+  userProfileRequestHandler,
   userRegistrationRequestHandler,
 } from '../requestHandlers/UserAuthRequestHandler';
 import { Credentials } from '../types/IUser';
@@ -96,6 +97,20 @@ export function addAuthRoutes(app: Express): void {
     }
   });
 }
+
+router.get('/userProfile/:emailId', json(), async (req, res) => {
+  try {
+    const result = await userProfileRequestHandler({
+      emailId: req.params.emailId,
+    });
+    res.status(StatusCodes.OK).json(result);
+  } catch (err) {
+    logError(err);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      message: 'Internal server error, please see log in server for more details',
+    });
+  }
+});
 
 export const validateAPIRequest = (validatetoken: string): Credentials => {
   let validatedCredentials: Credentials;

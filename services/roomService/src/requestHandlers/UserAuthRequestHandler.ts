@@ -1,6 +1,6 @@
 import { config } from 'dotenv';
 import User from '../types/user';
-import { newUserRegistration, userLogin} from '../db/coveyDBMethods';
+import { newUserRegistration, userLogin, userProfile} from '../db/coveyDBMethods';
 
 /**
  * Payload sent by client to create a Town in Covey.Town
@@ -27,6 +27,17 @@ export interface UserResponse {
 export interface UserLoginRequest {
   emailId: string;
   password: string;
+}
+
+export interface UserProfileRequest {
+  emailId: string;
+}
+
+export interface UserProfileResponse {
+  emailId: string;
+  password: string;
+  name: string;
+  creationDate: Date;
 }
     
 
@@ -87,6 +98,26 @@ export async function userLogoutRequestHandler(userSessionData: string): Promise
     response: {},
     message: !logoutSuccess ? 'Logout failed' : 'Logout Successful',
   };
+}
+
+export async function userProfileRequestHandler(requestData: UserProfileRequest): Promise<ResponseEnvelope<UserProfileResponse>> {
+  try {
+    const UserProfileResponse = await userProfile(requestData);
+    return {
+      isOK: true,
+      response: {
+        name: UserProfileResponse.name,
+        emailId: UserProfileResponse.emailId,
+        creationDate: UserProfileResponse.creationDate,
+        password: UserProfileResponse.password,
+      },
+    };
+  }  catch (err) {
+    return {
+      isOK: false,
+      message: 'User not found',
+    };
+  }
 }
 
 

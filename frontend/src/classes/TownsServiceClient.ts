@@ -106,10 +106,6 @@ export interface UserLoginResponse {
   };
 }
 
-export interface UserLogoutRequest {
-  userSessionData: string;
-}
-
 export interface UserRegisterRequest {
   emailId: string;
   password: string;
@@ -119,6 +115,17 @@ export interface UserRegisterRequest {
 
 export interface UserRegisterResponse {
   emailId: string;
+  name: string;
+  creationDate: Date;
+}
+
+export interface UserProfileRequest {
+  emailId: string;
+}
+
+export interface UserProfileResponse {
+  emailId: string;
+  password: string;
   name: string;
   creationDate: Date;
 }
@@ -204,10 +211,9 @@ export default class TownsServiceClient {
     return TownsServiceClient.unwrapOrThrowError(responseWrapper);
   }
 
-  async logoutUser(requestData: UserLogoutRequest): Promise<void> {
+  async logoutUser(): Promise<void> {
     const responseWrapper = await this._axios.post<ResponseEnvelope<void>>(
       '/auth/logoutUser',
-      requestData,
     );
     return TownsServiceClient.unwrapOrThrowError(responseWrapper);
   }
@@ -224,6 +230,13 @@ export default class TownsServiceClient {
     const responseWrapper = await this._axios.get<ResponseEnvelope<FetchLogsResponse>>(
       '/api/fetchlogs',
     );
+    return TownsServiceClient.unwrapOrThrowError(responseWrapper);
+  }
+
+  async userProfile(requestData: UserProfileRequest): Promise<UserProfileResponse> {
+    const responseWrapper = await this._axios.get<ResponseEnvelope<UserProfileResponse>> (
+      `/auth/userProfile/${requestData.emailId}`
+    )
     return TownsServiceClient.unwrapOrThrowError(responseWrapper);
   }
 }

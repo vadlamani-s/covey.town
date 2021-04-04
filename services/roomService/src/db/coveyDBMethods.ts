@@ -1,5 +1,5 @@
 import * as Mongoose from 'mongoose';
-import {IUser, IUserResponse, IUserLoginRequest, IUserDocument} from '../types/IUser';
+import {IUser, IUserResponse, IUserLoginRequest, IUserDocument, IUserProfileResponse, IUserProfileRequest} from '../types/IUser';
 import { UserModel } from '../models/userSchema';
 import User from '../types/user';
 import { LogListResponse, RoomLogin } from '../types/payloads';
@@ -61,6 +61,22 @@ export async function loginHistory(loginDetails: RoomLogin): Promise<RoomLogin> 
     return createResponse;
   } catch (err) {
     return err;
+  }
+}
+
+export async function userProfile(user: IUserProfileRequest): Promise<IUserProfileResponse> {
+  try {
+
+  const retrivedResult = await UserModel.findOne({emailId: user.emailId});
+
+  return {
+    name: retrivedResult.name,
+    creationDate: retrivedResult.creationDate,
+    emailId: retrivedResult.emailId,
+    password: retrivedResult.password,
+  };
+  } catch(err) {
+  return err;
   }
 }
 
