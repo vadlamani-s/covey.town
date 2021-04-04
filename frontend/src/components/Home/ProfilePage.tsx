@@ -56,7 +56,7 @@ export default function ProfilePage({ user }: UserProfile): JSX.Element {
                     <ModalBody pb={6}>
                         <FormControl>
                             <FormLabel htmlFor='userName'>User Name</FormLabel>
-                            <Input id='userName' placeholder="UserName" name="userName" value={userName} onChange={(ev) => setUserName(ev.target.value)} />
+                            <Input id='userName' name="userName" value={userName} onChange={(ev) => setUserName(ev.target.value)} />
                         </FormControl>
 
                         <FormControl>
