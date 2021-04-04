@@ -20,14 +20,13 @@ import Typography from '@material-ui/core/Typography';
 import { UserProfileResponse } from '../../classes/TownsServiceClient';
 
 interface UserProfile {
-    user: UserProfileResponse | undefined,
+    user: UserProfileResponse,
 }
 
 export default function ProfilePage({ user }: UserProfile): JSX.Element {
 
     const { isOpen, onOpen, onClose } = useDisclosure();
-    const [userName, setUserName] = useState<string>(user?.name || " ");
-    const [emailID, setEmailID] = useState<string>(user?.emailId || " ");
+    const [userName, setUserName] = useState<string>(user.name);
     const [roomUpdatePassword, setRoomUpdatePassword] = useState<string>('');
 
     const openSettings = useCallback(() => {
@@ -39,7 +38,7 @@ export default function ProfilePage({ user }: UserProfile): JSX.Element {
     }, [onClose,]);
 
     const processUpdates = async (action: string) => {
-        console.log("action ", action);
+
     };
 
 
@@ -57,15 +56,13 @@ export default function ProfilePage({ user }: UserProfile): JSX.Element {
                     <ModalBody pb={6}>
                         <FormControl>
                             <FormLabel htmlFor='userName'>User Name</FormLabel>
-                            <Input id='userName' placeholder="User Name" name="userName" value={userName} onChange={(ev) => setUserName(ev.target.value)} />
+                            <Input id='userName' placeholder="UserName" name="userName" value={userName} onChange={(ev) => setUserName(ev.target.value)} />
                         </FormControl>
 
                         <FormControl>
                             <FormLabel htmlFor='email'>Email address</FormLabel>
-                            <Input id='emailID' placeholder="Email ID" name="emailID" value={emailID} onChange={(ev) => setEmailID(ev.target.value)} />
+                            <Input id='emailID' placeholder="Email ID" name="emailID" value={user.emailId} />
                         </FormControl>
-
-
 
                         <FormControl isRequired>
                             <FormLabel htmlFor="updatePassword">Town Update Password</FormLabel>

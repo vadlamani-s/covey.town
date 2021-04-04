@@ -3,7 +3,6 @@ import {
     Box,
     Button,
     useToast,
-    Modal
 } from '@chakra-ui/react';
 
 import useCoveyAppState from '../../hooks/useCoveyAppState';
@@ -17,9 +16,15 @@ interface LogoutProps {
 
 export default function MenuBar({ logoutHandler, emailID }: LogoutProps): JSX.Element {
 
-    const [logout, setLogout] = useState<boolean>(false);
+    const defaultUser: UserProfileResponse = {
+        emailId: '',
+        password: '',
+        name: '',
+        creationDate: new Date(),
+    }
+
     const { apiClient } = useCoveyAppState();
-    const [uProfile, setUProfile] = useState<UserProfileResponse>();
+    const [uProfile, setUProfile] = useState<UserProfileResponse>(defaultUser);
     const [profile, setProfile] = useState<boolean>(false);
 
     const toast = useToast()
@@ -34,8 +39,6 @@ export default function MenuBar({ logoutHandler, emailID }: LogoutProps): JSX.El
                 title: 'Logout Successful',
                 status: 'success'
             })
-
-            setLogout(true);
 
         } catch (err) {
             toast({
