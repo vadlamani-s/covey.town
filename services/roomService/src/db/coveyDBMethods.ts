@@ -64,17 +64,20 @@ export async function loginHistory(loginDetails: RoomLogin): Promise<RoomLogin> 
   }
 }
 
+/**
+ * Method to fetch user's profile.
+ * @param user profile request from the client
+ * @returns profile response to the client
+ */
 export async function userProfile(user: IUserProfileRequest): Promise<IUserProfileResponse> {
   try {
-
-  const retrivedResult = await UserModel.findOne({emailId: user.emailId});
-
-  return {
-    name: retrivedResult.name,
-    creationDate: retrivedResult.creationDate,
-    emailId: retrivedResult.emailId,
-    password: retrivedResult.password,
-  };
+    const retrivedResult = await UserModel.findOne({emailId: user.emailId});
+    return {
+      name: retrivedResult.name,
+      creationDate: retrivedResult.creationDate,
+      emailId: retrivedResult.emailId,
+      password: retrivedResult.password,
+    };
   } catch(err) {
   return err;
   }
