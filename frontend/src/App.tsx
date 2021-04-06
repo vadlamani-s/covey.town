@@ -25,7 +25,8 @@ import { Callback } from './components/VideoCall/VideoFrontend/types';
 import Player, { ServerPlayer, UserLocation } from './classes/Player';
 import TownsServiceClient, { TownJoinResponse } from './classes/TownsServiceClient';
 import Video from './classes/Video/Video';
-import LoginPage from './components/Home/LoginPage';
+import LoginPage from './components/HomePage/LoginPage';
+import Home from './components/Home/Home';
 
 type CoveyAppUpdate =
   | { action: 'doConnect'; data: { userName: string, townFriendlyName: string, townID: string, townIsPubliclyListed: boolean, sessionToken: string, myPlayerID: string, socket: Socket, players: Player[], emitMovement: (location: UserLocation) => void } }
@@ -245,13 +246,13 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
 
   const page = useMemo(() => {
     if (!appState.userName) {
-      return <LoginPage loginHandler={loginHandler} />
+      return <Home loginHandler={loginHandler}/>
     }
 
     if (!appState.sessionToken && appState.userName) {
       return <Login doLogin={setupGameController}
         logoutHandler={logoutHandler}
-        emailId={appState.emailId} />
+        emailID={appState.emailId} />
     }
     if (!videoInstance) {
       return <div>Loading...</div>;
