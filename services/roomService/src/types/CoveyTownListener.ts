@@ -26,4 +26,14 @@ export default interface CoveyTownListener {
    * Called when a town is destroyed, causing all players to disconnect
    */
   onTownDestroyed(): void;
+
+  /**
+   * Called when a message is sent to all users in the town.
+   */
+  onSendMessagesPublic(message: Record<string, string>): void;
+
+  /**
+   * Called when a message is sent to private users in the town.
+   */
+  onSendMessagesPrivate(message: Record<string, string>): void;
 }

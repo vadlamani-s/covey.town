@@ -16,6 +16,7 @@ import './App.css';
 import Player, { ServerPlayer, UserLocation } from './classes/Player';
 import TownsServiceClient, { TownJoinResponse } from './classes/TownsServiceClient';
 import Video from './classes/Video/Video';
+import ChatWindow from './components/ChatBox/ChatWindow';
 import LoginPage from './components/Home/LoginPage';
 import Login from './components/Login/Login';
 import ErrorDialog from './components/VideoCall/VideoFrontend/components/ErrorDialog/ErrorDialog';
@@ -298,6 +299,7 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
     return (
       <div>
         <WorldMap />
+        <ChatWindow />
         <VideoOverlay preferredMode='fullwidth' />
       </div>
     );
