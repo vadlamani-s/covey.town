@@ -106,6 +106,17 @@ export interface UserLoginResponse {
   };
 }
 
+export interface UserDeleteRequest {
+  emailId: string;
+  password: string;
+}
+
+export interface UserUpdateRequest {
+  name: string;
+  password: string;
+  emailId: string;
+}
+
 export interface UserRegisterRequest {
   emailId: string;
   password: string;
@@ -238,5 +249,20 @@ export default class TownsServiceClient {
       `/auth/userProfile/${requestData.emailId}`
     )
     return TownsServiceClient.unwrapOrThrowError(responseWrapper);
+  }
+
+  async updateProfile(requestData: UserUpdateRequest): Promise<void> {
+    const responseWrapper = await this._axios.patch<ResponseEnvelope<void>>(
+      `/auth/updateUser/${requestData.emailId}`,
+      requestData,
+    );
+    return TownsServiceClient.unwrapOrThrowError(responseWrapper, true);
+  }
+
+  async deleteProfile(requestData: UserDeleteRequest): Promise<void> {
+    const responseWrapper = await this._axios.delete<ResponseEnvelope<void>>(
+      `/auth/deleteUser/${requestData.emailId}/${requestData.password}`,
+    );
+    return TownsServiceClient.unwrapOrThrowError(responseWrapper, true);
   }
 }

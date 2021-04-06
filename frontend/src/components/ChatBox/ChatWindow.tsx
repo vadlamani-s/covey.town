@@ -23,7 +23,7 @@ interface Message {
 }
 
 export default function ChatWindow(): JSX.Element {
-  const { userName, myPlayerID, players, nearbyPlayers, socket } = useCoveyAppState();
+  const { userName, myPlayerID, nearbyPlayers, socket } = useCoveyAppState();
   const [messageList, setMessage] = useState<Array<Message>>([]);
   // const [privateMessageList, setPrivateMessage] = useState<Array<Message>>([]);
   const [myMessage, setMyMessage] = useState<string>('');
@@ -34,7 +34,6 @@ export default function ChatWindow(): JSX.Element {
 
   socket?.off('chatMsgReceivedPublic');
   socket?.on('chatMsgReceivedPublic', (val: Record<string, string>) => {
-    console.log(val);
     const newMsg = {
       name: val.name,
       messageBody: val.messageBody,
@@ -49,7 +48,6 @@ export default function ChatWindow(): JSX.Element {
 
   socket?.off('chatMsgReceivedPrivate');
   socket?.on('chatMsgReceivedPrivate', (val: Record<string, string>) => {
-    console.log(val);
     const newMsg = {
       name: val.name,
       messageBody: val.messageBody,
@@ -64,7 +62,6 @@ export default function ChatWindow(): JSX.Element {
 
   const sendMessage = () => {
     if (myMessage.length !== 0 && !isPrivate) {
-      console.log(myPlayerID + messageList.length);
       const newMsg: Message = {
         name: userName,
         messageBody: myMessage,
@@ -74,7 +71,6 @@ export default function ChatWindow(): JSX.Element {
       };
       socket?.emit('chatMsgSendPublic', newMsg);
     } else if (myMessage.length !== 0 && isPrivate) {
-      console.log(myPlayerID + messageList.length);
       const newMsg: Message = {
         name: userName,
         messageBody: myMessage,
