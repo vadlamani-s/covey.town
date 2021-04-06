@@ -23,6 +23,10 @@ import {
   Thead,
   Tr,
 } from '@chakra-ui/react';
+import {
+  EditIcon
+} from '@chakra-ui/icons';
+import Cookies from 'js-cookie';
 import PreJoinScreens from '../VideoCall/VideoFrontend/components/PreJoinScreens/PreJoinScreens';
 import MediaErrorSnackbar
   from '../VideoCall/VideoFrontend/components/PreJoinScreens/MediaErrorSnackbar/MediaErrorSnackbar';
@@ -44,6 +48,7 @@ export default function Login({ doLogin, logoutHandler, emailID }: LoginProps): 
   const [userProfile, setUserProfile] = useState<UserProfileResponse>({emailId: emailID, name: ' ', password: ' ', creationDate: new Date()});
   const [userName, setUserName] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const [edit, setEdit] = useState<boolean>(false);
   
   
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -64,6 +69,8 @@ export default function Login({ doLogin, logoutHandler, emailID }: LoginProps): 
       await apiClient.logoutUser();
 
       logoutHandler('');
+
+      Cookies.remove("loggedIn");
 
       toast({
         title: 'Logout Successful',
@@ -90,6 +97,14 @@ export default function Login({ doLogin, logoutHandler, emailID }: LoginProps): 
     openTab();
     setLogs(true);
     handleMeeting()
+  }
+
+  const handleEdit = () => {
+    if (edit) {
+      setEdit(false);
+    } else {
+      setEdit(true);
+    }
   }
 
   const processProfile = async () => {
@@ -126,13 +141,16 @@ export default function Login({ doLogin, logoutHandler, emailID }: LoginProps): 
                 <Modal isOpen={isOpen} onClose={closeTab}>
                 <ModalOverlay />
                 <ModalContent>
-                <ModalHeader>Edit profile {userProfile.name} </ModalHeader>
+                <ModalHeader> {userProfile.name} Profile </ModalHeader>
                 <ModalCloseButton />
                 <form onSubmit={(ev) => { ev.preventDefault(); processUpdates('edit') }}>
                     <ModalBody pb={6}>
                         <FormControl>
-                            <FormLabel htmlFor='userName'>User Name</FormLabel>
+                            <FormLabel htmlFor='userName'>User Name <EditIcon onClick={handleEdit}/> </FormLabel>
+                            {
+                              edit &&
                             <Input id='userName' name="userName" placeholder="User name" type="text" value={userName} onChange={(ev) => setUserName(ev.target.value)} />
+                            }
                         </FormControl>
 
                         <FormControl>
@@ -141,7 +159,7 @@ export default function Login({ doLogin, logoutHandler, emailID }: LoginProps): 
                         </FormControl>
 
                         <FormControl isRequired>
-                            <FormLabel htmlFor="updatePassword">User Update Password</FormLabel>
+                            <FormLabel htmlFor="updatePassword">User Update/Delete Password</FormLabel>
                             <Input id="updatePassword" name="password" placeholder="Password"  type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
                         </FormControl>
                     </ModalBody>

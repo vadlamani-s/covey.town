@@ -23,6 +23,8 @@ import {
 
 import useCoveyAppState from '../../hooks/useCoveyAppState';
 
+import Cookies from 'js-cookie';
+
 // import Logo from '../../Images/logo.JPG';
 
 interface LoginProps {
@@ -73,6 +75,8 @@ export default function Home({ loginHandler }: LoginProps): JSX.Element {
             });
 
             loginHandler(log.credentials.name, emailID);
+
+            Cookies.set("loggedIn", "true");
 
             toast({
                 title: 'Login Successful',
