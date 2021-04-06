@@ -2,7 +2,6 @@ import bcrypt from 'bcryptjs';
 import HistoryModel from '../models/historySchema';
 import { generateHash, UserModel } from '../models/userSchema';
 import {
-  IUserDocument,
   IUserLoginRequest,
   IUserProfileRequest,
   IUserProfileResponse,
@@ -10,7 +9,7 @@ import {
   IUserUpdateRequest,
 } from '../types/IUser';
 import { RoomLogin } from '../types/payloads';
-import User from '../types/user';
+import User from '../types/User';
 
 export async function newUserRegistration(newUser: User): Promise<IUserResponse> {
   const retrivedResult = await UserModel.findOne({ emailId: newUser.emailId });
@@ -25,7 +24,7 @@ export async function newUserRegistration(newUser: User): Promise<IUserResponse>
       creationDate: new Date().toLocaleString('en-US'),
     });
     const createResponse = await createRequest.save();
-    return { 
+    return {
       name: createResponse.name,
       creationDate: createResponse.creationDate,
       emailId: createResponse.emailId,
@@ -93,11 +92,13 @@ export async function getAllLogs(email: string): Promise<RoomLogin[]> {
 export async function updateUserRegistration(user: IUserUpdateRequest): Promise<void> {
   try {
     await UserModel.updateOne(
-      {emailId: user.emailId},
-      { $set: {
-        name: user.name,
-        password: generateHash(user.password),
-      }},
+      { emailId: user.emailId },
+      {
+        $set: {
+          name: user.name,
+          password: generateHash(user.password),
+        },
+      },
     );
   } catch (err) {
     throw Error('User not registered');
@@ -113,9 +114,7 @@ export async function deleteUserRegistration(user: IUserLoginRequest): Promise<v
   if (!isMatch) {
     throw Error('Incorrect password');
   }
-  await UserModel.deleteOne(
-    {
-      emailId: user.emailId,
-    },
-  );
+  await UserModel.deleteOne({
+    emailId: user.emailId,
+  });
 }

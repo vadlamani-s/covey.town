@@ -1,7 +1,13 @@
 import { config } from 'dotenv';
-import User from '../types/user';
-import { deleteUserRegistration, newUserRegistration, updateUserRegistration, userLogin, userProfile} from '../db/coveyDBMethods';
-import { IUserLoginRequest, IUserResponse, IUserUpdateRequest } from '../types/IUser';
+import {
+  deleteUserRegistration,
+  newUserRegistration,
+  updateUserRegistration,
+  userLogin,
+  userProfile,
+} from '../db/coveyDBMethods';
+import { IUserLoginRequest, IUserUpdateRequest } from '../types/IUser';
+import User from '../types/User';
 
 /**
  * Payload sent by client to create a Town in Covey.Town
@@ -12,10 +18,10 @@ export interface UserRegisterRequest {
   name: string;
   creationDate?: Date;
 }
-  
+
 /**
-   * Response from the server for a Town create request
-   */
+ * Response from the server for a Town create request
+ */
 export interface UserResponse {
   emailId: string;
   name: string;
@@ -46,7 +52,7 @@ export interface UserProfileResponse {
   name: string;
   creationDate: Date;
 }
-    
+
 /**
  * Envelope that wraps any response from the server
  */
@@ -56,7 +62,9 @@ export interface ResponseEnvelope<T> {
   response?: T;
 }
 
-export async function userRegistrationRequestHandler(requestData: UserRegisterRequest): Promise<ResponseEnvelope<UserResponse>> {
+export async function userRegistrationRequestHandler(
+  requestData: UserRegisterRequest,
+): Promise<ResponseEnvelope<UserResponse>> {
   const newUser = new User(requestData.name, requestData.emailId, requestData.password);
   try {
     const registrationResponse = await newUserRegistration(newUser);
@@ -68,7 +76,7 @@ export async function userRegistrationRequestHandler(requestData: UserRegisterRe
         creationDate: registrationResponse.creationDate,
       },
     };
-  }  catch (err) {
+  } catch (err) {
     return {
       isOK: false,
       message: 'User is already registered',
@@ -76,7 +84,9 @@ export async function userRegistrationRequestHandler(requestData: UserRegisterRe
   }
 }
 
-export async function userLoginRequestHandler(requestData: UserLoginRequest): Promise<ResponseEnvelope<UserResponse>> {
+export async function userLoginRequestHandler(
+  requestData: UserLoginRequest,
+): Promise<ResponseEnvelope<UserResponse>> {
   try {
     const loginResponse = await userLogin(requestData);
     return {
@@ -93,11 +103,11 @@ export async function userLoginRequestHandler(requestData: UserLoginRequest): Pr
       message: 'Login failed, Incorrect Email or Password',
     };
   }
-  
-  
 }
 
-export async function userLogoutRequestHandler(userSessionData: string): Promise<ResponseEnvelope<Record<string, null>>> {
+export async function userLogoutRequestHandler(
+  userSessionData: string,
+): Promise<ResponseEnvelope<Record<string, null>>> {
   const logoutSuccess = !!userSessionData;
   return {
     isOK: logoutSuccess,
@@ -113,7 +123,9 @@ export async function userLogoutRequestHandler(userSessionData: string): Promise
  * @param requestData user profile request
  * @returns user profile response
  */
-export async function userProfileRequestHandler(requestData: UserProfileRequest): Promise<ResponseEnvelope<UserProfileResponse>> {
+export async function userProfileRequestHandler(
+  requestData: UserProfileRequest,
+): Promise<ResponseEnvelope<UserProfileResponse>> {
   try {
     const UserProfileResponse = await userProfile(requestData);
     return {
@@ -125,7 +137,7 @@ export async function userProfileRequestHandler(requestData: UserProfileRequest)
         password: UserProfileResponse.password,
       },
     };
-  }  catch (err) {
+  } catch (err) {
     return {
       isOK: false,
       message: 'User not found',
@@ -133,7 +145,9 @@ export async function userProfileRequestHandler(requestData: UserProfileRequest)
   }
 }
 
-export async function userProfileUpdateHandler(userUpdateData: IUserUpdateRequest): Promise<ResponseEnvelope<void>> {
+export async function userProfileUpdateHandler(
+  userUpdateData: IUserUpdateRequest,
+): Promise<ResponseEnvelope<void>> {
   try {
     await updateUserRegistration(userUpdateData);
     return {
@@ -148,7 +162,9 @@ export async function userProfileUpdateHandler(userUpdateData: IUserUpdateReques
   }
 }
 
-export async function userProfileDeleteHandler(userDeleteData: IUserLoginRequest): Promise<ResponseEnvelope<void>> {
+export async function userProfileDeleteHandler(
+  userDeleteData: IUserLoginRequest,
+): Promise<ResponseEnvelope<void>> {
   try {
     await deleteUserRegistration(userDeleteData);
     return {
@@ -158,15 +174,10 @@ export async function userProfileDeleteHandler(userDeleteData: IUserLoginRequest
   } catch (err) {
     return {
       isOK: false,
-      message: `Delete failed !!| ${  err.message}`,
+      message: `Delete failed !!| ${err.message}`,
     };
   }
 }
-
-
-
-
-
 
 /* Refer to this link to understand how json web tokens validate the tokens
     https://www.sohamkamani.com/blog/javascript/2019-03-29-node-jwt-authentication/
@@ -187,7 +198,7 @@ config();
 // routes.use(json());
 
 // routes.post('/signin', async (req, res) => {
-  
+
 //   //   const client = new OAuth2Client();
 //   //   const ticket = await client.verifyIdToken({ idToken: req.body.google_tokenId }).catch((e) => res.send(`Invalid Credentials: ${e}`));
 //   //   const tokenData = ticket.getPayload();
@@ -211,7 +222,6 @@ config();
 //   res.json({ status: 'ok' });
 // });
 
-
 // const validateAPIRequest = (req, res): unknown => {
 //   const validatetoken = req.cookies.jwt;
 //   try {
@@ -233,4 +243,4 @@ config();
 //     return res.status(400).json({ errorMessage: 'Bad Request' });
 //   }
 // //}
-// 
+//
