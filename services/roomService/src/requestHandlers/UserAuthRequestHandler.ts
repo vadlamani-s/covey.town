@@ -30,10 +30,16 @@ export interface UserLoginRequest {
   password: string;
 }
 
+/**
+ * Payload sent by client to request user's profile in Covey.Town
+ */
 export interface UserProfileRequest {
   emailId: string;
 }
 
+/**
+ * Response from the server for user profile response
+ */
 export interface UserProfileResponse {
   emailId: string;
   password: string;
@@ -41,7 +47,6 @@ export interface UserProfileResponse {
   creationDate: Date;
 }
     
-
 /**
  * Envelope that wraps any response from the server
  */
@@ -101,6 +106,13 @@ export async function userLogoutRequestHandler(userSessionData: string): Promise
   };
 }
 
+/**
+ * A handler to process a clinet's request to get user's information. The flow is:
+ *  1. Client makes a user profile request, this handler is executed
+ *  2. Client uses the user information returned by this handler to display the profile information,
+ * @param requestData user profile request
+ * @returns user profile response
+ */
 export async function userProfileRequestHandler(requestData: UserProfileRequest): Promise<ResponseEnvelope<UserProfileResponse>> {
   try {
     const UserProfileResponse = await userProfile(requestData);

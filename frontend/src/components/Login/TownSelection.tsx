@@ -153,10 +153,14 @@ export default function TownSelection({ doLogin }: TownSelectionProps): JSX.Elem
               Select a username
             </Heading>
 
-            <FormControl>
-              <FormLabel htmlFor='name'>Name</FormLabel>
-              <Input autoFocus name='name' value={userName} />
-            </FormControl>
+            <Flex>
+              <Box flex='1'>
+                <FormControl>
+                  <FormLabel htmlFor='name'>Name</FormLabel>
+                  <Input autoFocus name='name' readOnly disabled value={userName} />
+                </FormControl>
+              </Box>
+            </Flex>
           </Box>
           <Box borderWidth='1px' borderRadius='lg'>
             <Heading p='4' as='h2' size='lg'>

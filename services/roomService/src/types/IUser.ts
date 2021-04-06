@@ -13,15 +13,21 @@ export interface IUserResponse {
   creationDate: Date;
 }
 
+/**
+ * Payload sent by the client for user's profile
+ */
+export interface IUserProfileRequest {
+  emailId: string;
+}
+
+/**
+ * Response sent by the server for the user profile request
+ */
 export interface IUserProfileResponse {
   name: string;
   emailId: string;
   creationDate: Date;
   password: string;
-}
-
-export interface IUserProfileRequest {
-  emailId: string;
 }
 
 /**

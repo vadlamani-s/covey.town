@@ -131,6 +131,9 @@ export function addAuthRoutes(app: Express): void {
   });
 }
 
+/**
+ * Fetches user profile information
+ */
 router.get('/userProfile/:emailId', json(), async (req, res) => {
   try {
     const result = await userProfileRequestHandler({
