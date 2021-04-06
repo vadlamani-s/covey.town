@@ -40,8 +40,7 @@ export async function userLogin(user: IUserLoginRequest): Promise<IUserResponse>
   if (!retrivedResult) {
     throw Error('Email or Password Incorrect');
   }
-
-  const isMatch = await retrivedResult.comparePassword(user.password);
+  const isMatch = await bcrypt.compare(user.password, retrivedResult.password);
   if (!isMatch) {
     throw Error('Email or Password Incorrect');
   }
