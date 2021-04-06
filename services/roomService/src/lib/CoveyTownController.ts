@@ -157,11 +157,15 @@ export default class CoveyTownController {
     });
   }
 
-  sendMessagesPrivate(message: Record<string, string>, otherPlayerId: string): void {
+  sendMessagesPrivate(message: Record<string, string>, myId: string, otherPlayerId: string): void {
     const otherListener = this._listeners.find(
       listener => listener === this._playerListenerMap[otherPlayerId],
     );
-    otherListener?.onSendMessagesPrivate(message);
+    const listeners: Array<CoveyTownListener | undefined> = [
+      this._playerListenerMap[myId],
+      otherListener,
+    ];
+    listeners.forEach(listener => listener?.onSendMessagesPrivate(message));
   }
 
   /**

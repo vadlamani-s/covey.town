@@ -295,6 +295,7 @@ export function townSubscriptionHandler(socket: Socket): void {
       messageBody: val.messageBody,
       playerId: val.playerId,
       messageId: val.messageId,
+      isPrivate: val.isPrivate,
     };
     console.log(newMsg);
     townController.sendMessagesPublic(newMsg);
@@ -306,8 +307,10 @@ export function townSubscriptionHandler(socket: Socket): void {
       messageBody: val.messageBody,
       playerId: val.playerId,
       messageId: val.messageId,
+      isPrivate: val.isPrivate,
     };
     console.log(newMsg);
-    townController.sendMessagesPrivate(newMsg, otherPlayerId);
+    console.log(otherPlayerId);
+    townController.sendMessagesPrivate(newMsg, val.playerId, otherPlayerId);
   });
 }

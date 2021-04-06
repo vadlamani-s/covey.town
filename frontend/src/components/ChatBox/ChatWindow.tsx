@@ -1,4 +1,16 @@
-import { Box, Button, Container, Flex, Input, List, ListItem } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Container,
+  Flex,
+  Input,
+  List,
+  ListItem,
+  Radio,
+  RadioGroup,
+  Select,
+  Stack,
+} from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import useCoveyAppState from '../../hooks/useCoveyAppState';
 
@@ -7,17 +19,18 @@ interface Message {
   messageBody: string;
   messageId: string;
   playerId: string;
+  isPrivate: boolean;
 }
 
 export default function ChatWindow(): JSX.Element {
   const { userName, myPlayerID, players, nearbyPlayers, socket } = useCoveyAppState();
-  const [publicMessageList, setPublicMessage] = useState<Array<Message>>([]);
-  const [privateMessageList, setPrivateMessage] = useState<Array<Message>>([]);
+  const [messageList, setMessage] = useState<Array<Message>>([]);
+  // const [privateMessageList, setPrivateMessage] = useState<Array<Message>>([]);
   const [myMessage, setMyMessage] = useState<string>('');
   const [recentMessageId, setRecentMsgId] = useState<string>('');
   const [isPrivate, setPrivate] = useState<boolean>(false);
-
-  //   const publicMessageList: Array<Message> = [];
+  const [radioValue, setValue] = useState<string>('public');
+  const [selectedPrivatePlayer, setPrivatePlayer] = useState<string>('');
 
   socket?.off('chatMsgReceivedPublic');
   socket?.on('chatMsgReceivedPublic', (val: Record<string, string>) => {
@@ -27,10 +40,11 @@ export default function ChatWindow(): JSX.Element {
       messageBody: val.messageBody,
       playerId: val.playerId,
       messageId: val.messageId,
+      isPrivate: false,
     };
-    publicMessageList.push(newMsg);
+    messageList.push(newMsg);
     setRecentMsgId(val.messageId);
-    setPublicMessage(publicMessageList);
+    setMessage(messageList);
   });
 
   socket?.off('chatMsgReceivedPrivate');
@@ -41,56 +55,87 @@ export default function ChatWindow(): JSX.Element {
       messageBody: val.messageBody,
       playerId: val.playerId,
       messageId: val.messageId,
+      isPrivate: true,
     };
-    privateMessageList.push(newMsg);
+    messageList.push(newMsg);
     setRecentMsgId(val.messageId);
-    setPrivateMessage(privateMessageList);
+    setMessage(messageList);
   });
 
   const sendMessage = () => {
     if (myMessage.length !== 0 && !isPrivate) {
-      console.log(myPlayerID + publicMessageList.length);
-      socket?.emit('chatMsgSendPublic', {
+      console.log(myPlayerID + messageList.length);
+      const newMsg: Message = {
         name: userName,
         messageBody: myMessage,
         playerId: myPlayerID,
-        messageId: myPlayerID + publicMessageList.length,
-      });
+        messageId: `${myPlayerID}_pub_${messageList.length}`,
+        isPrivate: false,
+      };
+      socket?.emit('chatMsgSendPublic', newMsg);
     } else if (myMessage.length !== 0 && isPrivate) {
-      console.log(myPlayerID + publicMessageList.length);
-      socket?.emit('chatMsgSendPrivate', {
+      console.log(myPlayerID + messageList.length);
+      const newMsg: Message = {
         name: userName,
         messageBody: myMessage,
         playerId: myPlayerID,
-        messageId: myPlayerID + publicMessageList.length,
-      });
+        messageId: `${myPlayerID}_pri_${messageList.length}`,
+        isPrivate: true,
+      };
+      socket?.emit('chatMsgSendPrivate', newMsg, selectedPrivatePlayer);
     }
     setMyMessage('');
   };
 
-  useEffect(() => {}, [recentMessageId]);
-
-  //   const messages = useMemo(
-  //     () =>
-  //       publicMessageList.map(item => (
-  //         <List key={item.name}>
-  //           <div>
-  //             <ListItem fontStyle='italic'>{item.name}</ListItem>
-  //             <ListItem>{item.messageBody}</ListItem>
-  //           </div>
-  //         </List>
-  //       )),
-  //     [publicMessageList],
-  //   );
+  useEffect(() => {
+    console.log(recentMessageId);
+    console.log(nearbyPlayers.nearbyPlayers);
+  }, [recentMessageId, nearbyPlayers.nearbyPlayers]);
 
   return (
     <Container marginTop='10px' minH='400px' border='2px' borderRadius='5px' borderColor='gray.400'>
-      <Box minH='360px'>
-        {publicMessageList.map(item => (
-          <List key={item.name}>
+      <Box py={2}>
+        <RadioGroup
+          onChange={e => {
+            setValue(e as string);
+            setPrivate((e as string) === 'private');
+          }}
+          value={radioValue}>
+          <Stack direction='row'>
+            <Radio value='public'>Public</Radio>
+            <Radio value='private'>Private</Radio>
+          </Stack>
+        </RadioGroup>
+      </Box>
+      {radioValue === 'private' ? (
+        <Box py={2}>
+          <Select
+            size='xs'
+            placeholder='Select option'
+            value={selectedPrivatePlayer}
+            onChange={e => {
+              setPrivatePlayer(e.target.value as string);
+            }}>
+            {nearbyPlayers.nearbyPlayers.map(player => (
+              <option key={player.id} value={player.id}>
+                {player.userName}
+              </option>
+            ))}
+          </Select>
+        </Box>
+      ) : (
+        <></>
+      )}
+      <Box minH='340px'>
+        {messageList.map(item => (
+          <List key={item.messageId}>
             <div>
-              <ListItem fontStyle='italic'>{item.name}</ListItem>
-              <ListItem>{item.messageBody}</ListItem>
+              <ListItem>
+                <div style={{ color: 'red' }}>{`${item.name}: ${
+                  item.isPrivate ? 'Private' : 'Public'
+                }`}</div>
+                <div>{item.messageBody}</div>
+              </ListItem>
             </div>
           </List>
         ))}
