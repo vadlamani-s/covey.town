@@ -1,7 +1,6 @@
-import { Document, Model } from 'mongoose';
+import { Document, Model, Query } from 'mongoose';
 
 export interface IUser {
-  // [x: string]: any;
   name: string;
   emailId: string;
   password: string;
@@ -38,6 +37,12 @@ export interface Credentials {
   name?: string,
   emailId?: string,
   creationDate?: Date,
+}
+
+export interface IUserUpdateRequest {
+  name: string;
+  password: string;
+  emailId: string;
 }
 
 export interface IUserDocument extends IUser, Document {}

@@ -1,6 +1,7 @@
 import { config } from 'dotenv';
 import User from '../types/user';
-import { newUserRegistration, userLogin, userProfile} from '../db/coveyDBMethods';
+import { deleteUserRegistration, newUserRegistration, updateUserRegistration, userLogin, userProfile} from '../db/coveyDBMethods';
+import { IUserLoginRequest, IUserResponse, IUserUpdateRequest } from '../types/IUser';
 
 /**
  * Payload sent by client to create a Town in Covey.Town
@@ -120,6 +121,37 @@ export async function userProfileRequestHandler(requestData: UserProfileRequest)
   }
 }
 
+export async function userProfileUpdateHandler(userUpdateData: IUserUpdateRequest): Promise<ResponseEnvelope<void>> {
+  try {
+    await updateUserRegistration(userUpdateData);
+    return {
+      isOK: true,
+      message: 'Field Updated',
+    };
+  } catch (err) {
+    return {
+      isOK: false,
+      message: `Update failed !! ${err.message}`,
+    };
+  }
+}
+
+export async function userProfileDeleteHandler(userDeleteData: IUserLoginRequest): Promise<ResponseEnvelope<void>> {
+  try {
+    await deleteUserRegistration(userDeleteData);
+    return {
+      isOK: true,
+      message: 'User Deleted',
+    };
+  } catch (err) {
+    return {
+      isOK: false,
+      message: `Delete failed !!| ${  err.message}`,
+    };
+  }
+}
+
+
 
 
 
@@ -188,4 +220,5 @@ config();
 //     // otherwise, return a bad request error
 //     return res.status(400).json({ errorMessage: 'Bad Request' });
 //   }
-// };
+// //}
+// 

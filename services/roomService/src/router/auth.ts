@@ -6,14 +6,15 @@ import { sign, verify } from 'jsonwebtoken';
 import {
   userLoginRequestHandler,
   userLogoutRequestHandler,
+  userProfileDeleteHandler,
   userProfileRequestHandler,
+  userProfileUpdateHandler,
   userRegistrationRequestHandler,
 } from '../requestHandlers/UserAuthRequestHandler';
 import { Credentials } from '../types/IUser';
 import { logError } from '../Utils';
 
 const router = Router();
-
 const { JWT_SECRET } = process.env;
 
 export function addAuthRoutes(app: Express): void {
@@ -88,6 +89,38 @@ export function addAuthRoutes(app: Express): void {
     try {
       const result = await userLogoutRequestHandler(req.cookies.jwt);
       res.clearCookie('jwt');
+      res.status(StatusCodes.OK).json(result);
+    } catch (err) {
+      logError(err);
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        message: 'Internal server error, please see log in server for more details',
+      });
+    }
+  });
+
+
+  router.put('/updateUser', json(), async (req, res) => {
+    try {
+      const result = await userProfileUpdateHandler({
+        name: req.body.name,
+        password: req.body.password,
+        emailId: req.body.emailId, 
+      });
+      res.status(StatusCodes.OK).json(result);
+    } catch (err) {
+      logError(err);
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        message: 'Internal server error, please see log in server for more details',
+      });
+    }
+  });
+
+  router.delete('/deleteUser', json(), async (req, res) => {
+    try {
+      const result = await userProfileDeleteHandler({
+        emailId: req.body.emailId,
+        password: req.body.password,
+      });
       res.status(StatusCodes.OK).json(result);
     } catch (err) {
       logError(err);

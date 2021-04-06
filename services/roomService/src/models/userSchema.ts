@@ -14,35 +14,41 @@ const LoginSchema = new Schema<IUserDocument>({
 });
  
 
-LoginSchema.pre('save', function (next) {
-  const user = this;
+// LoginSchema.pre('save', function (next) {
+//   const user = this;
 
-  // only hash the password if it has been modified (or is new)
-  if (!user.isModified('password')) return next();
+//   // only hash the password if it has been modified (or is new)
+//   if (!user.isModified('password')) return next();
 
-  // generate a salt
-  bcrypt.genSalt(SALT_WORK_FACTOR, function (err, salt) {
-    if (err) return next(err);
+//   // generate a salt
+//   bcrypt.genSalt(SALT_WORK_FACTOR, function (err, salt) {
+//     if (err) return next(err);
 
-    // hash the password using our new salt
-    bcrypt.hash(user.password, salt, function (err, hash) {
-      if (err) return next(err);
+//     // hash the password using our new salt
+//     bcrypt.hash(user.password, salt, function (err, hash) {
+//       if (err) return next(err);
 
-      // override the cleartext password with the hashed one
-      user.password = hash;
-      next();
-    });
-  });
-});
+//       // override the cleartext password with the hashed one
+//       user.password = hash;
+//       next();
+//     });
+//   });
+// });
+
+export function generateHash(password: string): string {
+  const salt = bcrypt.genSaltSync();
+  const hashedPassword = bcrypt.hashSync(password, salt);
+  return hashedPassword;
+}
 
 
-LoginSchema.methods.comparePassword = async function(candidatePassword) {
-  try {
-    const isMatch = await bcrypt.compare(candidatePassword, this.password);
-    return isMatch;
-  } catch (err) {
-    throw Error(err);
-  }
-};
+// LoginSchema.methods.comparePassword = async function(candidatePassword) {
+//   try {
+//     const isMatch = await bcrypt.compare(candidatePassword, this.password);
+//     return isMatch;
+//   } catch (err) {
+//     throw Error(err);
+//   }
+// };
 
 export const UserModel = model('user', LoginSchema, "users");
