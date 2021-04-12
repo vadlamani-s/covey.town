@@ -19,7 +19,10 @@
     },
     "homepage": "https://github.com/neu-se/covey.town#readme",
     "devDependencies": {
+        "@types/bcryptjs": "^2.4.2",
+        "@types/cookie-parser": "^1.4.2",
         "@types/jest": "^26.0.15",
+        "@types/jsonwebtoken": "^8.5.1",
         "@typescript-eslint/eslint-plugin": "^4.8.1",
         "@typescript-eslint/parser": "^4.8.1",
         "eslint": "^7.13.0",
