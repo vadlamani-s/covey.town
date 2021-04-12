@@ -26,6 +26,7 @@ jobs:
           TWILIO_API_KEY_SECRET: ${{ secrets.TWILIO_API_KEY_SECRET }}
           TWILIO_API_KEY_SID: ${{ secrets.TWILIO_API_KEY_SID }}
           UI_SERVER_ORIGIN: ${{secrets.UI_SERVER_ORIGIN}}
+          JWT_SECRET: ${{secrets.JWT_SECRET}}
         run: cd services/roomService; npm install
 
       - name: Build and test frontend components
