@@ -1,4 +1,5 @@
 import cookieParser from 'cookie-parser';
+import CORS from 'cors';
 import { Express, json, Router } from 'express';
 import { StatusCodes } from 'http-status-codes';
 // import { OAuth2Client } from 'google-auth-library';
@@ -15,6 +16,8 @@ import { Credentials } from '../types/IUser';
 import { logError } from '../Utils';
 
 const router = Router();
+const uiServerOrigin = process.env.UI_SERVER_ORIGIN || 'http://localhost:3000';
+router.use(CORS({ origin: uiServerOrigin, credentials: true }));
 const { JWT_SECRET } = process.env;
 
 export function addAuthRoutes(app: Express): void {
@@ -61,9 +64,9 @@ export function addAuthRoutes(app: Express): void {
 
         const token = sign(credentials, JWT_SECRET as string);
         /* Uncomment below line so that it works on your localhost and comment the line next to it */
-        res.cookie('jwt', token, { httpOnly: true });
+        // res.cookie('jwt', token, { httpOnly: true });
         /* This following line is critical for production phase, uncomment this line while deploying */
-        // res.cookie('jwt', token, { httpOnly: true, sameSite: 'none', secure: true }); // Critical line needed in production phase
+        res.cookie('jwt', token, { httpOnly: true, sameSite: 'none', secure: true }); // Critical line needed in production phase
         const response1 = {
           isOK: true,
           response: {
@@ -98,13 +101,12 @@ export function addAuthRoutes(app: Express): void {
     }
   });
 
-
   router.patch('/updateUser/:emailId', json(), async (req, res) => {
     try {
       const result = await userProfileUpdateHandler({
         name: req.body.name,
         password: req.body.password,
-        emailId: req.params.emailId, 
+        emailId: req.params.emailId,
       });
       res.status(StatusCodes.OK).json(result);
     } catch (err) {
