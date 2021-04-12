@@ -1,60 +1,43 @@
+import React, {
+  Dispatch, SetStateAction, useCallback, useEffect, useMemo, useReducer, useState,
+} from 'react';
+import './App.css';
+import { BrowserRouter } from 'react-router-dom';
+import { io, Socket } from 'socket.io-client';
 import { ChakraProvider } from '@chakra-ui/react';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import assert from 'assert';
-import React, {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useMemo,
-  useReducer,
-  useState,
-} from 'react';
-import { BrowserRouter } from 'react-router-dom';
-import { io, Socket } from 'socket.io-client';
-import './App.css';
+import WorldMap from './components/world/WorldMap';
+import VideoOverlay from './components/VideoCall/VideoOverlay/VideoOverlay';
+import ChatWindow from './components/ChatBox/ChatWindow';
+import { CoveyAppState, NearbyPlayers } from './CoveyTypes';
+import VideoContext from './contexts/VideoContext';
+import Login from './components/Login/Login';
+import CoveyAppContext from './contexts/CoveyAppContext';
+import NearbyPlayersContext from './contexts/NearbyPlayersContext';
+import AppStateProvider, { useAppState } from './components/VideoCall/VideoFrontend/state';
+import useConnectionOptions from './components/VideoCall/VideoFrontend/utils/useConnectionOptions/useConnectionOptions';
+import UnsupportedBrowserWarning
+  from './components/VideoCall/VideoFrontend/components/UnsupportedBrowserWarning/UnsupportedBrowserWarning';
+import { VideoProvider } from './components/VideoCall/VideoFrontend/components/VideoProvider';
+import ErrorDialog from './components/VideoCall/VideoFrontend/components/ErrorDialog/ErrorDialog';
+import theme from './components/VideoCall/VideoFrontend/theme';
+import { Callback } from './components/VideoCall/VideoFrontend/types';
 import Player, { ServerPlayer, UserLocation } from './classes/Player';
 import TownsServiceClient, { TownJoinResponse } from './classes/TownsServiceClient';
 import Video from './classes/Video/Video';
-import ChatWindow from './components/ChatBox/ChatWindow';
-import LoginPage from './components/Home/LoginPage';
-import Login from './components/Login/Login';
-import ErrorDialog from './components/VideoCall/VideoFrontend/components/ErrorDialog/ErrorDialog';
-import UnsupportedBrowserWarning from './components/VideoCall/VideoFrontend/components/UnsupportedBrowserWarning/UnsupportedBrowserWarning';
-import { VideoProvider } from './components/VideoCall/VideoFrontend/components/VideoProvider';
-import AppStateProvider, { useAppState } from './components/VideoCall/VideoFrontend/state';
-import theme from './components/VideoCall/VideoFrontend/theme';
-import { Callback } from './components/VideoCall/VideoFrontend/types';
-import useConnectionOptions from './components/VideoCall/VideoFrontend/utils/useConnectionOptions/useConnectionOptions';
-import VideoOverlay from './components/VideoCall/VideoOverlay/VideoOverlay';
-import WorldMap from './components/world/WorldMap';
-import CoveyAppContext from './contexts/CoveyAppContext';
-import NearbyPlayersContext from './contexts/NearbyPlayersContext';
-import VideoContext from './contexts/VideoContext';
-import { CoveyAppState, NearbyPlayers } from './CoveyTypes';
+import Home from './components/Home/Home';
 
 type CoveyAppUpdate =
-  | {
-      action: 'doConnect';
-      data: {
-        userName: string;
-        townFriendlyName: string;
-        townID: string;
-        townIsPubliclyListed: boolean;
-        sessionToken: string;
-        myPlayerID: string;
-        socket: Socket;
-        players: Player[];
-        emitMovement: (location: UserLocation) => void;
-      };
-    }
+  | { action: 'doConnect'; data: { userName: string, townFriendlyName: string, townID: string, townIsPubliclyListed: boolean, sessionToken: string, myPlayerID: string, socket: Socket, players: Player[], emitMovement: (location: UserLocation) => void } }
   | { action: 'addPlayer'; player: Player }
   | { action: 'playerMoved'; player: Player }
   | { action: 'playerDisconnect'; player: Player }
   | { action: 'weMoved'; location: UserLocation }
   | { action: 'disconnect' }
-  | { action: 'playerLoggedIn'; data: { userName: string; emailId: string } }
-  | { action: 'playerLoggedOut'; userName: string };
+  | { action: 'playerLoggedIn'; data: { userName: string, emailId: string } }
+  | { action: 'playerLoggedOut'; userName: string }
+  ;
 
 function defaultAppState(): CoveyAppState {
   return {
@@ -69,12 +52,10 @@ function defaultAppState(): CoveyAppState {
     emailId: '',
     socket: null,
     currentLocation: {
-      x: 0,
-      y: 0,
-      rotation: 'front',
-      moving: false,
+      x: 0, y: 0, rotation: 'front', moving: false,
     },
-    emitMovement: () => {},
+    emitMovement: () => {
+    },
     apiClient: new TownsServiceClient(),
   };
 }
@@ -105,13 +86,13 @@ function appStateReducer(state: CoveyAppState, update: CoveyAppUpdate): CoveyApp
       }
       return false;
     };
-    return { nearbyPlayers: players.filter(p => isWithinCallRadius(p, currentLocation)) };
+    return { nearbyPlayers: players.filter((p) => isWithinCallRadius(p, currentLocation)) };
   }
 
   function samePlayers(a1: NearbyPlayers, a2: NearbyPlayers) {
     if (a1.nearbyPlayers.length !== a2.nearbyPlayers.length) return false;
-    const ids1 = a1.nearbyPlayers.map(p => p.id).sort();
-    const ids2 = a2.nearbyPlayers.map(p => p.id).sort();
+    const ids1 = a1.nearbyPlayers.map((p) => p.id).sort();
+    const ids2 = a2.nearbyPlayers.map((p) => p.id).sort();
     return !ids1.some((val, idx) => val !== ids2[idx]);
   }
 
@@ -132,38 +113,32 @@ function appStateReducer(state: CoveyAppState, update: CoveyAppUpdate): CoveyApp
       nextState.players = nextState.players.concat([update.player]);
       break;
     case 'playerMoved':
-      updatePlayer = nextState.players.find(p => p.id === update.player.id);
+      updatePlayer = nextState.players.find((p) => p.id === update.player.id);
       if (updatePlayer) {
         updatePlayer.location = update.player.location;
       } else {
         nextState.players = nextState.players.concat([update.player]);
       }
-      nextState.nearbyPlayers = calculateNearbyPlayers(
-        nextState.players,
-        nextState.currentLocation,
-      );
+      nextState.nearbyPlayers = calculateNearbyPlayers(nextState.players,
+        nextState.currentLocation);
       if (samePlayers(nextState.nearbyPlayers, state.nearbyPlayers)) {
         nextState.nearbyPlayers = state.nearbyPlayers;
       }
       break;
     case 'weMoved':
       nextState.currentLocation = update.location;
-      nextState.nearbyPlayers = calculateNearbyPlayers(
-        nextState.players,
-        nextState.currentLocation,
-      );
+      nextState.nearbyPlayers = calculateNearbyPlayers(nextState.players,
+        nextState.currentLocation);
       if (samePlayers(nextState.nearbyPlayers, state.nearbyPlayers)) {
         nextState.nearbyPlayers = state.nearbyPlayers;
       }
 
       break;
     case 'playerDisconnect':
-      nextState.players = nextState.players.filter(player => player.id !== update.player.id);
+      nextState.players = nextState.players.filter((player) => player.id !== update.player.id);
 
-      nextState.nearbyPlayers = calculateNearbyPlayers(
-        nextState.players,
-        nextState.currentLocation,
-      );
+      nextState.nearbyPlayers = calculateNearbyPlayers(nextState.players,
+        nextState.currentLocation);
       if (samePlayers(nextState.nearbyPlayers, state.nearbyPlayers)) {
         nextState.nearbyPlayers = state.nearbyPlayers;
       }
@@ -188,10 +163,8 @@ function appStateReducer(state: CoveyAppState, update: CoveyAppUpdate): CoveyApp
   return nextState;
 }
 
-async function GameController(
-  initData: TownJoinResponse,
-  dispatchAppUpdate: (update: CoveyAppUpdate) => void,
-) {
+async function GameController(initData: TownJoinResponse,
+  dispatchAppUpdate: (update: CoveyAppUpdate) => void) {
   // Now, set up the game sockets
   const gamePlayerID = initData.coveyUserID;
   const sessionToken = initData.coveySessionToken;
@@ -236,7 +209,7 @@ async function GameController(
       townIsPubliclyListed: video.isPubliclyListed,
       emitMovement,
       socket,
-      players: initData.currentPlayers.map(sp => Player.fromServerPlayer(sp)),
+      players: initData.currentPlayers.map((sp) => Player.fromServerPlayer(sp)),
     },
   });
   return true;
@@ -244,54 +217,43 @@ async function GameController(
 
 function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefined>> }) {
   const [appState, dispatchAppUpdate] = useReducer(appStateReducer, defaultAppState());
+  localStorage.setItem("loggedIn", "false");
 
-  const setupGameController = useCallback(
-    async (initData: TownJoinResponse) => {
-      await GameController(initData, dispatchAppUpdate);
-      return true;
-    },
-    [dispatchAppUpdate],
-  );
+  const setupGameController = useCallback(async (initData: TownJoinResponse) => {
+    await GameController(initData, dispatchAppUpdate);
+    return true;
+  }, [dispatchAppUpdate]);
   const videoInstance = Video.instance();
 
   const { setOnDisconnect } = props;
   useEffect(() => {
-    setOnDisconnect(() => async () => {
-      // Here's a great gotcha: https://medium.com/swlh/how-to-store-a-function-with-the-usestate-hook-in-react-8a88dd4eede1
+    setOnDisconnect(() => async () => { // Here's a great gotcha: https://medium.com/swlh/how-to-store-a-function-with-the-usestate-hook-in-react-8a88dd4eede1
       dispatchAppUpdate({ action: 'disconnect' });
       return Video.teardown();
     });
   }, [dispatchAppUpdate, setOnDisconnect]);
 
-  const loginHandler = useCallback(
-    (userName: string, emailId: string) => {
-      dispatchAppUpdate({ action: 'playerLoggedIn', data: { userName, emailId } });
-      return true;
-    },
-    [dispatchAppUpdate],
-  );
+  const loginHandler = useCallback((userName: string, emailId: string) => {
 
-  const logoutHandler = useCallback(
-    (userName: string) => {
-      dispatchAppUpdate({ action: 'playerLoggedOut', userName });
-      return true;
-    },
-    [dispatchAppUpdate],
-  );
+    dispatchAppUpdate({ action: 'playerLoggedIn', data: { userName, emailId } })
+    return true;
+  }, [dispatchAppUpdate])
+
+  const logoutHandler = useCallback((userName: string) => {
+
+    dispatchAppUpdate({ action: 'playerLoggedOut', userName })
+    return true;
+  }, [dispatchAppUpdate])
 
   const page = useMemo(() => {
     if (!appState.userName) {
-      return <LoginPage loginHandler={loginHandler} />;
+      return <Home loginHandler={loginHandler}/>
     }
 
     if (!appState.sessionToken && appState.userName) {
-      return (
-        <Login
-          doLogin={setupGameController}
-          logoutHandler={logoutHandler}
-          emailId={appState.emailId}
-        />
-      );
+      return <Login doLogin={setupGameController}
+        logoutHandler={logoutHandler}
+        emailID={appState.emailId} />
     }
     if (!videoInstance) {
       return <div>Loading...</div>;
@@ -300,19 +262,12 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
       <div>
         <WorldMap />
         <ChatWindow />
-        <VideoOverlay preferredMode='fullwidth' />
+        <VideoOverlay preferredMode="fullwidth" />
       </div>
     );
-  }, [
-    setupGameController,
-    appState.sessionToken,
-    videoInstance,
-    loginHandler,
-    logoutHandler,
-    appState.userName,
-    appState.emailId,
-  ]);
+  }, [setupGameController, appState.sessionToken, videoInstance, loginHandler, logoutHandler, appState.userName, appState.emailId]);
   return (
+
     <CoveyAppContext.Provider value={appState}>
       <VideoContext.Provider value={Video.instance()}>
         <NearbyPlayersContext.Provider value={appState.nearbyPlayers}>
@@ -320,6 +275,7 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
         </NearbyPlayersContext.Provider>
       </VideoContext.Provider>
     </CoveyAppContext.Provider>
+
   );
 }
 
@@ -342,7 +298,7 @@ export default function AppStateWrapper(): JSX.Element {
     <BrowserRouter>
       <ChakraProvider>
         <MuiThemeProvider theme={theme('rgb(185, 37, 0)')}>
-          <AppStateProvider preferredMode='fullwidth' highlightedProfiles={[]}>
+          <AppStateProvider preferredMode="fullwidth" highlightedProfiles={[]}>
             <EmbeddedTwilioAppWrapper />
           </AppStateProvider>
         </MuiThemeProvider>

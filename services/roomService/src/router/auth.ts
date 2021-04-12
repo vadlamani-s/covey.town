@@ -99,12 +99,12 @@ export function addAuthRoutes(app: Express): void {
   });
 
 
-  router.put('/updateUser', json(), async (req, res) => {
+  router.patch('/updateUser/:emailId', json(), async (req, res) => {
     try {
       const result = await userProfileUpdateHandler({
         name: req.body.name,
         password: req.body.password,
-        emailId: req.body.emailId, 
+        emailId: req.params.emailId, 
       });
       res.status(StatusCodes.OK).json(result);
     } catch (err) {
@@ -115,11 +115,11 @@ export function addAuthRoutes(app: Express): void {
     }
   });
 
-  router.delete('/deleteUser', json(), async (req, res) => {
+  router.delete('/deleteUser/:emailId/:password', json(), async (req, res) => {
     try {
       const result = await userProfileDeleteHandler({
-        emailId: req.body.emailId,
-        password: req.body.password,
+        emailId: req.params.emailId,
+        password: req.params.password,
       });
       res.status(StatusCodes.OK).json(result);
     } catch (err) {
