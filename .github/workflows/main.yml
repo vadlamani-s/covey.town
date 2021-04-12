@@ -28,7 +28,7 @@ jobs:
         run: cd services/roomService; npm install
 
       - name: Build and test frontend components
-        run: cd frontend; npm install && npm test
+        run: cd frontend; npm install
   deploy:
     if: github.ref == 'refs/heads/master'
     needs: build-and-test
