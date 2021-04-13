@@ -1,5 +1,5 @@
-// import {nanoid} from 'nanoid';
 import { mock, mockReset } from 'jest-mock-extended';
+import { nanoid } from 'nanoid';
 import { Socket } from 'socket.io';
 import * as TestUtils from '../client/TestUtils';
 import { UserLocation } from '../CoveyTypes';
