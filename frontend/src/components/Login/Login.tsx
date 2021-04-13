@@ -218,7 +218,7 @@ export default function Login({ doLogin, logoutHandler, emailID }: LoginProps): 
               <Button colorScheme="gray" onClick={handleMeetings} variant="outline"> History </Button>
               {
                 logs && 
-                <Modal isOpen={isOpen} onClose={closeTab}>
+                <Modal isOpen={isOpen} onClose={closeTab} scrollBehavior='inside'>
                 <ModalOverlay />
                 <ModalContent>
                   <ModalHeader>Meeting History</ModalHeader>

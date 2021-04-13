@@ -26,6 +26,7 @@ export default function EndCallButton(props: { className?: string }) {
   return (
     <Button
       onClick={async () => {
+        sessionStorage.removeItem('sessionToken');
         await room.disconnect();
       }}
       className={clsx(classes.button, props.className)}

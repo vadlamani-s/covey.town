@@ -5,8 +5,6 @@ import {
     VStack,
     Button,
     Stack,
-    Text,
-    Image,
     FormControl,
     FormLabel,
     Input,
@@ -18,7 +16,13 @@ import {
     ModalHeader,
     ModalOverlay,
     useDisclosure,
-    useToast
+    useToast,
+    Heading,
+    Divider,
+    Flex,
+    Container,
+    Center,
+    Spacer
 } from '@chakra-ui/react';
 
 import useCoveyAppState from '../../hooks/useCoveyAppState';
@@ -117,16 +121,44 @@ export default function Home({ loginHandler }: LoginProps): JSX.Element {
     };
 
     return <>
+        <Container marginTop='10px' minH='60px' borderRadius='5px' borderColor='gray.400'>
+            <Flex>
+                <Center>
+                <Button colorScheme="gray" variant="outline" onClick={handleSignIn}> SIGN IN </Button>
+                </Center>
+                <Spacer/>
+                <Center>
+                <Button colorScheme="gray" variant="outline" onClick={handleSignUp}> SIGN UP </Button>     
+                </Center>              
+            </Flex>
+            
+        </Container>
+        <Container marginTop='10px' minH='40px' border='2px' borderRadius='5px' borderColor='gray.400'>
+        <Heading>Welcome to Covey Town.</Heading>
+        <br/>
+        <div> A Remote Collaboration Tool! </div>
+        <br/>
+        <div> Where you can join towns and have video and chat conversations with people of the town. Happy Chatting!!</div>
+        <br/>
+        <div> Developed by Ram, Mownika, Satya</div>
+        <br/>
+        </Container>
 
-        <VStack>
-            <Stack direction="row" height="50px" backgroundColor="gray">
 
-                <Box alignSelf="start">
-                    <Text alignContent="center"> Covey.Town </Text>
-                </Box>
-                <Box alignSelf="end">
-                    <Button colorScheme="gray" variant="outline" onClick={handleSignIn}> SIGN IN </Button>
-                        {
+
+
+
+
+
+
+
+
+
+
+
+
+
+        {
                             signIn && 
                             <Modal isOpen={isOpen} onClose={closeTab}>
                                 <ModalOverlay />
@@ -159,8 +191,8 @@ export default function Home({ loginHandler }: LoginProps): JSX.Element {
                             </Modal>
                         }
 
-                    <Button colorScheme="gray" variant="outline" onClick={handleSignUp}> SIGN UP </Button>
-                        {
+                    
+                    {
                             signUp && 
                             <Modal isOpen={isOpen} onClose={closeTab}>
                                 <ModalOverlay />
@@ -204,15 +236,54 @@ export default function Home({ loginHandler }: LoginProps): JSX.Element {
                                 </ModalContent>
                             </Modal>
                         }
-                </Box>
                 
-            </Stack>
-            <Box height="auto" width="100%" backgroundColor="lightgray">
-                
-                <Image src="../Images/logo.JPG" alt="Covey.Town"/>
+                {
+                            signUp && 
+                            <Modal isOpen={isOpen} onClose={closeTab}>
+                                <ModalOverlay />
+                                <ModalContent>
+                                <ModalHeader>Create an account </ModalHeader>
+                                <ModalCloseButton />
+                                <form onSubmit={(ev) => { ev.preventDefault(); }}>
+                                    <ModalBody pb={6}>
+                        
+                                    <FormControl id="name" isRequired>
+                                        <FormLabel> Full name</FormLabel>
+                                        <Input type="text" placeholder="Full name"
+                                        size="lg" onChange={(e) => setFullName(e.target.value)} />
+                                   </FormControl>
 
-            </Box>
-        </VStack>
+                                    <FormControl id="email" isRequired>
+                                        <FormLabel> Email address</FormLabel>
+                                        <Input type="email" placeholder="Email address"
+                                        size="lg" onChange={(e) => setEmailID1(e.target.value)} />
+                                    </FormControl>
+
+                                    <FormControl id="password" isRequired>
+                                        <FormLabel> Password</FormLabel>
+                                        <Input type="password" placeholder="*******"
+                                        size="lg" onChange={(e) => setUserPassword1(e.target.value)} />
+                                    </FormControl>
+
+                                    <FormControl id="reEnterPassword" isRequired>
+                                        <FormLabel> Re-Enter your password</FormLabel>
+                                        <Input type="password" placeholder="*******"
+                                        size="lg" onChange={(e) => setReEnteredPassword(e.target.value)} />
+                                    </FormControl>
+
+                                    </ModalBody>
+
+                                    <ModalFooter>
+                                    <Button colorScheme="gray" onClick={processRegistration} disabled={!emailID1 || !userPassword1 || !fullName || reEnteredPassword !== userPassword1}> Register </Button>
+                                    <Button onClick={closeTab}>Cancel</Button>
+                                    </ModalFooter>
+                                </form>
+                                </ModalContent>
+                            </Modal>
+                        }
+
+            
+                              
     </>
 
 }

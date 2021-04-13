@@ -10,9 +10,20 @@ import {
   RadioGroup,
   Select,
   Stack,
+  useDisclosure,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
 } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
+import MenuItem from '@material-ui/core/MenuItem';
+import Typography from '@material-ui/core/Typography';
+import React, { useCallback, useEffect, useState } from 'react';
 import useCoveyAppState from '../../hooks/useCoveyAppState';
+import useMaybeVideo from '../../hooks/useMaybeVideo';
 
 interface Message {
   name: string;
@@ -31,6 +42,8 @@ export default function ChatWindow(): JSX.Element {
   const [isPrivate, setPrivate] = useState<boolean>(false);
   const [radioValue, setValue] = useState<string>('public');
   const [selectedPrivatePlayer, setPrivatePlayer] = useState<string>('');
+  const {isOpen, onOpen, onClose} = useDisclosure()
+  const video = useMaybeVideo()
 
   socket?.off('chatMsgReceivedPublic');
   socket?.on('chatMsgReceivedPublic', (val: Record<string, string>) => {
@@ -83,14 +96,31 @@ export default function ChatWindow(): JSX.Element {
     setMyMessage('');
   };
 
+  const openSettings = useCallback(()=>{
+    onOpen();
+    video?.pauseGame();
+  }, [onOpen, video]);
+
+  const closeSettings = useCallback(()=>{
+    onClose();
+    video?.unPauseGame();
+  }, [onClose, video]);
+
   useEffect(() => {
     console.log(recentMessageId);
     console.log(nearbyPlayers.nearbyPlayers);
   }, [recentMessageId, nearbyPlayers.nearbyPlayers]);
 
-  return (
-    <Container marginTop='10px' minH='400px' border='2px' borderRadius='5px' borderColor='gray.400'>
-      <Box py={2}>
+  return <>
+    <MenuItem data-testid='openMenuButton' onClick={openSettings}>
+      <Typography variant="body1">Chat</Typography>
+    </MenuItem>
+
+<Modal isOpen={isOpen} onClose={closeSettings} scrollBehavior='inside'>
+<ModalOverlay/>
+<ModalContent>
+  <ModalHeader>
+  <Box py={2}>
         <RadioGroup
           onChange={e => {
             setValue(e as string);
@@ -102,8 +132,7 @@ export default function ChatWindow(): JSX.Element {
             <Radio value='private'>Private</Radio>
           </Stack>
         </RadioGroup>
-      </Box>
-      {radioValue === 'private' ? (
+        {radioValue === 'private' ? (
         <Box py={2}>
           <Select
             size='xs'
@@ -122,6 +151,11 @@ export default function ChatWindow(): JSX.Element {
       ) : (
         <></>
       )}
+      </Box>
+  </ModalHeader>
+  <ModalCloseButton/>
+    <ModalBody pb={6}>
+    <Container marginTop='10px' minH='400px' border='2px' borderRadius='5px' borderColor='gray.400'>
       <Box minH='340px'>
         {messageList.map(item => (
           <List key={item.messageId}>
@@ -136,19 +170,31 @@ export default function ChatWindow(): JSX.Element {
           </List>
         ))}
       </Box>
-      <Flex>
-        <Input
-          placeholder='Type your Message'
-          size='sm'
-          value={myMessage}
-          onChange={event => setMyMessage(event.target.value)}
-        />
-        <Box paddingLeft='5px'>
-          <Button size='sm' onClick={() => sendMessage()}>
-            Send
-          </Button>
-        </Box>
-      </Flex>
+     
     </Container>
-  );
+    </ModalBody>
+
+          <ModalFooter>
+            <Box mr = {8}>
+            <Input
+              placeholder='Type your Message'
+              size='md'
+              value={myMessage}
+              onChange={event => setMyMessage(event.target.value)}
+            />
+            </Box>
+            <Box mr={2} paddingX='5px'>
+              <Button size='sm' onClick={() => sendMessage()}>
+                Send
+              </Button>
+              
+            </Box>
+            <Box mr={2} paddingX='5px'>
+              <Button size='sm' onClick={closeSettings}>Cancel</Button>
+            </Box>
+            
+          </ModalFooter>
+      </ModalContent>
+    </Modal>
+  </>
 }

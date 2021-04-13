@@ -9,7 +9,6 @@ import { MuiThemeProvider } from '@material-ui/core/styles';
 import assert from 'assert';
 import WorldMap from './components/world/WorldMap';
 import VideoOverlay from './components/VideoCall/VideoOverlay/VideoOverlay';
-import ChatWindow from './components/ChatBox/ChatWindow';
 import { CoveyAppState, NearbyPlayers } from './CoveyTypes';
 import VideoContext from './contexts/VideoContext';
 import Login from './components/Login/Login';
@@ -35,21 +34,22 @@ type CoveyAppUpdate =
   | { action: 'playerDisconnect'; player: Player }
   | { action: 'weMoved'; location: UserLocation }
   | { action: 'disconnect' }
-  | { action: 'playerLoggedIn'; data: { userName: string, emailId: string } }
+  | { action: 'playerLoggedIn'; data: { userName: string, emailId: string, sessionToken: string } }
   | { action: 'playerLoggedOut'; userName: string }
   ;
 
 function defaultAppState(): CoveyAppState {
+
   return {
     nearbyPlayers: { nearbyPlayers: [] },
     players: [],
     myPlayerID: '',
     currentTownFriendlyName: '',
-    currentTownID: '',
+    currentTownID: sessionStorage.getItem('townId') || '',
     currentTownIsPubliclyListed: false,
-    sessionToken: '',
-    userName: '',
-    emailId: '',
+    sessionToken: sessionStorage.getItem('sessionToken') ||  '',
+    userName: sessionStorage.getItem('userName') || '',
+    emailId: sessionStorage.getItem('emailId') || '',
     socket: null,
     currentLocation: {
       x: 0, y: 0, rotation: 'front', moving: false,
@@ -59,6 +59,7 @@ function defaultAppState(): CoveyAppState {
     apiClient: new TownsServiceClient(),
   };
 }
+
 function appStateReducer(state: CoveyAppState, update: CoveyAppUpdate): CoveyAppState {
   const nextState = {
     sessionToken: state.sessionToken,
@@ -147,6 +148,7 @@ function appStateReducer(state: CoveyAppState, update: CoveyAppUpdate): CoveyApp
     case 'playerLoggedIn':
       nextState.userName = update.data.userName;
       nextState.emailId = update.data.emailId;
+      nextState.sessionToken = update.data.sessionToken;
       break;
 
     case 'playerLoggedOut':
@@ -160,6 +162,10 @@ function appStateReducer(state: CoveyAppState, update: CoveyAppUpdate): CoveyApp
       throw new Error('Unexpected state request');
   }
 
+  sessionStorage.setItem("userName", nextState.userName);
+  sessionStorage.setItem("emailId", nextState.emailId);
+  sessionStorage.setItem("sessionToken", nextState.sessionToken);
+  sessionStorage.setItem("townId", nextState.currentTownID);
   return nextState;
 }
 
@@ -217,7 +223,7 @@ async function GameController(initData: TownJoinResponse,
 
 function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefined>> }) {
   const [appState, dispatchAppUpdate] = useReducer(appStateReducer, defaultAppState());
-  localStorage.setItem("loggedIn", "false");
+  sessionStorage.setItem("loggedIn", "false");
 
   const setupGameController = useCallback(async (initData: TownJoinResponse) => {
     await GameController(initData, dispatchAppUpdate);
@@ -235,7 +241,7 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
 
   const loginHandler = useCallback((userName: string, emailId: string) => {
 
-    dispatchAppUpdate({ action: 'playerLoggedIn', data: { userName, emailId } })
+    dispatchAppUpdate({ action: 'playerLoggedIn', data: { userName, emailId, sessionToken: '' } })
     return true;
   }, [dispatchAppUpdate])
 
@@ -244,6 +250,11 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
     dispatchAppUpdate({ action: 'playerLoggedOut', userName })
     return true;
   }, [dispatchAppUpdate])
+
+  window.onbeforeunload = () => {
+    
+    // sessionStorage.clear()
+  } 
 
   const page = useMemo(() => {
     if (!appState.userName) {
@@ -255,13 +266,14 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
         logoutHandler={logoutHandler}
         emailID={appState.emailId} />
     }
+    
     if (!videoInstance) {
-      return <div>Loading...</div>;
+      sessionStorage.removeItem('sessionToken');
+      dispatchAppUpdate({ action: 'playerLoggedIn', data: { userName: appState.userName, emailId: appState.emailId, sessionToken: '' } })
     }
     return (
       <div>
         <WorldMap />
-        <ChatWindow />
         <VideoOverlay preferredMode="fullwidth" />
       </div>
     );

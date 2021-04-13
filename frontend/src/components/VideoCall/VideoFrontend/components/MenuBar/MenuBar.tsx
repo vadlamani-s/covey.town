@@ -14,6 +14,7 @@ import ToggleVideoButton from '../Buttons/ToggleVideoButton/ToggleVideoButton';
 import ToggleScreenShareButton from '../Buttons/ToogleScreenShareButton/ToggleScreenShareButton';
 import TownSettings from '../../../../Login/TownSettings';
 import MenuContainer from '@material-ui/core/Menu';
+import ChatWindow from '../../../../ChatBox/ChatWindow';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   container: {
@@ -85,12 +86,15 @@ export default function MenuBar(props: { setMediaError?(error: Error): void }) {
               <Hidden smDown>
                 {!isSharingScreen && <ToggleScreenShareButton disabled={isReconnecting} />}
               </Hidden>
+              <ChatWindow />
+
               <FlipCameraButton />
+
             </Grid>
           </Grid>
           <Hidden smDown>
             <Grid style={{ flex: 1 }}>
-              <Grid container justify="flex-end">
+              <Grid container justify="flex-end">    
                 <TownSettings />
 
                 <Menu />
