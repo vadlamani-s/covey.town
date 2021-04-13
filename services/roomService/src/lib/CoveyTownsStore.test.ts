@@ -20,6 +20,12 @@ function mockCoveyListener(): CoveyTownListener {
     onPlayerJoined(newPlayer: Player) {
       mockCoveyListenerOtherFns(newPlayer);
     },
+    onSendMessagesPublic(message: Record<string, string>): void {
+      mockCoveyListenerOtherFns(message);
+    },
+    onSendMessagesPrivate(message: Record<string, string>): void {
+      mockCoveyListenerOtherFns(message);
+    },
   };
 }
 
