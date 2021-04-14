@@ -27,7 +27,7 @@
 
     The CoveyAppState in the CoveyTypes.ts was modified to include emailId of the user as a part of the state.
 
-    The App.tsx contains the logic of rendering pages based on different condition. Two new CoveyAppUpdate was included - playerLoggedIn and playerLoggedOut to  <br />handle the login and logout feature. AppStateReducer was modified to include the CoveyAppUpdate. SessionStorage was added to handle the states on page refresh.<br />LoginHandler and LogoutHandler was added to render different pages on login and logout. UseMemo was modified to incorporate home page and changes were made to <br />the conditions to render the pages. 
+    The App.tsx contains the logic of rendering pages based on different condition. Two new CoveyAppUpdate was included - playerLoggedIn and playerLoggedOut to  <br>handle the login and logout feature. AppStateReducer was modified to include the CoveyAppUpdate. SessionStorage was added to handle the states on page refresh.<br />LoginHandler and LogoutHandler was added to render different pages on login and logout. UseMemo was modified to incorporate home page and changes were made to <br />the conditions to render the pages. 
 
     The Login.tsx was modified to add a menu dropdown which has three functionalites - Profile, Meeting History and Logout which are the remaining parts of the<br />first and second user story as explained in the FEATURE.md
 
