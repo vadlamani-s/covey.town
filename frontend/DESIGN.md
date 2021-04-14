@@ -47,7 +47,7 @@
 
 ## Architecture of the new code:
 
-    ![Architerue](https://github.com/vadlamani-s/covey.town/blob/master/frontend/src/Architecture.JPG.com)
+    ![Architecturue](https://github.com/vadlamani-s/covey.town/blob/master/frontend/src/Architecture.JPG)
 
 
 ## CRC Diagram:
