@@ -11,7 +11,11 @@
     a) Home\Home.tsx
     b) ChatBox\ChatWindow.tsx
 
-    The Home.tsx was developed to create a home page with description of the application to let the user understand the scope of it. It has Sign In and Sign Up buttons to let the users create an account and log in to the application using the credentials. This covers parts of the first and second user story as explained in the FEATURE.md.
+    The Home.tsx was developed to create a home page with description of the application to let the user understand the scope of it. It has Sign In and Sign Up 
+    
+    buttons to let the users create an account and log in to the application using the credentials. This covers parts of the first and second user story as 
+    
+    explained in the FEATURE.md.
     
     The ChatWindow.tsx was developed to let the users text chat with other users in the town. The ChatWindow has an option to either send public message to all the users of the town or a private message to a single user. This covers third and fourth user story as explained in the FEATURE.md
 
