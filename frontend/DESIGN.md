@@ -1,0 +1,2 @@
+DESIGN.md file contains a description of any substantive changes to the existing Covey.Town codebase, and the architecture of your new code.
+It uses CRC cards, or state diagrams or any of the other techniques that help describe the structure.
