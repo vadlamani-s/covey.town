@@ -44,6 +44,7 @@
 
 ## Architecture of the new code
 
+![Architecture](./Architecture.JPG)
 
 ## CRC Diagram
 
