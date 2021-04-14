@@ -1,4 +1,4 @@
-# Design :
+# Design
 
 ## Description of changes to the exisiting Covey.Town codebase:
 
@@ -38,13 +38,16 @@
 
 #### New Components:
 
-Following components were added in the services folder - services\roomService:
+    Following components were added in the services folder - services\roomService:
 
 #### Changes to existing components:
 
-Following existing components were edited in the services folder - services\roomService:
+    Following existing components were edited in the services folder - services\roomService:
 
 
 ## Architecture of the new code:
+
+    
+
 
 ## CRC Diagram:

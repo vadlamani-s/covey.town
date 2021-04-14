@@ -1,4 +1,4 @@
-# Features:
+# Features
 
 ## User Stories and steps to interact with it:
 
