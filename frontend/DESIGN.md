@@ -1,12 +1,12 @@
 # Design
 
-## Description of changes to the exisiting Covey.Town codebase:
+## Description of changes to the exisiting Covey.Town codebase
 
-### Frontend:
+### Frontend
 
-#### New Components:
+#### New Components
 
-    Following components were added in the frontend folder - frontend\src\components:
+    Following components were added in the frontend  folder - frontend\src\components:
 
     a) Home\Home.tsx
     b) ChatBox\ChatWindow.tsx
@@ -15,8 +15,7 @@
     
     The ChatWindow.tsx was developed to let the users text chat with other users in the town. The ChatWindow has an option to either send public message to all the users of the town or a private message to a single user. This covers third and fourth user story as explained in the FEATURE.md
 
-
-#### Changes to existing components:
+#### Changes to existing components
 
     Following existing components were edited in the frontend folder - frontend\src\components:
 
@@ -33,21 +32,18 @@
 
     The TownSelection.tsx was modified for format changes.
 
+### Services
 
-### Services:
-
-#### New Components:
+#### New Components
 
     Following components were added in the services folder - services\roomService:
 
-#### Changes to existing components:
+#### Changes to existing components
 
     Following existing components were edited in the services folder - services\roomService:
 
-
-## Architecture of the new code:
-
-    ![Architecturue](https://github.com/vadlamani-s/covey.town/blob/master/frontend/src/Architecture.JPG)
+## Architecture of the new code
 
 
-## CRC Diagram:
+## CRC Diagram
+
