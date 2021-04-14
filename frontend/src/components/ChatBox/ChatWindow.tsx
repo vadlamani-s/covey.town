@@ -2,7 +2,6 @@ import {
   Box,
   Button,
   Container,
-  Flex,
   Input,
   List,
   ListItem,
@@ -107,8 +106,7 @@ export default function ChatWindow(): JSX.Element {
   }, [onClose, video]);
 
   useEffect(() => {
-    console.log(recentMessageId);
-    console.log(nearbyPlayers.nearbyPlayers);
+    
   }, [recentMessageId, nearbyPlayers.nearbyPlayers]);
 
   return <>
