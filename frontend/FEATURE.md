@@ -29,4 +29,4 @@
     c) Select the chat from the bottom menu bar.
     d) Click on private radio button, choose the user from the town to whom you want to send private message, type your message in the space provided and click on send.
     e) The messages will be sent to the particular user in the town.
-    f) If the users replies back, it can be seen in the chat window.
+    f) If the users replies back, it can be seen in the chat box.
