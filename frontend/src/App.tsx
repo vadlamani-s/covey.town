@@ -223,7 +223,6 @@ async function GameController(initData: TownJoinResponse,
 
 function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefined>> }) {
   const [appState, dispatchAppUpdate] = useReducer(appStateReducer, defaultAppState());
-  sessionStorage.setItem("loggedIn", "false");
 
   const setupGameController = useCallback(async (initData: TownJoinResponse) => {
     await GameController(initData, dispatchAppUpdate);

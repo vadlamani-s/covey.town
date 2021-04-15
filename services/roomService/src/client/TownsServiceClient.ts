@@ -124,7 +124,7 @@ export default class TownsServiceClient {
 
   async createTown(requestData: TownCreateRequest): Promise<TownCreateResponse> {
     const responseWrapper = await this._axios.post<ResponseEnvelope<TownCreateResponse>>(
-      'api/towns',
+      '/api/towns',
       requestData,
     );
     return TownsServiceClient.unwrapOrThrowError(responseWrapper);
@@ -132,7 +132,7 @@ export default class TownsServiceClient {
 
   async updateTown(requestData: TownUpdateRequest): Promise<void> {
     const responseWrapper = await this._axios.patch<ResponseEnvelope<void>>(
-      `api/towns/${requestData.coveyTownID}`,
+      `/api/towns/${requestData.coveyTownID}`,
       requestData,
     );
     return TownsServiceClient.unwrapOrThrowError(responseWrapper, true);
@@ -140,18 +140,18 @@ export default class TownsServiceClient {
 
   async deleteTown(requestData: TownDeleteRequest): Promise<void> {
     const responseWrapper = await this._axios.delete<ResponseEnvelope<void>>(
-      `api/towns/${requestData.coveyTownID}/${requestData.coveyTownPassword}`,
+      `/api/towns/${requestData.coveyTownID}/${requestData.coveyTownPassword}`,
     );
     return TownsServiceClient.unwrapOrThrowError(responseWrapper, true);
   }
 
   async listTowns(): Promise<TownListResponse> {
-    const responseWrapper = await this._axios.get<ResponseEnvelope<TownListResponse>>('api/towns');
+    const responseWrapper = await this._axios.get<ResponseEnvelope<TownListResponse>>('/api/towns');
     return TownsServiceClient.unwrapOrThrowError(responseWrapper);
   }
 
   async joinTown(requestData: TownJoinRequest): Promise<TownJoinResponse> {
-    const responseWrapper = await this._axios.post('api/sessions', requestData);
+    const responseWrapper = await this._axios.post('/api/sessions', requestData);
     return TownsServiceClient.unwrapOrThrowError(responseWrapper);
   }
 }

@@ -14,8 +14,8 @@ import {
   townUpdateHandler,
 } from '../requestHandlers/CoveyTownRequestHandlers';
 import { Credentials } from '../types/IUser';
+import Validate from '../types/Validate';
 import { logError } from '../Utils';
-import { validateAPIRequest } from './auth';
 
 const router = Router();
 
@@ -25,14 +25,12 @@ export default function addTownRoutes(http: Server, app: Express): io.Server {
   let userCredentials: Credentials;
 
   router.use('/', (req, res, next) => {
-    userCredentials = validateAPIRequest(req.cookies.jwt) as Credentials;
-    next();
-    res.status(200);
-    // if (userCredentials.signedIn) {
-    //   next();
-    // } else {
-    //   res.status(400).json({ message: 'Invalid Request' });
-    // }
+    userCredentials = Validate.validateAPIRequest(req.cookies.jwt) as Credentials;
+    if (userCredentials.signedIn) {
+      next();
+    } else {
+      res.status(400).json({ message: 'Invalid Request' });
+    }
   });
 
   /*

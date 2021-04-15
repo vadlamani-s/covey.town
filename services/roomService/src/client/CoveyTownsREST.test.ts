@@ -5,7 +5,22 @@ import http from 'http';
 import { nanoid } from 'nanoid';
 import { AddressInfo } from 'net';
 import addTownRoutes from '../router/towns';
+import { Credentials } from '../types/IUser';
+import Validate from '../types/Validate';
 import TownsServiceClient, { TownListResponse } from './TownsServiceClient';
+
+jest.mock('../types/Validate');
+
+const mockValidateAPI = jest.fn();
+
+Validate.validateAPIRequest = mockValidateAPI;
+
+mockValidateAPI.mockImplementation(() => {
+  const mockCredentials: Credentials = {
+    signedIn: true,
+  };
+  return mockCredentials;
+});
 
 type TestTownData = {
   friendlyName: string;

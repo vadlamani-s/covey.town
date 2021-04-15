@@ -1,11 +1,5 @@
 import { config } from 'dotenv';
-import {
-  deleteUserRegistration,
-  newUserRegistration,
-  updateUserRegistration,
-  userLogin,
-  userProfile,
-} from '../db/coveyDBMethods';
+import DBMethods from '../db/coveyDBMethods';
 import { IUserLoginRequest, IUserUpdateRequest } from '../types/IUser';
 import User from '../types/User';
 
@@ -67,7 +61,7 @@ export async function userRegistrationRequestHandler(
 ): Promise<ResponseEnvelope<UserResponse>> {
   const newUser = new User(requestData.name, requestData.emailId, requestData.password);
   try {
-    const registrationResponse = await newUserRegistration(newUser);
+    const registrationResponse = await DBMethods.newUserRegistration(newUser);
     return {
       isOK: true,
       response: {
@@ -88,7 +82,7 @@ export async function userLoginRequestHandler(
   requestData: UserLoginRequest,
 ): Promise<ResponseEnvelope<UserResponse>> {
   try {
-    const loginResponse = await userLogin(requestData);
+    const loginResponse = await DBMethods.userLogin(requestData);
     return {
       isOK: true,
       response: {
@@ -127,7 +121,7 @@ export async function userProfileRequestHandler(
   requestData: UserProfileRequest,
 ): Promise<ResponseEnvelope<UserProfileResponse>> {
   try {
-    const UserProfileResponse = await userProfile(requestData);
+    const UserProfileResponse = await DBMethods.userProfile(requestData);
     return {
       isOK: true,
       response: {
@@ -149,7 +143,7 @@ export async function userProfileUpdateHandler(
   userUpdateData: IUserUpdateRequest,
 ): Promise<ResponseEnvelope<void>> {
   try {
-    await updateUserRegistration(userUpdateData);
+    await DBMethods.updateUserRegistration(userUpdateData);
     return {
       isOK: true,
       message: 'Field Updated',
@@ -166,7 +160,7 @@ export async function userProfileDeleteHandler(
   userDeleteData: IUserLoginRequest,
 ): Promise<ResponseEnvelope<void>> {
   try {
-    await deleteUserRegistration(userDeleteData);
+    await DBMethods.deleteUserRegistration(userDeleteData);
     return {
       isOK: true,
       message: 'User Deleted',

@@ -3,8 +3,10 @@ import { nanoid } from 'nanoid';
 import { Socket } from 'socket.io';
 import * as TestUtils from '../client/TestUtils';
 import { UserLocation } from '../CoveyTypes';
-import { newUserRegistration } from '../db/coveyDBMethods';
+import DBMethods from '../db/coveyDBMethods';
 import { townSubscriptionHandler } from '../requestHandlers/CoveyTownRequestHandlers';
+import * as AuthHandlers from '../requestHandlers/UserAuthRequestHandler';
+import { UserLoginRequest } from '../requestHandlers/UserAuthRequestHandler';
 import CoveyTownListener from '../types/CoveyTownListener';
 import Player from '../types/Player';
 import PlayerSession from '../types/PlayerSession';
@@ -14,6 +16,18 @@ import CoveyTownsStore from './CoveyTownsStore';
 import TwilioVideo from './TwilioVideo';
 
 jest.mock('./TwilioVideo');
+jest.mock('../db/coveyDBMethods');
+
+const mockLogin = jest.fn();
+DBMethods.userLogin = mockLogin;
+mockLogin.mockImplementation((user: UserLoginRequest) => ({
+  name: '',
+  emailId: user.emailId,
+  creationDate: new Date(),
+}));
+
+const mockNewUserRegistration = jest.fn();
+DBMethods.newUserRegistration = mockNewUserRegistration;
 
 const mockGetTokenForTown = jest.fn();
 // eslint-disable-next-line
@@ -38,13 +52,22 @@ export default function mockFunction<T extends (...args: any[]) => any>(
 }
 
 describe('Registration', () => {
-  it('new User registration', async () => {
-    const newUser = new User('xyz', 'xyz@mail.com', '1234567890');
-    const newUserRegistrationMock = mockFunction(newUserRegistration);
-    console.log(newUserRegistrationMock);
-    const result = await newUserRegistrationMock(newUser);
-    expect(result.name).toBe('xyz');
-    expect(result.emailId).toBe('xyz@gmail.com');
+  it('User Login', async () => {
+    const newUser = new User('xyz', 'xyz@gmail.com', '1234567890');
+
+    const result1 = await AuthHandlers.userLoginRequestHandler({
+      password: newUser.password,
+      emailId: newUser.emailId,
+    });
+    if (result1.response) {
+      expect(result1.response.emailId).toBe('xyz@gmail.com');
+    } else {
+      fail();
+    }
+  });
+
+  it('New User Registration', async () => {
+    // const userLoginMock = mockFunction(userLogin());
   });
 });
 

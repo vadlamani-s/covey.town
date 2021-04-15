@@ -5,7 +5,7 @@ import * as http from 'http';
 import mongoose from 'mongoose';
 import { AddressInfo } from 'net';
 import CoveyTownsStore from './lib/CoveyTownsStore';
-import { addAuthRoutes } from './router/auth';
+import addAuthRoutes from './router/auth';
 import addTownRoutes from './router/towns';
 
 config();

@@ -2,9 +2,7 @@ import React, { useCallback, useState } from 'react';
 
 import {
     Box,
-    VStack,
     Button,
-    Stack,
     FormControl,
     FormLabel,
     Input,
@@ -18,16 +16,12 @@ import {
     useDisclosure,
     useToast,
     Heading,
-    Divider,
-    Flex,
-    Container,
+    Text,
     Center,
-    Spacer
+    ButtonGroup
 } from '@chakra-ui/react';
 
 import useCoveyAppState from '../../hooks/useCoveyAppState';
-
-// import Logo from '../../Images/logo.JPG';
 
 interface LoginProps {
     loginHandler: (userName: string, emailId: string) => boolean
@@ -121,43 +115,30 @@ export default function Home({ loginHandler }: LoginProps): JSX.Element {
     };
 
     return <>
-        <Container marginTop='10px' minH='60px' borderRadius='5px' borderColor='gray.400'>
-            <Flex>
-                <Center>
-                <Button colorScheme="gray" variant="outline" onClick={handleSignIn}> SIGN IN </Button>
-                </Center>
-                <Spacer/>
-                <Center>
-                <Button colorScheme="gray" variant="outline" onClick={handleSignUp}> SIGN UP </Button>     
-                </Center>              
-            </Flex>
-            
-        </Container>
-        <Container marginTop='10px' minH='40px' border='2px' borderRadius='5px' borderColor='gray.400'>
-        <Heading>Welcome to Covey Town.</Heading>
-        <br/>
-        <div> A Remote Collaboration Tool! </div>
-        <br/>
-        <div> Where you can join towns and have video and chat conversations with people of the town. Happy Chatting!!</div>
-        <br/>
-        <div> Developed by Ram, Mownika, Satya</div>
-        <br/>
-        </Container>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    <Center>
+        <Box position="relative">
+            <br/>
+            <br/>
+            <Heading as="h4" fontFamily="monospace" textAlign="center">Welcome To Covey.Town</Heading>
+            <br/>
+            <Text fontSize="lg" fontFamily="monospace" textAlign="center">
+                <div> A Remote Collobaration Tool! </div>
+                <br/>
+                <div> Where you can join towns and have video/chat conversations with people of the town. </div>    
+                <br/>
+                <div>Happy Chatting!!</div>
+                <br/>
+                <div> Developed by Ram, Mownika, Satya</div>
+            </Text>
+            <br/>
+            <Center>
+            <ButtonGroup spacing="2">
+                <Button colorScheme="black" onClick={handleSignIn} variant="outline"> Sign In </Button>
+                <Button colorScheme="black" onClick={handleSignUp} variant="outline"> Sign Up </Button>          
+            </ButtonGroup>
+            </Center>
+        </Box>   
+    </Center>
         {
                             signIn && 
                             <Modal isOpen={isOpen} onClose={closeTab}>
@@ -183,8 +164,10 @@ export default function Home({ loginHandler }: LoginProps): JSX.Element {
                                     </ModalBody>
 
                                     <ModalFooter>
-                                    <Button colorScheme="gray" onClick={processLogin} disabled={!emailID || !userPassword}> Login </Button>
-                                    <Button onClick={closeTab}>Cancel</Button>
+                                        <ButtonGroup spacing="2">
+                                            <Button colorScheme="gray" onClick={processLogin} disabled={!emailID || !userPassword}> Login </Button>
+                                            <Button onClick={closeTab}>Cancel</Button>
+                                        </ButtonGroup>
                                     </ModalFooter>
                                 </form>
                                 </ModalContent>
@@ -229,8 +212,10 @@ export default function Home({ loginHandler }: LoginProps): JSX.Element {
                                     </ModalBody>
 
                                     <ModalFooter>
-                                    <Button colorScheme="gray" onClick={processRegistration} disabled={!emailID1 || !userPassword1 || !fullName || reEnteredPassword !== userPassword1}> Register </Button>
-                                    <Button onClick={closeTab}>Cancel</Button>
+                                        <ButtonGroup spacing="4">
+                                            <Button colorScheme="gray" onClick={processRegistration} disabled={!emailID1 || !userPassword1 || !fullName || reEnteredPassword !== userPassword1}> Register </Button>
+                                            <Button onClick={closeTab}>Cancel</Button>
+                                        </ButtonGroup>
                                     </ModalFooter>
                                 </form>
                                 </ModalContent>
