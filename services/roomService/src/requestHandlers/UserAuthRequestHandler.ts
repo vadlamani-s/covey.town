@@ -66,21 +66,25 @@ export async function userRegistrationRequestHandler(
     generateHash(requestData.password),
   );
   try {
-    // await DBMethods.userProfile({emailId: newUser.emailId});
-    const registrationResponse = await DBMethods.newUserRegistration(newUser);
-    return {
-      isOK: true,
-      response: {
-        name: registrationResponse.name,
-        emailId: registrationResponse.emailId,
-        creationDate: registrationResponse.creationDate,
-      },
-    };
-  } catch (err) {
+    await DBMethods.userProfile({ emailId: newUser.emailId });
     return {
       isOK: false,
       message: 'User is already registered',
     };
+  } catch (err) {
+    try {
+      const registrationResponse = await DBMethods.newUserRegistration(newUser);
+      return {
+        isOK: true,
+        response: {
+          name: registrationResponse.name,
+          emailId: registrationResponse.emailId,
+          creationDate: registrationResponse.creationDate,
+        },
+      };
+    } catch (err1) {
+      return err;
+    }
   }
 }
 
@@ -88,6 +92,7 @@ export async function userLoginRequestHandler(
   requestData: UserLoginRequest,
 ): Promise<ResponseEnvelope<UserResponse>> {
   try {
+    
     const loginResponse = await DBMethods.userLogin(requestData);
     return {
       isOK: true,

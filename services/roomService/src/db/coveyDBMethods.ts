@@ -13,10 +13,6 @@ import User from '../types/User';
 
 export default class DBMethods {
   static async newUserRegistration(newUser: User): Promise<IUserResponse> {
-    const retrivedResult = await UserModel.findOne({ emailId: newUser.emailId });
-    if (retrivedResult) {
-      throw Error('User is already registered');
-    }
     try {
       const createRequest = new UserModel({
         name: newUser.name,
@@ -70,18 +66,16 @@ export default class DBMethods {
   }
 
   static async userProfile(user: IUserProfileRequest): Promise<IUserProfileResponse> {
-    try {
-      const retrivedResult = await UserModel.findOne({ emailId: user.emailId });
-      console.log(retrivedResult);
-      return {
-        name: retrivedResult.name,
-        creationDate: retrivedResult.creationDate,
-        emailId: retrivedResult.emailId,
-        password: retrivedResult.password,
-      };
-    } catch (err) {
-      return err;
+    const retrivedResult = await UserModel.findOne({ emailId: user.emailId });
+    if (retrivedResult === null) {
+      throw new Error('User is not registered');
     }
+    return {
+      name: retrivedResult.name,
+      creationDate: retrivedResult.creationDate,
+      emailId: retrivedResult.emailId,
+      password: retrivedResult.password,
+    };
   }
 
   static async getAllLogs(email: string): Promise<RoomLogin[]> {
