@@ -14,8 +14,8 @@ import {
   townUpdateHandler,
 } from '../requestHandlers/CoveyTownRequestHandlers';
 import { Credentials } from '../types/IUser';
+import Validate from '../types/Validate';
 import { logError } from '../Utils';
-import { validateAPIRequest } from './auth';
 
 const router = Router();
 
@@ -25,7 +25,7 @@ export default function addTownRoutes(http: Server, app: Express): io.Server {
   let userCredentials: Credentials;
 
   router.use('/', (req, res, next) => {
-    userCredentials = validateAPIRequest(req.cookies.jwt) as Credentials;
+    userCredentials = Validate.validateAPIRequest(req.cookies.jwt) as Credentials;
     if (userCredentials.signedIn) {
       next();
     } else {
@@ -148,7 +148,6 @@ export default function addTownRoutes(http: Server, app: Express): io.Server {
       });
     }
   });
-  
 
   const socketServer = new io.Server(http, { cors: { origin: '*' } });
   socketServer.on('connection', townSubscriptionHandler);
