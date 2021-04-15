@@ -3,7 +3,7 @@ import CORS from 'cors';
 import { Express, json, Router } from 'express';
 import { StatusCodes } from 'http-status-codes';
 // import { OAuth2Client } from 'google-auth-library';
-import { sign, verify } from 'jsonwebtoken';
+import { sign } from 'jsonwebtoken';
 import {
   userLoginRequestHandler,
   userLogoutRequestHandler,
@@ -20,7 +20,7 @@ const uiServerOrigin = process.env.UI_SERVER_ORIGIN || 'http://localhost:3000';
 router.use(CORS({ origin: uiServerOrigin, credentials: true }));
 const { JWT_SECRET } = process.env;
 
-export function addAuthRoutes(app: Express): void {
+export default function addAuthRoutes(app: Express): void {
   app.use(cookieParser());
   app.use('/auth', router);
 
@@ -149,15 +149,5 @@ router.get('/userProfile/:emailId', json(), async (req, res) => {
     });
   }
 });
-
-export const validateAPIRequest = (validatetoken: string): Credentials => {
-  let validatedCredentials: Credentials;
-  try {
-    validatedCredentials = verify(validatetoken, JWT_SECRET as string) as Credentials;
-  } catch (err) {
-    validatedCredentials = { signedIn: false };
-  }
-  return validatedCredentials;
-};
 
 // export default { routes, validateAPIRequest };
