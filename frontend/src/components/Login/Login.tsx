@@ -155,6 +155,8 @@ export default function Login({ doLogin, logoutHandler, emailID }: LoginProps): 
             })
 
             logoutHandler(userName);
+            setUserName('');
+            setPassword('');
             closeTab();
 
           } catch(err) {
