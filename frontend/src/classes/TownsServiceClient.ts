@@ -223,9 +223,7 @@ export default class TownsServiceClient {
   }
 
   async logoutUser(): Promise<void> {
-    const responseWrapper = await this._axios.post<ResponseEnvelope<void>>(
-      '/auth/logoutUser',
-    );
+    const responseWrapper = await this._axios.post<ResponseEnvelope<void>>('/auth/logoutUser');
     return TownsServiceClient.unwrapOrThrowError(responseWrapper);
   }
 
@@ -245,9 +243,10 @@ export default class TownsServiceClient {
   }
 
   async userProfile(requestData: UserProfileRequest): Promise<UserProfileResponse> {
-    const responseWrapper = await this._axios.get<ResponseEnvelope<UserProfileResponse>> (
-      `/auth/userProfile/${requestData.emailId}`
-    )
+    const responseWrapper = await this._axios.post<ResponseEnvelope<UserProfileResponse>>(
+      `/auth/userProfile`,
+      requestData,
+    );
     return TownsServiceClient.unwrapOrThrowError(responseWrapper);
   }
 
