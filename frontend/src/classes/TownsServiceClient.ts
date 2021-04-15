@@ -244,7 +244,7 @@ export default class TownsServiceClient {
 
   async userProfile(requestData: UserProfileRequest): Promise<UserProfileResponse> {
     const responseWrapper = await this._axios.post<ResponseEnvelope<UserProfileResponse>>(
-      `/auth/userProfile`,
+      '/auth/userProfile',
       requestData,
     );
     return TownsServiceClient.unwrapOrThrowError(responseWrapper);
