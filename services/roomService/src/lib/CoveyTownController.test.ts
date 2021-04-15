@@ -8,6 +8,7 @@ import { townSubscriptionHandler } from '../requestHandlers/CoveyTownRequestHand
 import * as AuthHandlers from '../requestHandlers/UserAuthRequestHandler';
 import { UserLoginRequest } from '../requestHandlers/UserAuthRequestHandler';
 import CoveyTownListener from '../types/CoveyTownListener';
+import { IUserLoginRequest, IUserUpdateRequest } from '../types/IUser';
 import Player from '../types/Player';
 import PlayerSession from '../types/PlayerSession';
 import User from '../types/User';
@@ -28,6 +29,30 @@ mockLogin.mockImplementation((user: UserLoginRequest) => ({
 
 const mockNewUserRegistration = jest.fn();
 DBMethods.newUserRegistration = mockNewUserRegistration;
+mockNewUserRegistration.mockImplementation((newUser: User) => ({
+  name: newUser.name,
+  creationDate: new Date(),
+  emailId: newUser.emailId,
+}));
+
+const mockUserProfileRequest = jest.fn();
+DBMethods.userProfile = mockUserProfileRequest;
+mockUserProfileRequest.mockImplementation((requestData: AuthHandlers.UserProfileRequest) => ({
+  emailId: requestData.emailId,
+  name: 'xyz',
+}));
+
+const mockUserUpdate = jest.fn();
+DBMethods.updateUserRegistration = mockUserUpdate;
+mockUserUpdate.mockImplementation((updateData: IUserUpdateRequest) => ({
+  emailId: updateData.emailId,
+}));
+
+const mockDeleteUser = jest.fn();
+DBMethods.deleteUserRegistration = mockDeleteUser;
+mockDeleteUser.mockImplementation((userData: IUserLoginRequest) => ({
+  emailId: userData.emailId,
+}));
 
 const mockGetTokenForTown = jest.fn();
 // eslint-disable-next-line
@@ -61,13 +86,68 @@ describe('Registration', () => {
     });
     if (result1.response) {
       expect(result1.response.emailId).toBe('xyz@gmail.com');
+      expect(result1.response.name).toBe('');
     } else {
       fail();
     }
   });
 
   it('New User Registration', async () => {
-    // const userLoginMock = mockFunction(userLogin());
+    const newUser = new User('xyz', 'xyz@gmail.com', '1234567890');
+    const result = await AuthHandlers.userRegistrationRequestHandler({
+      name: newUser.name,
+      emailId: newUser.emailId,
+      password: newUser.password,
+    });
+
+    if (result.response) {
+      expect(result.response.emailId).toBe('xyz@gmail.com');
+      expect(result.response.name).toBe('xyz');
+    } else {
+      fail();
+    }
+  });
+
+  it('LogOut', async () => {
+    const result = await AuthHandlers.userLogoutRequestHandler('data');
+    if (result.response) {
+      expect(result.message).toBe('Logout Successful');
+    } else {
+      fail();
+    }
+  });
+
+  it('User Profile Request', async () => {
+    const result = await AuthHandlers.userProfileRequestHandler({
+      emailId: 'xyz@gmail.com',
+    });
+    if (result.response) {
+      expect(result.response.emailId).toBe('xyz@gmail.com');
+      expect(result.response.name).toBe('xyz');
+    } else {
+      fail();
+    }
+  });
+
+  it('User Profile Update', async () => {
+    const result = await AuthHandlers.userProfileUpdateHandler({
+      emailId: 'xyz@gmail.com',
+      name: 'xyz',
+      password: '12345678',
+    });
+    if (result.message) {
+      expect(result.message).toBe('Field Updated');
+    } else {
+      fail();
+    }
+  });
+
+  it('Delete User Data', async () => {
+    const result = await AuthHandlers.userProfileDeleteHandler({
+      emailId: 'xyz@gmail.com',
+      password: '1234567890',
+    });
+    expect(result.message).toBe('User Deleted');
   });
 });
 

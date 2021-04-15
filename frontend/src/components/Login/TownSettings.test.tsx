@@ -39,6 +39,7 @@ function wrappedTownSettings() {
     players: [],
     myPlayerID: '',
     currentTownID: '',
+    emailId: '',
     currentTownFriendlyName: '',
     currentTownIsPubliclyListed: false,
     sessionToken: '',

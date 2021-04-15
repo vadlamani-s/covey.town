@@ -29,12 +29,13 @@ interface TownSelectionProps {
 }
 
 export default function TownSelection({ doLogin }: TownSelectionProps): JSX.Element {
+  const [userName, setUserName] = useState<string>(useCoveyAppState().userName || '');
   const [newTownName, setNewTownName] = useState<string>('');
   const [newTownIsPublic, setNewTownIsPublic] = useState<boolean>(true);
   const [townIDToJoin, setTownIDToJoin] = useState<string>('');
   const [currentPublicTowns, setCurrentPublicTowns] = useState<CoveyTownInfo[]>();
   const { connect } = useVideoContext();
-  const { apiClient, userName } = useCoveyAppState();
+  const { apiClient } = useCoveyAppState();
   const toast = useToast();
 
   const updateTownListings = useCallback(() => {
@@ -45,7 +46,7 @@ export default function TownSelection({ doLogin }: TownSelectionProps): JSX.Elem
   }, [setCurrentPublicTowns, apiClient]);
   useEffect(() => {
     updateTownListings();
-    const timer = setInterval(updateTownListings, 20000000);
+    const timer = setInterval(updateTownListings, 2000);
     return () => {
       clearInterval(timer);
     };
@@ -156,8 +157,11 @@ export default function TownSelection({ doLogin }: TownSelectionProps): JSX.Elem
             <Flex>
               <Box flex='1'>
                 <FormControl>
-                  <FormLabel htmlFor='name'>Name</FormLabel>
-                  <Input autoFocus name='name' readOnly disabled value={userName} />
+                  <FormLabel htmlFor='name'>Name</FormLabel>                 
+                  <Input autoFocus name="name" placeholder="Your name"
+                     value={userName}
+                     onChange={event => setUserName(event.target.value)}
+                  />
                 </FormControl>
               </Box>
             </Flex>
