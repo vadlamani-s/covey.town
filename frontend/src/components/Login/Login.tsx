@@ -1,9 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import {
   Box,
-  VStack,
   Button,
-  Stack,
   FormControl,
   FormLabel,
   Input,
@@ -22,8 +20,13 @@ import {
   Th,
   Thead,
   Tr,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
 } from '@chakra-ui/react';
 import {
+  ChevronDownIcon,
   EditIcon
 } from '@chakra-ui/icons';
 import PreJoinScreens from '../VideoCall/VideoFrontend/components/PreJoinScreens/PreJoinScreens';
@@ -111,7 +114,7 @@ export default function Login({ doLogin, logoutHandler, emailID }: LoginProps): 
       }).then((user) => setUserProfile(user));
 
       } catch (err) {
-        console.log(err);
+        setUserProfile({emailId: emailID, name: ' ', password: ' ', creationDate: new Date()});
       }
   };
 
@@ -167,12 +170,8 @@ export default function Login({ doLogin, logoutHandler, emailID }: LoginProps): 
   return (
     <>
       <MediaErrorSnackbar error={mediaError} dismissError={() => setMediaError(undefined)} />
-      
-      <VStack>
-        <Stack direction="row" spacing="50px">
-          <Box>
-              <Button colorScheme="gray" onClick={handleProfile} variant="outline"> Profile </Button>
-              {
+
+          {
                 profile && 
                 <Modal isOpen={isOpen} onClose={closeTab}>
                 <ModalOverlay />
@@ -213,10 +212,8 @@ export default function Login({ doLogin, logoutHandler, emailID }: LoginProps): 
                 </ModalContent>
                 </Modal>
               }
-          </Box>
-          <Box>
-              <Button colorScheme="gray" onClick={handleMeetings} variant="outline"> History </Button>
-              {
+
+{
                 logs && 
                 <Modal isOpen={isOpen} onClose={closeTab} scrollBehavior='inside'>
                 <ModalOverlay />
@@ -242,18 +239,23 @@ export default function Login({ doLogin, logoutHandler, emailID }: LoginProps): 
                 </ModalContent>
                 </Modal>
               }
-          </Box>
-          <Box>
-            <Button colorScheme="gray" onClick={processLogout} variant="outline"> Logout </Button>
-          </Box>
-        </Stack>
+  
         <Box height="auto">
+          <Menu>
+            <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+              Menu
+            </MenuButton>
+            <MenuList>
+              <MenuItem onClick={handleProfile}>Profile</MenuItem>
+              <MenuItem onClick={handleMeetings}>Meeting History</MenuItem>
+              <MenuItem onClick={processLogout}> Logout</MenuItem>
+            </MenuList>
+          </Menu>
           <PreJoinScreens
             doLogin={doLogin}
             setMediaError={setMediaError}
           />
         </Box>
-      </VStack>
     </>
   );
 }
