@@ -131,23 +131,23 @@ export default function addAuthRoutes(app: Express): void {
       });
     }
   });
-}
 
-/**
- * Fetches user profile information
- */
-router.get('/userProfile/:emailId', json(), async (req, res) => {
-  try {
-    const result = await userProfileRequestHandler({
-      emailId: req.params.emailId,
-    });
-    res.status(StatusCodes.OK).json(result);
-  } catch (err) {
-    logError(err);
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-      message: 'Internal server error, please see log in server for more details',
-    });
-  }
-});
+  /**
+   * Fetches user profile information
+   */
+  router.get('/userProfile/:emailId', json(), async (req, res) => {
+    try {
+      const result = await userProfileRequestHandler({
+        emailId: req.params.emailId,
+      });
+      res.status(StatusCodes.OK).json(result);
+    } catch (err) {
+      logError(err);
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        message: 'Internal server error, please see log in server for more details',
+      });
+    }
+  });
+}
 
 // export default { routes, validateAPIRequest };

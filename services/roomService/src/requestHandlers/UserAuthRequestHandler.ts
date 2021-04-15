@@ -1,5 +1,6 @@
 import { config } from 'dotenv';
 import DBMethods from '../db/coveyDBMethods';
+import { generateHash } from '../models/userSchema';
 import { IUserLoginRequest, IUserUpdateRequest } from '../types/IUser';
 import User from '../types/User';
 
@@ -59,8 +60,13 @@ export interface ResponseEnvelope<T> {
 export async function userRegistrationRequestHandler(
   requestData: UserRegisterRequest,
 ): Promise<ResponseEnvelope<UserResponse>> {
-  const newUser = new User(requestData.name, requestData.emailId, requestData.password);
+  const newUser = new User(
+    requestData.name,
+    requestData.emailId,
+    generateHash(requestData.password),
+  );
   try {
+    // await DBMethods.userProfile({emailId: newUser.emailId});
     const registrationResponse = await DBMethods.newUserRegistration(newUser);
     return {
       isOK: true,

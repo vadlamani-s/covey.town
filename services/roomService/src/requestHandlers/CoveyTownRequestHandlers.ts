@@ -1,7 +1,7 @@
 import assert from 'assert';
 import { Socket } from 'socket.io';
 import { CoveyTownList, UserLocation } from '../CoveyTypes';
-import { getAllLogs, loginHistory } from '../db/coveyDBMethods';
+import DBMethods from '../db/coveyDBMethods';
 import CoveyTownsStore from '../lib/CoveyTownsStore';
 import CoveyTownListener from '../types/CoveyTownListener';
 import { LogListResponse, RoomLogin } from '../types/payloads';
@@ -130,7 +130,7 @@ export async function townJoinHandler(
 export async function storeMeetingRequest(
   request: RoomLogin,
 ): Promise<ResponseEnvelope<Record<string, null>>> {
-  const historyDetails = await loginHistory({
+  const historyDetails = await DBMethods.loginHistory({
     emailId: request.emailId,
     friendlyName: request.friendlyName,
     coveyTownID: request.coveyTownID,
@@ -151,7 +151,7 @@ export async function storeMeetingRequest(
 export async function meetingLogs(request: {
   emailId: string;
 }): Promise<ResponseEnvelope<LogListResponse>> {
-  const logList = await getAllLogs(request.emailId);
+  const logList = await DBMethods.getAllLogs(request.emailId);
   return {
     isOK: true,
     response: { logs: logList },

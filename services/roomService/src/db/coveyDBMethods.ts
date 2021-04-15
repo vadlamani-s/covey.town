@@ -21,7 +21,7 @@ export default class DBMethods {
       const createRequest = new UserModel({
         name: newUser.name,
         emailId: newUser.emailId,
-        password: generateHash(newUser.password),
+        password: newUser.password,
         creationDate: new Date().toLocaleString('en-US'),
       });
       const createResponse = await createRequest.save();
@@ -72,7 +72,7 @@ export default class DBMethods {
   static async userProfile(user: IUserProfileRequest): Promise<IUserProfileResponse> {
     try {
       const retrivedResult = await UserModel.findOne({ emailId: user.emailId });
-
+      console.log(retrivedResult);
       return {
         name: retrivedResult.name,
         creationDate: retrivedResult.creationDate,
