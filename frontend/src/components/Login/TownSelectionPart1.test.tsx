@@ -89,6 +89,7 @@ function wrappedTownSelection() {
     currentTownFriendlyName: '',
     sessionToken: '',
     userName: '',
+    emailId: '',
     socket: null,
     currentLocation: {
       x: 0,

@@ -45,7 +45,7 @@ export default function TownSelection({ doLogin }: TownSelectionProps): JSX.Elem
   }, [setCurrentPublicTowns, apiClient]);
   useEffect(() => {
     updateTownListings();
-    const timer = setInterval(updateTownListings, 20000000);
+    const timer = setInterval(updateTownListings, 2000);
     return () => {
       clearInterval(timer);
     };
