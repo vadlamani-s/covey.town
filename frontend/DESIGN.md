@@ -48,3 +48,14 @@
 
 ## CRC Diagram
 
+![image](https://user-images.githubusercontent.com/69494422/114808196-ccf0ce00-9d75-11eb-9369-0620fcaac8b7.png)
+
+![image](https://user-images.githubusercontent.com/69494422/114808289-f1e54100-9d75-11eb-8d6d-fe51a6dfe6be.png)
+
+![image](https://user-images.githubusercontent.com/69494422/114808305-f9a4e580-9d75-11eb-8dd6-241c5093d100.png)
+
+![image](https://user-images.githubusercontent.com/69494422/114808327-032e4d80-9d76-11eb-8751-909b801043b2.png)
+
+![image](https://user-images.githubusercontent.com/69494422/114808342-09242e80-9d76-11eb-9973-ba53161bda8c.png)
+
+![image](https://user-images.githubusercontent.com/69494422/114808353-0e817900-9d76-11eb-90d7-19e05c09115d.png)
