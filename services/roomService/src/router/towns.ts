@@ -26,11 +26,13 @@ export default function addTownRoutes(http: Server, app: Express): io.Server {
 
   router.use('/', (req, res, next) => {
     userCredentials = validateAPIRequest(req.cookies.jwt) as Credentials;
-    if (userCredentials.signedIn) {
-      next();
-    } else {
-      res.status(400).json({ message: 'Invalid Request' });
-    }
+    next();
+    res.status(200);
+    // if (userCredentials.signedIn) {
+    //   next();
+    // } else {
+    //   res.status(400).json({ message: 'Invalid Request' });
+    // }
   });
 
   /*
@@ -148,7 +150,6 @@ export default function addTownRoutes(http: Server, app: Express): io.Server {
       });
     }
   });
-  
 
   const socketServer = new io.Server(http, { cors: { origin: '*' } });
   socketServer.on('connection', townSubscriptionHandler);

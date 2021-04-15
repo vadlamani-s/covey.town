@@ -3,10 +3,12 @@ import { nanoid } from 'nanoid';
 import { Socket } from 'socket.io';
 import * as TestUtils from '../client/TestUtils';
 import { UserLocation } from '../CoveyTypes';
+import { newUserRegistration } from '../db/coveyDBMethods';
 import { townSubscriptionHandler } from '../requestHandlers/CoveyTownRequestHandlers';
 import CoveyTownListener from '../types/CoveyTownListener';
 import Player from '../types/Player';
 import PlayerSession from '../types/PlayerSession';
+import User from '../types/User';
 import CoveyTownController from './CoveyTownController';
 import CoveyTownsStore from './CoveyTownsStore';
 import TwilioVideo from './TwilioVideo';
@@ -28,6 +30,23 @@ function generateTestLocation(): UserLocation {
     y: Math.floor(Math.random() * 100),
   };
 }
+
+export default function mockFunction<T extends (...args: any[]) => any>(
+  fn: T,
+): jest.MockedFunction<T> {
+  return fn as jest.MockedFunction<T>;
+}
+
+describe('Registration', () => {
+  it('new User registration', async () => {
+    const newUser = new User('xyz', 'xyz@mail.com', '1234567890');
+    const newUserRegistrationMock = mockFunction(newUserRegistration);
+    console.log(newUserRegistrationMock);
+    const result = await newUserRegistrationMock(newUser);
+    expect(result.name).toBe('xyz');
+    expect(result.emailId).toBe('xyz@gmail.com');
+  });
+});
 
 describe('CoveyTownController', () => {
   beforeEach(() => {

@@ -2,7 +2,6 @@ import CORS from 'cors';
 import { config } from 'dotenv';
 import Express from 'express';
 import * as http from 'http';
-// import * as mongoose from 'mongoose';
 import mongoose from 'mongoose';
 import { AddressInfo } from 'net';
 import CoveyTownsStore from './lib/CoveyTownsStore';
@@ -17,7 +16,7 @@ app.use(CORS({ origin: uiServerOrigin, credentials: true }));
 const server = http.createServer(app);
 
 let database: mongoose.Connection;
-const connect = () => {
+export default function connect(): void {
   const uri = process.env.MONGODB_URI as string;
 
   if (database) {
@@ -39,7 +38,7 @@ const connect = () => {
   database.on('error', () => {
     console.log('Error connecting to database');
   });
-};
+}
 
 // const db = process.env.DB_URL;
 // mongoose
@@ -57,7 +56,6 @@ server.listen(process.env.PORT || 8081, () => {
   // eslint-disable-next-line no-console
   console.log(`Listening on ${address.port}`);
   if (process.env.DEMO_TOWN_ID) {
-    CoveyTownsStore.getInstance()
-      .createTown(process.env.DEMO_TOWN_ID, false);
+    CoveyTownsStore.getInstance().createTown(process.env.DEMO_TOWN_ID, false);
   }
 });
