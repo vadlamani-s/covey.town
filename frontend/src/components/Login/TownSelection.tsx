@@ -157,8 +157,7 @@ export default function TownSelection({ doLogin }: TownSelectionProps): JSX.Elem
             <Flex>
               <Box flex='1'>
                 <FormControl>
-                  <FormLabel htmlFor='name'>Name</FormLabel>
-/** <Input autoFocus name='name' readOnly disabled value={userName} /> */                  
+                  <FormLabel htmlFor='name'>Name</FormLabel>                 
                   <Input autoFocus name="name" placeholder="Your name"
                      value={userName}
                      onChange={event => setUserName(event.target.value)}
