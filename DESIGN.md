@@ -108,7 +108,7 @@
     
 ## Architecture of the new code
 
-<img src="./Architecture.JPG" width="500">
+<img src="./Architecture.JPG" width="1000">
 
 ## CRC Diagram
 
