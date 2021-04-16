@@ -25,12 +25,16 @@ To create an account and configure your local environment:
 2. Create an API key and secret (select "API Keys" on the left under "Settings")
 3. Create a `.env` file in the `services/roomService` directory, setting the values as follows:
 
-| Config Value            | Description                               |
-| ----------------------- | ----------------------------------------- |
-| `TWILIO_ACCOUNT_SID`    | Visible on your twilio account dashboard. |
-| `TWILIO_API_KEY_SID`    | The SID of the new API key you created.   |
-| `TWILIO_API_KEY_SECRET` | The secret for the API key you created.   |
-| `TWILIO_API_AUTH_TOKEN` | Visible on your twilio account dashboard. |
+| Config Value            | Description                                      |
+| ----------------------- | -------------------------------------------------|
+| `TWILIO_ACCOUNT_SID`    | Visible on your twilio account dashboard.        |
+| `TWILIO_API_KEY_SID`    | The SID of the new API key you created.          |
+| `TWILIO_API_KEY_SECRET` | The secret for the API key you created.          |
+| `TWILIO_API_AUTH_TOKEN` | Visible on your twilio account dashboard.        |
+| `JWT_SECRET`            | Secret for Cookie Authentication.                |
+| `UI_SERVER_ORIGIN`      | URL of the frontend server.                      |
+| `MONGODB_URI`           | URL for connecting to DB with Mongo credentials. |
+
 
 ### Starting the backend
 
@@ -45,3 +49,11 @@ Create a `.env` file in the `frontend` directory, with the line: `REACT_APP_TOWN
 
 In the `frontend` directory, run `npm start` (again, you'll need to run `npm install` the very first time). After several moments (or minutes, depending on the speed of your machine), a browser will open with the frontend running locally.
 The frontend will automatically re-compile and reload in your browser if you change any files in the `frontend/src` directory.
+
+### Setting up MongoDB
+
+Create a MongoDB account. After login create a cluster by providing a valid name for the same. After that create a Database along with a collection name. Additonal collections can be added when required to the database. { Note: for this project 2 collections have been created for User detail storage and meeting history details of the players }.
+
+The URI for the database can be obtained from the 'Connect tab' under Clusters details. Once the tab is clicked, the option to connect to your application has to be choosen. Use this URI for configuring the 'MONGODB_URI'. 
+
+Note: Whitelist the network connection port to current IP address or '0.0.0.0/0' under network access tab.
