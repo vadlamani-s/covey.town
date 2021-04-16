@@ -37,6 +37,7 @@ export default function TownSelection({ doLogin }: TownSelectionProps): JSX.Elem
   const { connect } = useVideoContext();
   const { apiClient } = useCoveyAppState();
   const toast = useToast();
+  const userNameOnUpdateProfile = useCoveyAppState().userName;
 
   const updateTownListings = useCallback(() => {
     // console.log(apiClient);
@@ -146,8 +147,8 @@ export default function TownSelection({ doLogin }: TownSelectionProps): JSX.Elem
   };
 
   useEffect(() => {
-    
-  }, [useCoveyAppState().userName]);
+    setUserName(userNameOnUpdateProfile);
+  }, [userNameOnUpdateProfile]);
 
   return (
     <>
