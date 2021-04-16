@@ -113,16 +113,66 @@ describe('Registration', () => {
     }
   });
 
-  
+  it('User already Registered', async () => {
+    const newUser = new User('xyz', 'xyz@gmail.com', '1234567890');
+    const result = await AuthHandlers.userRegistrationRequestHandler({
+      name: newUser.name,
+      emailId: newUser.emailId,
+      password: newUser.password,
+    });
+    if (result.message) {
+      expect(result.message).toBe('User is already registered');
+    } else {
+      fail();
+    }
+  });
+
+  it('User already Registered', async () => {
+    const newUser = new User('xyz', 'xyz@gmail.com', '1234567890');
+    const result = await AuthHandlers.userRegistrationRequestHandler({
+      name: newUser.name,
+      emailId: newUser.emailId,
+      password: newUser.password,
+    });
+    if (result.message) {
+      expect(result.message).toBe('User is already registered');
+    } else {
+      fail();
+    }
+  });
+
+  it('User failed to Register', async () => {
+    try {
+      const newUser = new User('xyz', 'xyzgmail.com', '1234567890');
+      const result = await AuthHandlers.userRegistrationRequestHandler({
+        name: newUser.name,
+        emailId: newUser.emailId,
+        password: newUser.password,
+      });
+      fail();
+    } catch (err) {
+      // has to be here
+    }
+  });
 
   it('LogOut', async () => {
-    const result = await AuthHandlers.userLogoutRequestHandler('data');
+    const result = await AuthHandlers.userLogoutRequestHandler('userSession');
     if (result.response) {
       expect(result.message).toBe('Logout Successful');
     } else {
       fail();
     }
   });
+
+  it('LogOut Failed', async () => {
+    const result = await AuthHandlers.userLogoutRequestHandler('');
+    if (result.response) {
+      expect(result.message).toBe('Logout failed');
+    } else {
+      fail();
+    }
+  });
+
 
   it('User Profile Request', async () => {
     const result = await AuthHandlers.userProfileRequestHandler({
@@ -135,6 +185,19 @@ describe('Registration', () => {
       fail();
     }
   });
+  
+  // it('User Profile Request Failed', async () => {
+  //   const result = await AuthHandlers.userProfileRequestHandler({
+  //     emailId: 'xyz@gmail.com',
+  //   });
+  //   console.log(result);
+  //   if (result.response) {
+  //     expect(result.response.emailId).toBe('xyz@gmail.com');
+  //     expect(result.response.name).toBe('xyz');
+  //   } else {
+  //     fail();
+  //   }
+  // });
 
   it('User Profile Update', async () => {
     const result = await AuthHandlers.userProfileUpdateHandler({
@@ -148,6 +211,22 @@ describe('Registration', () => {
       fail();
     }
   });
+
+  it('User Profile Update Fail', async () => {
+    const result = await AuthHandlers.userProfileUpdateHandler({
+      emailId: 'xyz@gmail.com',
+      name: 'xyz',
+      password: '12345',
+    });
+    console.log(result);
+    if (result.message) {
+      expect(result.message).toBe('Field Updated');
+    } else {
+      fail();
+    }
+  });
+
+
 
   it('Delete User Data', async () => {
     mockUserProfileRequest.mockImplementationOnce(() => ({
