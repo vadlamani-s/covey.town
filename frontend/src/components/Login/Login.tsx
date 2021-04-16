@@ -48,7 +48,7 @@ export default function Login({ doLogin, logoutHandler, emailID }: LoginProps): 
   const [logs, setLogs] = useState<boolean>(false);
   const [profile, setProfile] = useState<boolean>(false);
   const [meetingLogs, setMeetingLogs] = useState<RoomLogin[]>();
-  const [userProfile, setUserProfile] = useState<UserProfileResponse>({emailId: emailID, name: ' ', password: ' ', creationDate: new Date()});
+  const [userProfile, setUserProfile] = useState<UserProfileResponse>({emailId: emailID, name: ' ', creationDate: new Date()});
   const [userName, setUserName] = useState<string>('');
   const [userPassword, setPassword] = useState<string>('');
   const [edit, setEdit] = useState<boolean>(false);
@@ -115,7 +115,7 @@ export default function Login({ doLogin, logoutHandler, emailID }: LoginProps): 
       }).then((user) => setUserProfile(user));
 
       } catch (err) {
-        setUserProfile({emailId: emailID, name: ' ', password: ' ', creationDate: new Date()});
+        setUserProfile({emailId: emailID, name: ' ', creationDate: new Date()});
       }
   };
 
@@ -197,8 +197,8 @@ export default function Login({ doLogin, logoutHandler, emailID }: LoginProps): 
                         </FormControl>
 
                         <FormControl isRequired>
-                            <FormLabel htmlFor="updatePassword">User Update/Delete Password</FormLabel>
-                            <Input id="updatePassword" name="password" placeholder="Password"  type="password" value={userPassword} onChange={(e) => setPassword(e.target.value)} />
+                            <FormLabel htmlFor="updatePassword">Verify Password</FormLabel>
+                            <Input id="verify-Password" name="password" placeholder="Password"  type="password" value={userPassword} onChange={(e) => setPassword(e.target.value)} />
                         </FormControl>
                     </ModalBody>
 
@@ -206,7 +206,7 @@ export default function Login({ doLogin, logoutHandler, emailID }: LoginProps): 
                         <Button data-testid='deletebutton' colorScheme="red" mr={3} value="delete" name='action1' variant="outline" disabled={!userPassword} onClick={() => processUpdates('delete')}>
                             Delete
                         </Button>
-                        <Button data-testid='updatebutton' colorScheme="green" mr={3} value="update" name='action2' variant="outline" disabled={!userPassword || !userName} onClick={() => processUpdates('edit')}>
+                        <Button data-testid='updatebutton' colorScheme="green" mr={3} value="update" name='action2' variant="outline" disabled={!userName || !userPassword} onClick={() => processUpdates('edit')}>
                             Update
                         </Button>
                         <Button onClick={closeTab}>Cancel</Button>

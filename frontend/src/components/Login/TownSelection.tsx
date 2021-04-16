@@ -147,7 +147,7 @@ export default function TownSelection({ doLogin }: TownSelectionProps): JSX.Elem
   };
 
   useEffect(() => {
-    setUserName(userNameOnUpdateProfile);
+    setUserName(userNameOnUpdateProfile)
   }, [userNameOnUpdateProfile]);
 
   return (

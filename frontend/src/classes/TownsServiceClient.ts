@@ -136,7 +136,6 @@ export interface UserProfileRequest {
 
 export interface UserProfileResponse {
   emailId: string;
-  password: string;
   name: string;
   creationDate: Date;
 }
