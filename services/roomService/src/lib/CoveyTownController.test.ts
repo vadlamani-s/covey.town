@@ -85,7 +85,6 @@ function generateTestLocation(): UserLocation {
 describe('Registration', () => {
   it('New User Registration', async () => {
     const newUser = new User('xyz', 'xyz@gmail.com', '1234567890');
-
     const result = await AuthHandlers.userRegistrationRequestHandler({
       name: newUser.name,
       emailId: newUser.emailId,
@@ -100,37 +99,61 @@ describe('Registration', () => {
   });
 
   it('User already Registered', async () => {
-    const newUser = new User('xyz', 'xyz@gmail.com', '1234567890');
+    const newUser = new User('test1', 'test1@gmail.com', '1234567890');
     const result = await AuthHandlers.userRegistrationRequestHandler({
       name: newUser.name,
       emailId: newUser.emailId,
       password: newUser.password,
     });
-    if (result.message) {
-      expect(result.message).toBe('User is already registered');
-    } else {
-      fail();
-    }
-  });
-
-  it('User already Registered', async () => {
-    const newUser = new User('xyz', 'xyz@gmail.com', '1234567890');
-    const result = await AuthHandlers.userRegistrationRequestHandler({
+    const result1 = await AuthHandlers.userRegistrationRequestHandler({
       name: newUser.name,
       emailId: newUser.emailId,
       password: newUser.password,
     });
-    if (result.message) {
-      expect(result.message).toBe('User is already registered');
+
+    if (result1.message && result.response) {
+      expect(result.response.emailId).toBe('test1@gmail.com');
+      expect(result.response.name).toBe('test1');
+      expect(result1.message).toBe('User is already registered');
     } else {
       fail();
     }
   });
 
-  it('User failed to Register', async () => {
+
+  it('User failed to Register due to invalid emailId', async () => {
     try {
       const newUser = new User('xyz', 'xyzgmail.com', '1234567890');
-      const result = await AuthHandlers.userRegistrationRequestHandler({
+      await AuthHandlers.userRegistrationRequestHandler({
+        name: newUser.name,
+        emailId: newUser.emailId,
+        password: newUser.password,
+      });
+      fail();
+    } catch (err) {
+      // has to be here
+    }
+  });
+
+
+  it('User failed to Register due to invalid password', async () => {
+    try {
+      const newUser = new User('xyz', 'xyz@gmail.com', '12345');
+      await AuthHandlers.userRegistrationRequestHandler({
+        name: newUser.name,
+        emailId: newUser.emailId,
+        password: newUser.password,
+      });
+      fail();
+    } catch (err) {
+      // has to be here
+    }
+  });
+
+  it('User failed to Register due to empty username', async () => {
+    try {
+      const newUser = new User('', 'xyz@gmail.com', '123456789');
+      await AuthHandlers.userRegistrationRequestHandler({
         name: newUser.name,
         emailId: newUser.emailId,
         password: newUser.password,
@@ -161,63 +184,105 @@ describe('Registration', () => {
 
   it('User Profile Request', async () => {
     const result = await AuthHandlers.userProfileRequestHandler({
-      emailId: 'xyz@gmail.com',
+      emailId: 'test1@email.com',
     });
     if (result.response) {
-      expect(result.response.emailId).toBe('xyz@gmail.com');
-      expect(result.response.name).toBe('xyz');
+      expect(result.response.emailId).toBe('test1@email.com');
+      expect(result.response.name).toBe('Test 1');
     } else {
       fail();
     }
   });
 
-  // it('User Profile Request Failed', async () => {
-  //   const result = await AuthHandlers.userProfileRequestHandler({
-  //     emailId: 'xyz@gmail.com',
-  //   });
-  //   console.log(result);
-  //   if (result.response) {
-  //     expect(result.response.emailId).toBe('xyz@gmail.com');
-  //     expect(result.response.name).toBe('xyz');
-  //   } else {
-  //     fail();
-  //   }
-  // });
+  it('User Profile Request failed due to no User registered', async () => {
+    const result = await AuthHandlers.userProfileRequestHandler({
+      emailId: 'test2@email.com',
+    });
+    if (result.message) {
+      expect(result.message).toBe('User not found');
+    } else {
+      fail();
+    }
+  });
+
 
   it('User Profile Update', async () => {
     const result = await AuthHandlers.userProfileUpdateHandler({
-      emailId: 'xyz@gmail.com',
-      name: 'xyz',
-      password: '1234567890',
+      emailId: 'test1@email.com',
+      name: 'test1',
+      password: '123123123',
     });
-    if (result.message) {
+    const profileRequest = await AuthHandlers.userProfileRequestHandler({
+      emailId: 'test1@email.com',
+    });
+    if (result.message && profileRequest.response) {
       expect(result.message).toBe('Field Updated');
+      expect(profileRequest.response.name).toBe('test1');
     } else {
       fail();
     }
   });
 
-  it('User Profile Update Fail', async () => {
+  it('User Profile Update failed due to invalid user name', async () => {
     const result = await AuthHandlers.userProfileUpdateHandler({
-      emailId: 'xyz@gmail.com',
-      name: 'xyz',
-      password: '12345',
+      emailId: 'test1@email.com',
+      name: '',
+      password: '1234567890',
     });
-    console.log(result);
     if (result.message) {
-      expect(result.message).toBe('Field Updated');
+      expect(result.message).toBe('Update failed !! Name field is empty');
+    } else {
+      fail();
+    }
+  });
+
+  it('User Profile Update failed due to invalid emailId', async () => {
+    const result = await AuthHandlers.userProfileUpdateHandler({
+      emailId: 'test2@email.com',
+      name: 'test1',
+      password: '1234567890',
+    });
+    if (result.message) {
+      expect(result.isOK).toBe(false);
     } else {
       fail();
     }
   });
 
   it('Delete User Data', async () => {
-    const result = await AuthHandlers.userProfileDeleteHandler({
-      emailId: 'xyz@gmail.com',
+    const newUser = new User('test3', 'test3@gmail.com', '1234567890');
+    await AuthHandlers.userRegistrationRequestHandler({
+      name: newUser.name,
+      emailId: newUser.emailId,
+      password: newUser.password,
+    });
+    const deleteResult = await AuthHandlers.userProfileDeleteHandler({
+      emailId: 'test3@gmail.com',
       password: '1234567890',
     });
-    expect(result.message).toBe('User Deleted');
+    expect(deleteResult.message).toBe('User Deleted');
   });
+
+  it('Delete User Data after deleting once', async () => {
+    const newUser = new User('test4', 'test4@gmail.com', '1234567890');
+    await AuthHandlers.userRegistrationRequestHandler({
+      name: newUser.name,
+      emailId: newUser.emailId,
+      password: newUser.password,
+    });
+    const deleteResult = await AuthHandlers.userProfileDeleteHandler({
+      emailId: 'test4@gmail.com',
+      password: '1234567890',
+    });
+
+    const deleteResult1 = await AuthHandlers.userProfileDeleteHandler({
+      emailId: 'test4@gmail.com',
+      password: '1234567890',
+    });
+    expect(deleteResult.message).toBe('User Deleted');
+    expect(deleteResult1.isOK).toBe(false);
+  });
+
 });
 
 describe('CoveyTownController', () => {
