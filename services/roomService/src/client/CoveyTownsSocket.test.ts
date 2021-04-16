@@ -232,4 +232,190 @@ describe('TownServiceApiSocket', () => {
     });
     await Promise.all([socketDisconnected, disconnectPromise2]);
   });
+  it('Public Chat works for people in the town', async () => {
+    const town = await createTownForTesting();
+    const userName1 = nanoid();
+    const joinData = await apiClient.joinTown({
+      coveyTownID: town.coveyTownID,
+      userName: userName1,
+    });
+    const userName2 = nanoid();
+    const joinData2 = await apiClient.joinTown({
+      coveyTownID: town.coveyTownID,
+      userName: userName2,
+    });
+    const {
+      socketConnected,
+      socket,
+      publicChatReceived: publicChatPromise1,
+    } = TestUtils.createSocketClient(server, joinData.coveySessionToken, town.coveyTownID);
+    const {
+      socketConnected: socketConnected2,
+      publicChatReceived: publicChatPromise2,
+    } = TestUtils.createSocketClient(server, joinData2.coveySessionToken, town.coveyTownID);
+    await socketConnected;
+    await socketConnected2;
+    const newMsg = {
+      name: userName1,
+      messageBody: `Msg sent from:${joinData.coveyUserID}`,
+      playerId: joinData.coveyUserID,
+      messageId: `${joinData.coveyUserID}_msg1`,
+      isPrivate: false,
+    };
+    socket.emit('chatMsgSendPublic', newMsg);
+    const [receivedMsg1, receivedMsg2] = await Promise.all([
+      publicChatPromise1,
+      publicChatPromise2,
+    ]);
+    expect(receivedMsg1.messageId).toBe(newMsg.messageId);
+    expect(receivedMsg1.playerId).toBe(newMsg.playerId);
+    expect(receivedMsg2.messageId).toBe(newMsg.messageId);
+    expect(receivedMsg2.playerId).toBe(newMsg.playerId);
+  });
+  it('Private Chat works for people in the town', async () => {
+    const town = await createTownForTesting();
+    const userName1 = nanoid();
+    const joinData = await apiClient.joinTown({
+      coveyTownID: town.coveyTownID,
+      userName: userName1,
+    });
+    const userName2 = nanoid();
+    const joinData2 = await apiClient.joinTown({
+      coveyTownID: town.coveyTownID,
+      userName: userName2,
+    });
+    const userName3 = nanoid();
+    const joinData3 = await apiClient.joinTown({
+      coveyTownID: town.coveyTownID,
+      userName: userName3,
+    });
+    const {
+      socketConnected,
+      socket,
+      privateChatReceived: privateChatPromise1,
+    } = TestUtils.createSocketClient(server, joinData.coveySessionToken, town.coveyTownID);
+    const {
+      socketConnected: socketConnected2,
+      privateChatReceived: privateChatPromise2,
+    } = TestUtils.createSocketClient(server, joinData2.coveySessionToken, town.coveyTownID);
+    const {
+      socketConnected: socketConnected3,
+      privateChatReceived: privateChatPromise3,
+    } = TestUtils.createSocketClient(server, joinData3.coveySessionToken, town.coveyTownID);
+    await socketConnected;
+    await socketConnected2;
+    await socketConnected3;
+    const newMsg = {
+      name: userName1,
+      messageBody: `Msg sent from:${joinData.coveyUserID}`,
+      playerId: joinData.coveyUserID,
+      messageId: `${joinData.coveyUserID}_msg1`,
+      isPrivate: true,
+    };
+    socket.emit('chatMsgSendPrivate', newMsg, joinData2.coveyUserID);
+    const [receivedMsg1, receivedMsg2] = await Promise.all([
+      privateChatPromise1,
+      privateChatPromise2,
+    ]);
+    expect(receivedMsg1.messageId).toBe(newMsg.messageId);
+    expect(receivedMsg1.playerId).toBe(newMsg.playerId);
+    expect(receivedMsg2.messageId).toBe(newMsg.messageId);
+    expect(receivedMsg2.playerId).toBe(newMsg.playerId);
+    const timeOutPromise = new Promise(resolve => {
+      setTimeout(() => {
+        resolve('Message not recieved');
+      }, 3000);
+    });
+    expect(await Promise.race([timeOutPromise, privateChatPromise3])).toBe('Message not recieved');
+  });
+  it('Public Chat doesnt work for people in different towns', async () => {
+    const town1 = await createTownForTesting();
+    const town2 = await createTownForTesting();
+    const userName1 = nanoid();
+    const joinData = await apiClient.joinTown({
+      coveyTownID: town1.coveyTownID,
+      userName: userName1,
+    });
+    const userName2 = nanoid();
+    const joinData2 = await apiClient.joinTown({
+      coveyTownID: town2.coveyTownID,
+      userName: userName2,
+    });
+    const {
+      socketConnected,
+      socket,
+      publicChatReceived: publicChatPromise1,
+    } = TestUtils.createSocketClient(server, joinData.coveySessionToken, town1.coveyTownID);
+    const {
+      socketConnected: socketConnected2,
+      publicChatReceived: publicChatPromise2,
+    } = TestUtils.createSocketClient(server, joinData2.coveySessionToken, town2.coveyTownID);
+    await socketConnected;
+    await socketConnected2;
+    const newMsg = {
+      name: userName1,
+      messageBody: `Msg sent from:${joinData.coveyUserID}`,
+      playerId: joinData.coveyUserID,
+      messageId: `${joinData.coveyUserID}_msg1`,
+      isPrivate: false,
+    };
+    socket.emit('chatMsgSendPublic', newMsg);
+    const [receivedMsg1] = await Promise.all([
+      publicChatPromise1,
+    ]);
+    expect(receivedMsg1.messageId).toBe(newMsg.messageId);
+    expect(receivedMsg1.playerId).toBe(newMsg.playerId);
+
+    const timeOutPromise = new Promise(resolve => {
+      setTimeout(() => {
+        resolve('Message not recieved');
+      }, 3000);
+    });
+    expect(await Promise.race([timeOutPromise, publicChatPromise2])).toBe('Message not recieved');
+  });
+  it('Private Chat works for people in the town', async () => {
+    const town1 = await createTownForTesting();
+    const town2 = await createTownForTesting();
+    const userName1 = nanoid();
+    const joinData = await apiClient.joinTown({
+      coveyTownID: town1.coveyTownID,
+      userName: userName1,
+    });
+    const userName2 = nanoid();
+    const joinData2 = await apiClient.joinTown({
+      coveyTownID: town2.coveyTownID,
+      userName: userName2,
+    });
+    const {
+      socketConnected,
+      socket,
+      privateChatReceived: privateChatPromise1,
+    } = TestUtils.createSocketClient(server, joinData.coveySessionToken, town1.coveyTownID);
+    const {
+      socketConnected: socketConnected2,
+      privateChatReceived: privateChatPromise2,
+    } = TestUtils.createSocketClient(server, joinData2.coveySessionToken, town2.coveyTownID);
+    
+    await socketConnected;
+    await socketConnected2;
+    const newMsg = {
+      name: userName1,
+      messageBody: `Msg sent from:${joinData.coveyUserID}`,
+      playerId: joinData.coveyUserID,
+      messageId: `${joinData.coveyUserID}_msg1`,
+      isPrivate: true,
+    };
+    socket.emit('chatMsgSendPrivate', newMsg, joinData2.coveyUserID);
+    const [receivedMsg1] = await Promise.all([
+      privateChatPromise1,
+    ]);
+    expect(receivedMsg1.messageId).toBe(newMsg.messageId);
+    expect(receivedMsg1.playerId).toBe(newMsg.playerId);
+    const timeOutPromise = new Promise(resolve => {
+      setTimeout(() => {
+        resolve('Message not recieved');
+      }, 3000);
+    });
+    expect(await Promise.race([timeOutPromise, privateChatPromise2])).toBe('Message not recieved');
+  });
 });
