@@ -94,6 +94,67 @@ export type CoveyTownInfo = {
   maximumOccupancy: number;
 };
 
+export interface UserLoginRequest {
+  emailId: string;
+  password: string;
+}
+
+export interface UserLoginResponse {
+  credentials: {
+    signedIn: boolean;
+    name: string;
+    emailId: string;
+    creationDate: Date;
+  };
+}
+
+export interface UserDeleteRequest {
+  emailId: string;
+  password: string;
+}
+
+export interface UserUpdateRequest {
+  name: string;
+  password: string;
+  emailId: string;
+}
+
+export interface UserRegisterRequest {
+  emailId: string;
+  password: string;
+  name: string;
+  creationDate?: Date;
+}
+
+export interface UserRegisterResponse {
+  emailId: string;
+  name: string;
+  creationDate: Date;
+}
+
+export interface UserProfileRequest {
+  emailId: string;
+}
+
+export interface UserProfileResponse {
+  emailId: string;
+  password: string;
+  name: string;
+  creationDate: Date;
+}
+
+export interface RoomLogin {
+  emailId?: string;
+  loginDate?: Date;
+  friendlyName: string;
+  coveyTownID: string;
+  userName: string;
+}
+
+export interface FetchLogsResponse {
+  logs: RoomLogin[];
+}
+
 export default class TownsServiceClient {
   private _axios: AxiosInstance;
 
@@ -153,5 +214,56 @@ export default class TownsServiceClient {
   async joinTown(requestData: TownJoinRequest): Promise<TownJoinResponse> {
     const responseWrapper = await this._axios.post('/api/sessions', requestData);
     return TownsServiceClient.unwrapOrThrowError(responseWrapper);
+  }
+
+  async loginUser(requestData: UserLoginRequest): Promise<UserLoginResponse> {
+    const responseWrapper = await this._axios.post<ResponseEnvelope<UserLoginResponse>>(
+      '/auth/loginUser',
+      requestData,
+    );
+    return TownsServiceClient.unwrapOrThrowError(responseWrapper);
+  }
+
+  async logoutUser(): Promise<void> {
+    const responseWrapper = await this._axios.post<ResponseEnvelope<void>>('/auth/logoutUser');
+    return TownsServiceClient.unwrapOrThrowError(responseWrapper);
+  }
+
+  async registerUser(requestData: UserRegisterRequest): Promise<UserRegisterResponse> {
+    const responseWrapper = await this._axios.post<ResponseEnvelope<UserRegisterResponse>>(
+      '/auth/registerUser',
+      requestData,
+    );
+    return TownsServiceClient.unwrapOrThrowError(responseWrapper);
+  }
+
+  async fetchLogs(): Promise<FetchLogsResponse> {
+    const responseWrapper = await this._axios.get<ResponseEnvelope<FetchLogsResponse>>(
+      '/api/fetchlogs',
+    );
+    return TownsServiceClient.unwrapOrThrowError(responseWrapper);
+  }
+
+  async userProfile(requestData: UserProfileRequest): Promise<UserProfileResponse> {
+    const responseWrapper = await this._axios.post<ResponseEnvelope<UserProfileResponse>>(
+      '/auth/userProfile',
+      requestData,
+    );
+    return TownsServiceClient.unwrapOrThrowError(responseWrapper);
+  }
+
+  async updateProfile(requestData: UserUpdateRequest): Promise<void> {
+    const responseWrapper = await this._axios.patch<ResponseEnvelope<void>>(
+      `/auth/updateUser/${requestData.emailId}`,
+      requestData,
+    );
+    return TownsServiceClient.unwrapOrThrowError(responseWrapper, true);
+  }
+
+  async deleteProfile(requestData: UserDeleteRequest): Promise<void> {
+    const responseWrapper = await this._axios.delete<ResponseEnvelope<void>>(
+      `/auth/deleteUser/${requestData.emailId}/${requestData.password}`,
+    );
+    return TownsServiceClient.unwrapOrThrowError(responseWrapper, true);
   }
 }
