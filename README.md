@@ -57,3 +57,10 @@ Create a MongoDB account. After login create a cluster by providing a valid name
 The URI for the database can be obtained from the 'Connect tab' under Clusters details. Once the tab is clicked, the option to connect to your application has to be choosen. Use this URI for configuring the 'MONGODB_URI'. 
 
 Note: Whitelist the network connection port to current IP address or '0.0.0.0/0' under network access tab.
+
+### Setting up Netlify and Herouku
+Please refer to the Activity 10.1 link mentioned below
+https://neu-se.github.io/CS4530-CS5500-Spring-2021/Activities/continuous-development
+
+Note: Apart from the config values mentioned in the Activity, add the above mentioned config variables in the git secrets and the main.yml file.
+
