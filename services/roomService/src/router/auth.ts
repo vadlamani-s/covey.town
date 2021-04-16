@@ -124,7 +124,7 @@ export default function addAuthRoutes(app: Express): void {
       const validateResponse = await validateUser(req.body.emailId, req.body.password);
       assert(validateResponse.isOk);
     } catch (err) {
-      res.status(400).json({ message: 'Invalid Request' });
+      res.status(400).json({ message: 'Verify password before updating' });
     }
     try {
       const result = await userProfileUpdateHandler({
@@ -148,7 +148,7 @@ export default function addAuthRoutes(app: Express): void {
       const validateResponse = await validateUser(req.body.emailId, req.body.password);
       assert(validateResponse.isOk);
     } catch (err) {
-      res.status(400).json({ message: 'Invalid Request' });
+      res.status(400).json({ message: 'Verify password before deleting' });
     }
     try {
       const userCredentials = Validate.validateAPIRequest(req.cookies.jwt) as Credentials;
