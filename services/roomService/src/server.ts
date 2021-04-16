@@ -18,6 +18,7 @@ const server = http.createServer(app);
 let database: mongoose.Connection;
 export default function connect(): void {
   const uri = process.env.MONGODB_URI as string;
+  console.log(uri);
 
   if (database) {
     return;
@@ -32,8 +33,14 @@ export default function connect(): void {
 
   database = mongoose.connection;
 
-  database.once('open', async () => {});
-  database.on('error', () => {});
+  database.once('open', async () => {
+    // eslint-disable-next-line no-console
+    console.log('Connected to Database');
+  });
+  database.on('error', () => {
+    // eslint-disable-next-line no-console
+    console.log('Disconnected');
+  });
 }
 
 connect();
