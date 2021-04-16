@@ -24,6 +24,7 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
+  Center,
 } from '@chakra-ui/react';
 import {
   ChevronDownIcon,
@@ -244,9 +245,11 @@ export default function Login({ doLogin, logoutHandler, emailID }: LoginProps): 
   
         <Box height="auto">
           <Menu>
+            <Center>
             <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
               Menu
             </MenuButton>
+            </Center>
             <MenuList>
               <MenuItem onClick={handleProfile}>Profile</MenuItem>
               <MenuItem onClick={handleMeetings}>Meeting History</MenuItem>
