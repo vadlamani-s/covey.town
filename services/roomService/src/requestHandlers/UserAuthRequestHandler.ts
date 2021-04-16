@@ -1,4 +1,5 @@
 import bcrypt from 'bcryptjs';
+import { assert } from 'console';
 import { config } from 'dotenv';
 import DBMethods from '../db/coveyDBMethods';
 import { generateHash } from '../models/userSchema';
@@ -66,7 +67,8 @@ export async function userRegistrationRequestHandler(
     generateHash(requestData.password),
   );
   try {
-    await DBMethods.userProfile({ emailId: newUser.emailId });
+    const response = await DBMethods.userProfile({ emailId: newUser.emailId });
+    assert(response.emailId);
     return {
       isOK: false,
       message: 'User is already registered',

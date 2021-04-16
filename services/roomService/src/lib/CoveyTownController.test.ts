@@ -14,40 +14,49 @@ import PlayerSession from '../types/PlayerSession';
 import User from '../types/User';
 import CoveyTownController from './CoveyTownController';
 import CoveyTownsStore from './CoveyTownsStore';
+import DummyDB from './DummyDB';
 import TwilioVideo from './TwilioVideo';
 
 jest.mock('./TwilioVideo');
 jest.mock('../db/coveyDBMethods');
 jest.mock('bcryptjs');
 
-const;
+const dummyUser = new User('Test 1', 'test1@email.com', '123123123');
+const dummyDB = new DummyDB(dummyUser);
 
 const mockNewUserRegistration = jest.fn();
 DBMethods.newUserRegistration = mockNewUserRegistration;
-mockNewUserRegistration.mockImplementation((newUser: User) => ({
-  name: newUser.name,
-  creationDate: new Date(),
-  emailId: newUser.emailId,
-}));
+mockNewUserRegistration.mockImplementation((newUser: User) => {
+  if (!dummyDB.getUserById(newUser.emailId)) {
+    dummyDB.newUser = newUser;
+  }
+  return {
+    name: newUser.name,
+    creationDate: new Date(),
+    emailId: newUser.emailId,
+  };
+});
 
 const mockUserProfileRequest = jest.fn();
 DBMethods.userProfile = mockUserProfileRequest;
-mockUserProfileRequest.mockImplementation((requestData: AuthHandlers.UserProfileRequest) => ({
-  emailId: requestData.emailId,
-  name: 'xyz',
-}));
+mockUserProfileRequest.mockImplementation((requestData: AuthHandlers.UserProfileRequest) =>
+  dummyDB.getUserById(requestData.emailId),
+);
 
 const mockUserUpdate = jest.fn();
 DBMethods.updateUserRegistration = mockUserUpdate;
-mockUserUpdate.mockImplementation((updateData: IUserUpdateRequest) => ({
-  emailId: updateData.emailId,
-}));
+mockUserUpdate.mockImplementation((updateData: IUserUpdateRequest) => {
+  dummyDB.updateUser = updateData;
+  return {
+    emailId: updateData.emailId,
+  };
+});
 
 const mockDeleteUser = jest.fn();
 DBMethods.deleteUserRegistration = mockDeleteUser;
-mockDeleteUser.mockImplementation((userData: IUserLoginRequest) => ({
-  emailId: userData.emailId,
-}));
+mockDeleteUser.mockImplementation((userData: IUserLoginRequest) => {
+  dummyDB.deleteUserById(userData.emailId);
+});
 
 const mockCompare = jest.fn();
 bcrypt.compare = mockCompare;
@@ -73,25 +82,10 @@ function generateTestLocation(): UserLocation {
   };
 }
 
-export default function mockFunction<T extends (...args: any[]) => any>(
-  fn: T,
-): jest.MockedFunction<T> {
-  return fn as jest.MockedFunction<T>;
-}
-
 describe('Registration', () => {
-  beforeEach(() => {
-    mockUserProfileRequest.mockImplementation((requestData: AuthHandlers.UserProfileRequest) => ({
-      emailId: requestData.emailId,
-      name: 'xyz',
-    }));
-  });
-
   it('New User Registration', async () => {
     const newUser = new User('xyz', 'xyz@gmail.com', '1234567890');
-    mockUserProfileRequest.mockImplementationOnce(() => {
-      throw Error();
-    });
+
     const result = await AuthHandlers.userRegistrationRequestHandler({
       name: newUser.name,
       emailId: newUser.emailId,
@@ -218,9 +212,6 @@ describe('Registration', () => {
   });
 
   it('Delete User Data', async () => {
-    mockUserProfileRequest.mockImplementationOnce(() => ({
-      password: '1234567890',
-    }));
     const result = await AuthHandlers.userProfileDeleteHandler({
       emailId: 'xyz@gmail.com',
       password: '1234567890',
