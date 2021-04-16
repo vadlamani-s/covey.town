@@ -1,4 +1,4 @@
-import { mongo, Mongoose, Schema, model } from 'mongoose';
+import { Schema, model } from 'mongoose';
 
 
 const HistorySchema = new Schema({

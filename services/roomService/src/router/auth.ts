@@ -3,7 +3,6 @@ import cookieParser from 'cookie-parser';
 import CORS from 'cors';
 import { Express, json, Router } from 'express';
 import { StatusCodes } from 'http-status-codes';
-// import { OAuth2Client } from 'google-auth-library';
 import { sign } from 'jsonwebtoken';
 import {
   userLoginRequestHandler,
@@ -125,6 +124,7 @@ export default function addAuthRoutes(app: Express): void {
       assert(validateResponse.isOk);
     } catch (err) {
       res.status(400).json({ message: 'Verify password before updating' });
+      return;
     }
     try {
       const result = await userProfileUpdateHandler({
@@ -145,16 +145,11 @@ export default function addAuthRoutes(app: Express): void {
     try {
       const userCredentials = Validate.validateAPIRequest(req.cookies.jwt) as Credentials;
       assert(userCredentials.signedIn);
-      const validateResponse = await validateUser(req.body.emailId, req.body.password);
+      const validateResponse = await validateUser(req.params.emailId, req.params.password);
       assert(validateResponse.isOk);
     } catch (err) {
       res.status(400).json({ message: 'Verify password before deleting' });
-    }
-    try {
-      const userCredentials = Validate.validateAPIRequest(req.cookies.jwt) as Credentials;
-      assert(userCredentials.signedIn);
-    } catch (err) {
-      res.status(StatusCodes.OK).json({ message: 'Invalid Request' });
+      return;
     }
     try {
       const result = await userProfileDeleteHandler({
@@ -193,5 +188,3 @@ export default function addAuthRoutes(app: Express): void {
     }
   });
 }
-
-// export default { routes, validateAPIRequest };

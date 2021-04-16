@@ -82,7 +82,11 @@ function generateTestLocation(): UserLocation {
   };
 }
 
-describe('Registration', () => {
+/**
+ * Login Iser test cases have been written in the CoveyAuthREST file.
+ */
+
+describe('Authorization', () => {
   it('New User Registration', async () => {
     const newUser = new User('xyz', 'xyz@gmail.com', '1234567890');
     const result = await AuthHandlers.userRegistrationRequestHandler({

@@ -32,19 +32,9 @@ export default function connect(): void {
 
   database = mongoose.connection;
 
-  database.once('open', async () => {
-    console.log('Connected to database');
-  });
-  database.on('error', () => {
-    console.log('Error connecting to database');
-  });
+  database.once('open', async () => {});
+  database.on('error', () => {});
 }
-
-// const db = process.env.DB_URL;
-// mongoose
-//   .connect(db as string, { useNewUrlParser: true, useUnifiedTopology: true })
-//   .then(() => console.log('Mongo Connected...'  ))
-//   .catch((err) => console.log(err));
 
 connect();
 
