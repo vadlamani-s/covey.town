@@ -1,3 +1,4 @@
+import assert from 'assert';
 import cookieParser from 'cookie-parser';
 import CORS from 'cors';
 import { Express, json, Router } from 'express';
@@ -13,6 +14,7 @@ import {
   userRegistrationRequestHandler,
 } from '../requestHandlers/UserAuthRequestHandler';
 import { Credentials } from '../types/IUser';
+import Validate from '../types/Validate';
 import { logError } from '../Utils';
 
 const router = Router();
@@ -43,40 +45,54 @@ export default function addAuthRoutes(app: Express): void {
     }
   });
 
+  interface LoginResponse {
+    isOk: boolean;
+    token?: string;
+    credentials?: Credentials;
+    message?: string;
+  }
+
+  async function validateUser(emailId: string, password: string): Promise<LoginResponse> {
+    const response = await userLoginRequestHandler({
+      emailId,
+      password,
+    });
+
+    if (response.isOK) {
+      const { response: loginResponse } = response;
+      const credentials: Credentials = {
+        signedIn: true,
+        name: loginResponse?.name,
+        emailId: loginResponse?.emailId,
+        creationDate: loginResponse?.creationDate,
+      };
+
+      const token = sign(credentials, JWT_SECRET as string);
+      /* Uncomment below line so that it works on your localhost and comment the line next to it */
+      // res.cookie('jwt', token, { httpOnly: true });
+      /* This following line is critical for production phase, uncomment this line while deploying */
+      return { isOk: response.isOK, token, credentials };
+    }
+    return { isOk: response.isOK, message: response.message };
+  }
+
   /*
    * Login user
    */
   router.post('/loginUser', json(), async (req, res) => {
     try {
-      const response = await userLoginRequestHandler({
-        emailId: req.body.emailId,
-        password: req.body.password,
-      });
-
-      if (response.isOK) {
-        const { response: loginResponse } = response;
-        const credentials: Credentials = {
-          signedIn: true,
-          name: loginResponse?.name,
-          emailId: loginResponse?.emailId,
-          creationDate: loginResponse?.creationDate,
-        };
-
-        const token = sign(credentials, JWT_SECRET as string);
-        /* Uncomment below line so that it works on your localhost and comment the line next to it */
-        // res.cookie('jwt', token, { httpOnly: true });
-        /* This following line is critical for production phase, uncomment this line while deploying */
-        res.cookie('jwt', token, { httpOnly: true, sameSite: 'none', secure: true }); // Critical line needed in production phase
+      const response = await validateUser(req.body.emailId, req.body.password);
+      if (response.isOk) {
+        res.cookie('jwt', response.token, { httpOnly: true, sameSite: 'none', secure: true }); // Critical line needed in production phase
         const response1 = {
           isOK: true,
           response: {
-            credentials,
+            credentials: response.credentials,
           },
         };
         res.status(StatusCodes.OK).json(response1);
-      } else {
-        res.status(StatusCodes.OK).json(response);
       }
+      res.status(400).json(response);
     } catch (err) {
       logError(err);
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
@@ -103,6 +119,14 @@ export default function addAuthRoutes(app: Express): void {
 
   router.patch('/updateUser/:emailId', json(), async (req, res) => {
     try {
+      const userCredentials = Validate.validateAPIRequest(req.cookies.jwt) as Credentials;
+      assert(userCredentials.signedIn);
+      const validateResponse = await validateUser(req.body.emailId, req.body.password);
+      assert(validateResponse.isOk);
+    } catch (err) {
+      res.status(400).json({ message: 'Invalid Request' });
+    }
+    try {
       const result = await userProfileUpdateHandler({
         name: req.body.name,
         password: req.body.password,
@@ -118,6 +142,20 @@ export default function addAuthRoutes(app: Express): void {
   });
 
   router.delete('/deleteUser/:emailId/:password', json(), async (req, res) => {
+    try {
+      const userCredentials = Validate.validateAPIRequest(req.cookies.jwt) as Credentials;
+      assert(userCredentials.signedIn);
+      const validateResponse = await validateUser(req.body.emailId, req.body.password);
+      assert(validateResponse.isOk);
+    } catch (err) {
+      res.status(400).json({ message: 'Invalid Request' });
+    }
+    try {
+      const userCredentials = Validate.validateAPIRequest(req.cookies.jwt) as Credentials;
+      assert(userCredentials.signedIn);
+    } catch (err) {
+      res.status(StatusCodes.OK).json({ message: 'Invalid Request' });
+    }
     try {
       const result = await userProfileDeleteHandler({
         emailId: req.params.emailId,
@@ -136,6 +174,12 @@ export default function addAuthRoutes(app: Express): void {
    * Fetches user profile information
    */
   router.post('/userProfile', json(), async (req, res) => {
+    try {
+      const userCredentials = Validate.validateAPIRequest(req.cookies.jwt) as Credentials;
+      assert(userCredentials.signedIn);
+    } catch (err) {
+      res.status(StatusCodes.OK).json({ message: 'Invalid Request' });
+    }
     try {
       const result = await userProfileRequestHandler({
         emailId: req.body.emailId,
