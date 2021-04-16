@@ -90,6 +90,7 @@ export default function addAuthRoutes(app: Express): void {
           },
         };
         res.status(StatusCodes.OK).json(response1);
+        return;
       }
       res.status(400).json(response);
     } catch (err) {
