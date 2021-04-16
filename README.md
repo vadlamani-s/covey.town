@@ -1,10 +1,12 @@
 # Covey.Town
+Git URL: https://github.com/vadlamani-s/covey.town/
+App URL: https://fervent-hawking-007175.netlify.app/
 
 Covey.Town provides a virtual meeting space where different groups of people can have simultaneous video calls, allowing participants to drift between different conversations, just like in real life.
-Covey.Town was built for Northeastern's [Spring 2021 software engineering course](https://neu-se.github.io/CS4530-CS5500-Spring-2021/), and is designed to be reused across semesters.
-You can view our reference deployment of the app at [app.covey.town](https://app.covey.town/).
+Covey.Town was built for Northeastern's [Spring 2021 software engineering course](https://github.com/vadlamani-s/covey.town), and is designed to be reused across semesters.
+You can view our reference deployment of the app at [app.covey.town](https://fervent-hawking-007175.netlify.app/).
 
-![Covey.Town Architecture](docs/covey-town-architecture.png)
+<img src="./Architecture.JPG" width="1000">
 
 The figure above depicts the high-level architecture of Covey.Town.
 The frontend client (in the `frontend` directory of this repository) uses the [PhaserJS Game Library](https://phaser.io) to create a 2D game interface, using tilemaps and sprites.
