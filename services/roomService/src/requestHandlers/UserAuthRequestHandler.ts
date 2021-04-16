@@ -189,7 +189,7 @@ export async function userProfileDeleteHandler(
   } catch (err) {
     return {
       isOK: false,
-      message: `Delete failed !!| ${err.message}`,
+      message: `Delete failed !!| ${err}`,
     };
   }
 }
