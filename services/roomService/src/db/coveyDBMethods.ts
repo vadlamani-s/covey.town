@@ -1,4 +1,3 @@
-import bcrypt from 'bcryptjs';
 import HistoryModel from '../models/historySchema';
 import { generateHash, UserModel } from '../models/userSchema';
 import {
