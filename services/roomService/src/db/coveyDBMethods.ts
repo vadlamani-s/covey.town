@@ -31,23 +31,6 @@ export default class DBMethods {
     }
   }
 
-  static async userLogin(user: IUserLoginRequest): Promise<IUserResponse> {
-    const retrivedResult = await UserModel.findOne({ emailId: user.emailId });
-    if (!retrivedResult) {
-      throw Error('Email or Password Incorrect');
-    }
-    const isMatch = await bcrypt.compare(user.password, retrivedResult.password);
-    if (!isMatch) {
-      throw Error('Email or Password Incorrect');
-    }
-
-    return {
-      name: retrivedResult.name,
-      creationDate: retrivedResult.creationDate,
-      emailId: retrivedResult.emailId,
-    };
-  }
-
   static async loginHistory(loginDetails: RoomLogin): Promise<RoomLogin> {
     try {
       const createRequest = new HistoryModel({
@@ -100,14 +83,6 @@ export default class DBMethods {
   }
 
   static async deleteUserRegistration(user: IUserLoginRequest): Promise<void> {
-    const retrivedResult = await UserModel.findOne({ emailId: user.emailId });
-    if (!retrivedResult) {
-      throw Error('User is not registered');
-    }
-    const isMatch = await bcrypt.compare(user.password, retrivedResult.password);
-    if (!isMatch) {
-      throw Error('Incorrect password');
-    }
     await UserModel.deleteOne({
       emailId: user.emailId,
     });

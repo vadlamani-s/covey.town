@@ -1,3 +1,4 @@
+import bcrypt from 'bcryptjs';
 import { config } from 'dotenv';
 import DBMethods from '../db/coveyDBMethods';
 import { generateHash } from '../models/userSchema';
@@ -92,14 +93,18 @@ export async function userLoginRequestHandler(
   requestData: UserLoginRequest,
 ): Promise<ResponseEnvelope<UserResponse>> {
   try {
-    
-    const loginResponse = await DBMethods.userLogin(requestData);
+    const retrievedUserData = await DBMethods.userProfile({ emailId: requestData.emailId });
+    const isMatch = await bcrypt.compare(requestData.password, retrievedUserData.password);
+    if (!isMatch) {
+      throw Error('Email or Password Incorrect');
+    }
+    // const loginResponse = await DBMethods.userLogin(requestData);
     return {
       isOK: true,
       response: {
-        name: loginResponse.name,
-        emailId: loginResponse.emailId,
-        creationDate: loginResponse.creationDate,
+        name: retrievedUserData.name,
+        emailId: retrievedUserData.emailId,
+        creationDate: retrievedUserData.creationDate,
       },
     };
   } catch (err) {
@@ -171,6 +176,11 @@ export async function userProfileDeleteHandler(
   userDeleteData: IUserLoginRequest,
 ): Promise<ResponseEnvelope<void>> {
   try {
+    const retrievedUserData = await DBMethods.userProfile({ emailId: userDeleteData.emailId });
+    const isMatch = await bcrypt.compare(userDeleteData.password, retrievedUserData.password);
+    if (!isMatch) {
+      throw Error('Incorrect password');
+    }
     await DBMethods.deleteUserRegistration(userDeleteData);
     return {
       isOK: true,
@@ -179,7 +189,7 @@ export async function userProfileDeleteHandler(
   } catch (err) {
     return {
       isOK: false,
-      message: `Delete failed !!| ${err.message}`,
+      message: `Delete failed !!| ${err}`,
     };
   }
 }
