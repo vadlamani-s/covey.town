@@ -1,5 +1,5 @@
 import HistoryModel from '../models/historySchema';
-import { generateHash, UserModel } from '../models/userSchema';
+import { UserModel } from '../models/userSchema';
 import {
   IUserLoginRequest,
   IUserProfileRequest,
@@ -72,7 +72,6 @@ export default class DBMethods {
         {
           $set: {
             name: user.name,
-            password: generateHash(user.password),
           },
         },
       );
