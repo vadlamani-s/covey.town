@@ -108,9 +108,9 @@
     
 ## Architecture of the new code
 
-<img src="./Architecture.JPG" width="1000">
+<img src="./Architecture.JPG" width="1000" alt="Architecture">
 
 ## CRC Diagram
 
-<img src="https://user-images.githubusercontent.com/69494422/114979535-064e3a00-9e59-11eb-98d4-8f7c63f7b7ad.png" width="500">
-<img src="https://user-images.githubusercontent.com/69494422/114979557-11a16580-9e59-11eb-8d31-111d3d6a0c96.png" width="500">
+<img src="https://user-images.githubusercontent.com/69494422/114979535-064e3a00-9e59-11eb-98d4-8f7c63f7b7ad.png" width="500" alt="CRC1">
+<img src="https://user-images.githubusercontent.com/69494422/114979557-11a16580-9e59-11eb-8d31-111d3d6a0c96.png" width="500" alt="CRC2">
