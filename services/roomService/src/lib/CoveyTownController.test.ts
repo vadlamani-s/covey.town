@@ -94,20 +94,6 @@ describe('Registration', () => {
     }));
   });
 
-  // it('User Login', async () => {
-  //   const newUser = new User('xyz', 'xyz@gmail.com', '1234567890');
-
-  //   const result1 = await AuthHandlers.userLoginRequestHandler({
-  //     password: newUser.password,
-  //     emailId: newUser.emailId,
-  //   });
-  //   if (result1.response) {
-  //     expect(result1.response.emailId).toBe('xyz@gmail.com');
-  //     expect(result1.response.name).toBe('');
-  //   } else {
-  //     fail();
-  //   }
-  // });
 
   it('New User Registration', async () => {
     const newUser = new User('xyz', 'xyz@gmail.com', '1234567890');
@@ -126,6 +112,8 @@ describe('Registration', () => {
       fail();
     }
   });
+
+  
 
   it('LogOut', async () => {
     const result = await AuthHandlers.userLogoutRequestHandler('data');

@@ -75,7 +75,7 @@ export async function userRegistrationRequestHandler(
   } catch (err) {
     try {
       const registrationResponse = await DBMethods.newUserRegistration(newUser);
-      return {
+      return {  
         isOK: true,
         response: {
           name: registrationResponse.name,
