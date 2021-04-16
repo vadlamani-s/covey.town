@@ -252,7 +252,6 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
 
   window.onbeforeunload = () => {
     
-    // sessionStorage.clear()
   } 
 
   const page = useMemo(() => {

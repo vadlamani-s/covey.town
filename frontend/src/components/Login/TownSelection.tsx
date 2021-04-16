@@ -40,7 +40,6 @@ export default function TownSelection({ doLogin }: TownSelectionProps): JSX.Elem
   const userNameOnUpdateProfile = useCoveyAppState().userName;
 
   const updateTownListings = useCallback(() => {
-    // console.log(apiClient);
     apiClient.listTowns().then(towns => {
       setCurrentPublicTowns(towns.towns.sort((a, b) => b.currentOccupancy - a.currentOccupancy));
     });

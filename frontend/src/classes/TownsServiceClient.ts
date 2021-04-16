@@ -92,11 +92,17 @@ export type CoveyTownInfo = {
   maximumOccupancy: number;
 };
 
+/**
+ * Payload sent by client to login user
+ */
 export interface UserLoginRequest {
   emailId: string;
   password: string;
 }
 
+/**
+ * Response by server for the login request
+ */
 export interface UserLoginResponse {
   credentials: {
     signedIn: boolean;
@@ -106,17 +112,26 @@ export interface UserLoginResponse {
   };
 }
 
+/**
+ * Payload sent by client to delete user
+ */
 export interface UserDeleteRequest {
   emailId: string;
   password: string;
 }
 
+/**
+ * Payload sent by client to update user
+ */
 export interface UserUpdateRequest {
   name: string;
   password: string;
   emailId: string;
 }
 
+/**
+ * Payload sent by client to register user
+ */
 export interface UserRegisterRequest {
   emailId: string;
   password: string;
@@ -124,16 +139,25 @@ export interface UserRegisterRequest {
   creationDate: Date;
 }
 
+/**
+ * Response by server for the register request
+ */
 export interface UserRegisterResponse {
   emailId: string;
   name: string;
   creationDate: Date;
 }
 
+/**
+ * Payload sent by client to request user profile
+ */
 export interface UserProfileRequest {
   emailId: string;
 }
 
+/**
+ * Response by server for the profile request
+ */
 export interface UserProfileResponse {
   emailId: string;
   name: string;
@@ -148,6 +172,9 @@ export interface RoomLogin {
   userName: string;
 }
 
+/**
+ * Response for the fetch log
+ */
 export interface FetchLogsResponse {
   logs: RoomLogin[];
 }

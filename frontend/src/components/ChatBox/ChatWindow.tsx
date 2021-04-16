@@ -35,7 +35,6 @@ interface Message {
 export default function ChatWindow(): JSX.Element {
   const { userName, myPlayerID, nearbyPlayers, socket } = useCoveyAppState();
   const [messageList, setMessage] = useState<Array<Message>>([]);
-  // const [privateMessageList, setPrivateMessage] = useState<Array<Message>>([]);
   const [myMessage, setMyMessage] = useState<string>('');
   const [recentMessageId, setRecentMsgId] = useState<string>('');
   const [isPrivate, setPrivate] = useState<boolean>(false);
@@ -114,11 +113,11 @@ export default function ChatWindow(): JSX.Element {
       <Typography variant="body1">Chat</Typography>
     </MenuItem>
 
-<Modal isOpen={isOpen} onClose={closeSettings} scrollBehavior='inside'>
-<ModalOverlay/>
-<ModalContent>
-  <ModalHeader>
-  <Box py={2}>
+  <Modal isOpen={isOpen} onClose={closeSettings} scrollBehavior='inside'>
+  <ModalOverlay/>
+  <ModalContent>
+    <ModalHeader>
+    <Box py={2}>
         <RadioGroup
           onChange={e => {
             setValue(e as string);
@@ -145,13 +144,13 @@ export default function ChatWindow(): JSX.Element {
               </option>
             ))}
           </Select>
-        </Box>
+      </Box>
       ) : (
         <></>
       )}
       </Box>
-  </ModalHeader>
-  <ModalCloseButton/>
+    </ModalHeader>
+    <ModalCloseButton/>
     <ModalBody pb={6}>
     <Container marginTop='10px' minH='400px' border='2px' borderRadius='5px' borderColor='gray.400'>
       <Box minH='340px'>
@@ -172,27 +171,27 @@ export default function ChatWindow(): JSX.Element {
     </Container>
     </ModalBody>
 
-          <ModalFooter>
-            <Box mr = {8}>
-            <Input
-              placeholder='Type your Message'
-              size='md'
-              value={myMessage}
-              onChange={event => setMyMessage(event.target.value)}
-            />
-            </Box>
-            <Box mr={2} paddingX='5px'>
-              <Button size='sm' onClick={() => sendMessage()}>
-                Send
-              </Button>
+    <ModalFooter>
+      <Box mr = {8}>
+        <Input
+         placeholder='Type your Message'
+         size='md'
+         value={myMessage}
+         onChange={event => setMyMessage(event.target.value)}
+        />
+      </Box>
+      <Box mr={2} paddingX='5px'>
+        <Button size='sm' onClick={() => sendMessage()}>
+          Send
+        </Button>
               
-            </Box>
-            <Box mr={2} paddingX='5px'>
-              <Button size='sm' onClick={closeSettings}>Cancel</Button>
-            </Box>
+      </Box>
+      <Box mr={2} paddingX='5px'>
+        <Button size='sm' onClick={closeSettings}>Cancel</Button>
+      </Box>
             
-          </ModalFooter>
-      </ModalContent>
-    </Modal>
+    </ModalFooter>
+  </ModalContent>
+  </Modal>
   </>
 }
