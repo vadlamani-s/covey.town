@@ -6,7 +6,7 @@
 
     a) Once the application is launched, click the 'Sign Up' button to register yourself to the application.
     b) Fill in the Full name, email address and password to create an account. Reenter your password to confirm your original password.
-    c) Sign in to the application as explained in user story 2, click on the menu dropdown in the left side.
+    c) Sign in to the application as explained in user story 2, click on the menu dropdown which is on top middle.
     d) Click on profile to view your profile details.
     e) The account can be edited for its username or deleted. Password is mandatory to edit or delete the profile.
 
