@@ -20,13 +20,7 @@ jest.mock('./TwilioVideo');
 jest.mock('../db/coveyDBMethods');
 jest.mock('bcryptjs');
 
-// const mockLogin = jest.fn();
-// DBMethods.userLogin = mockLogin;
-// mockLogin.mockImplementation((user: UserLoginRequest) => ({
-//   name: '',
-//   emailId: user.emailId,
-//   creationDate: new Date(),
-// }));
+const;
 
 const mockNewUserRegistration = jest.fn();
 DBMethods.newUserRegistration = mockNewUserRegistration;
@@ -61,8 +55,7 @@ mockCompare.mockImplementation((retrievedPassword, password) => password === ret
 
 const mockHash = jest.fn();
 bcrypt.hashSync = mockHash;
-mockHash.mockImplementation((pass) => pass);
-
+mockHash.mockImplementation(pass => pass);
 
 const mockGetTokenForTown = jest.fn();
 // eslint-disable-next-line
@@ -93,7 +86,6 @@ describe('Registration', () => {
       name: 'xyz',
     }));
   });
-
 
   it('New User Registration', async () => {
     const newUser = new User('xyz', 'xyz@gmail.com', '1234567890');
@@ -173,7 +165,6 @@ describe('Registration', () => {
     }
   });
 
-
   it('User Profile Request', async () => {
     const result = await AuthHandlers.userProfileRequestHandler({
       emailId: 'xyz@gmail.com',
@@ -185,7 +176,7 @@ describe('Registration', () => {
       fail();
     }
   });
-  
+
   // it('User Profile Request Failed', async () => {
   //   const result = await AuthHandlers.userProfileRequestHandler({
   //     emailId: 'xyz@gmail.com',
@@ -225,8 +216,6 @@ describe('Registration', () => {
       fail();
     }
   });
-
-
 
   it('Delete User Data', async () => {
     mockUserProfileRequest.mockImplementationOnce(() => ({
