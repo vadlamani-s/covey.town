@@ -85,7 +85,10 @@ export async function userRegistrationRequestHandler(
         },
       };
     } catch (err1) {
-      return err;
+      return {
+        isOK: false,
+        message: `User registration failed | ${err1}`,
+      };
     }
   }
 }

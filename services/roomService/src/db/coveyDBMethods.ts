@@ -67,6 +67,9 @@ export default class DBMethods {
 
   static async updateUserRegistration(user: IUserUpdateRequest): Promise<void> {
     try {
+      if (user.name.length === 0) {
+        throw new Error('The name cannot be empty string');
+      }
       await UserModel.updateOne(
         { emailId: user.emailId },
         {
@@ -76,7 +79,7 @@ export default class DBMethods {
         },
       );
     } catch (err) {
-      throw Error('User not registered');
+      throw new Error('User not registered');
     }
   }
 
