@@ -198,7 +198,7 @@ export default function Home({ loginHandler }: LoginProps): JSX.Element {
                                     </FormControl>
 
                                     <FormControl id="password" isRequired>
-                                        <FormLabel> Password</FormLabel>
+                                        <FormLabel> Password (8 characters minimum) </FormLabel>
                                         <Input type="password" placeholder="*******"
                                         size="lg" onChange={(e) => setUserPassword1(e.target.value)} />
                                     </FormControl>
@@ -213,7 +213,7 @@ export default function Home({ loginHandler }: LoginProps): JSX.Element {
 
                                     <ModalFooter>
                                         <ButtonGroup spacing="4">
-                                            <Button colorScheme="gray" onClick={processRegistration} disabled={!emailID1 || !userPassword1 || !fullName || reEnteredPassword !== userPassword1}> Register </Button>
+                                            <Button colorScheme="gray" onClick={processRegistration} disabled={!emailID1 || !userPassword1 || !fullName || reEnteredPassword !== userPassword1 || userPassword1.length < 8}> Register </Button>
                                             <Button onClick={closeTab}>Cancel</Button>
                                         </ButtonGroup>
                                     </ModalFooter>
@@ -221,54 +221,7 @@ export default function Home({ loginHandler }: LoginProps): JSX.Element {
                                 </ModalContent>
                             </Modal>
                         }
-                
-                {
-                            signUp && 
-                            <Modal isOpen={isOpen} onClose={closeTab}>
-                                <ModalOverlay />
-                                <ModalContent>
-                                <ModalHeader>Create an account </ModalHeader>
-                                <ModalCloseButton />
-                                <form onSubmit={(ev) => { ev.preventDefault(); }}>
-                                    <ModalBody pb={6}>
-                        
-                                    <FormControl id="name" isRequired>
-                                        <FormLabel> Full name</FormLabel>
-                                        <Input type="text" placeholder="Full name"
-                                        size="lg" onChange={(e) => setFullName(e.target.value)} />
-                                   </FormControl>
-
-                                    <FormControl id="email" isRequired>
-                                        <FormLabel> Email address</FormLabel>
-                                        <Input type="email" placeholder="Email address"
-                                        size="lg" onChange={(e) => setEmailID1(e.target.value)} />
-                                    </FormControl>
-
-                                    <FormControl id="password" isRequired>
-                                        <FormLabel> Password</FormLabel>
-                                        <Input type="password" placeholder="*******"
-                                        size="lg" onChange={(e) => setUserPassword1(e.target.value)} />
-                                    </FormControl>
-
-                                    <FormControl id="reEnterPassword" isRequired>
-                                        <FormLabel> Re-Enter your password</FormLabel>
-                                        <Input type="password" placeholder="*******"
-                                        size="lg" onChange={(e) => setReEnteredPassword(e.target.value)} />
-                                    </FormControl>
-
-                                    </ModalBody>
-
-                                    <ModalFooter>
-                                    <Button colorScheme="gray" onClick={processRegistration} disabled={!emailID1 || !userPassword1 || !fullName || reEnteredPassword !== userPassword1}> Register </Button>
-                                    <Button onClick={closeTab}>Cancel</Button>
-                                    </ModalFooter>
-                                </form>
-                                </ModalContent>
-                            </Modal>
-                        }
-
-            
-                              
+                                
     </>
 
 }
