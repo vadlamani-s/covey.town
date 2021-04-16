@@ -82,7 +82,7 @@ export default function Home({ loginHandler }: LoginProps): JSX.Element {
             setUserPassword(' ');
             toast({
                 title: 'Unable to login',
-                description: err.toString(),
+                description: err.response.data.message,
                 status: 'error'
             });
         }
@@ -108,7 +108,7 @@ export default function Home({ loginHandler }: LoginProps): JSX.Element {
             setUserPassword(' ');
             toast({
                 title: 'Unable to register',
-                description: err.toString(),
+                description: err.response.data.message,
                 status: 'error'
             });
         }
