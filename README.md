@@ -66,4 +66,3 @@ Please refer to the Activity 10.1 link mentioned below
 https://neu-se.github.io/CS4530-CS5500-Spring-2021/Activities/continuous-development
 
 Note: Apart from the config values mentioned in the Activity, add the above mentioned config variables in the git secrets and the main.yml file.
-
