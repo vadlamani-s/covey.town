@@ -81,7 +81,7 @@ export default function Login({ doLogin, logoutHandler, emailID }: LoginProps): 
       } catch (err) {
         toast({
           title: 'Unable to logout',
-          description: err.toString(),
+          description: err.response.data.message,
           status: 'error'
         });
       }
@@ -141,7 +141,7 @@ export default function Login({ doLogin, logoutHandler, emailID }: LoginProps): 
         } catch(err) {
           toast({
             title: 'Unable to delete',
-            description: err.toString(),
+            description: err.response.data.message,
             status: 'error'
           });
         }
@@ -163,7 +163,7 @@ export default function Login({ doLogin, logoutHandler, emailID }: LoginProps): 
           } catch(err) {
             toast({
               title: 'Unable to update',
-              description: err.toString(),
+              description: err.response.data.message,
               status: 'error'
             });
           }
