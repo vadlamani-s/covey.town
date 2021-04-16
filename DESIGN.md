@@ -23,14 +23,17 @@
     b) App.tsx
     c) Login\Login.tsx
     d) Login\TownSelection.tsx
+    e) classes\TownServiceClient.ts
 
     The CoveyAppState in the CoveyTypes.ts was modified to include emailId of the user as a part of the state.
 
     The App.tsx contains the logic of rendering pages based on different condition. Two new CoveyAppUpdate was included - playerLoggedIn and playerLoggedOut to handle the login and logout feature. AppStateReducer was modified to include the CoveyAppUpdate. SessionStorage was added to handle the states on page refresh LoginHandler and LogoutHandler was added to render different pages on login and logout. UseMemo was modified to incorporate home page and changes were made to the conditions to render the pages.
 
-    The Login.tsx was modified to add a menu dropdown which has three functionalites - Profile, Meeting History and Logout which are the remaining parts of the first and second user story as explained in the FEATURE.md
+    The Login.tsx was modified to add a menu dropdown which has three functionalites - Profile, Meeting History and Logout which are the remaining parts of the first and second user stories as explained in the FEATURE.md
 
     The TownSelection.tsx was modified for format changes.
+
+    The TownServiceClient.ts was modified to include services like - loginUser(), logoutUser(), registerUser(), fetchLogs(), updateProfile(), deleteProfile() for the first and second user stories as explained in the FEATURE.md
 
 ### Services
 
