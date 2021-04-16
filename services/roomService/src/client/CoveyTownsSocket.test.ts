@@ -373,7 +373,7 @@ describe('TownServiceApiSocket', () => {
     });
     expect(await Promise.race([timeOutPromise, publicChatPromise2])).toBe('Message not recieved');
   });
-  it('Private Chat works for people in the town', async () => {
+  it('Private Chat doesnt work for people in different towns', async () => {
     const town1 = await createTownForTesting();
     const town2 = await createTownForTesting();
     const userName1 = nanoid();
