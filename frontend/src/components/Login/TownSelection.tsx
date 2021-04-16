@@ -145,6 +145,10 @@ export default function TownSelection({ doLogin }: TownSelectionProps): JSX.Elem
     }
   };
 
+  useEffect(() => {
+    
+  }, [useCoveyAppState().userName]);
+
   return (
     <>
       <form>
