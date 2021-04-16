@@ -3,7 +3,6 @@ import cookieParser from 'cookie-parser';
 import CORS from 'cors';
 import { Express, json, Router } from 'express';
 import { StatusCodes } from 'http-status-codes';
-// import { OAuth2Client } from 'google-auth-library';
 import { sign } from 'jsonwebtoken';
 import {
   userLoginRequestHandler,
@@ -189,5 +188,3 @@ export default function addAuthRoutes(app: Express): void {
     }
   });
 }
-
-// export default { routes, validateAPIRequest };
