@@ -13,7 +13,6 @@ const friendlyNanoID = customAlphabet('1234567890ABCDEF', 8);
  * can occur (e.g. joining a town, moving, leaving a town)
  */
 export default class CoveyTownController {
-
   get capacity(): number {
     return this._capacity;
   }
@@ -148,16 +147,34 @@ export default class CoveyTownController {
     this._listeners = this._listeners.filter(v => v !== listener);
   }
 
+  /**
+   * Generate player listener map to enable chat feature
+   *
+   * @param listener New listener
+   * @param playerId playerId
+   */
   generatePlayerListenerMap(listener: CoveyTownListener, playerId: string): void {
     this._playerListenerMap[playerId] = listener;
   }
 
+  /**
+   * Send public messages to users of the town
+   *
+   * @param message message to be sent
+   */
   sendMessagesPublic(message: Record<string, string>): void {
     this._listeners.forEach(listener => {
       listener.onSendMessagesPublic(message);
     });
   }
 
+  /**
+   * Send private messages to users of the town
+   *
+   * @param message message to be sent
+   * @param id player
+   * @param otherPlayerId otherPlayer
+   */
   sendMessagesPrivate(message: Record<string, string>, myId: string, otherPlayerId: string): void {
     const otherListener = this._listeners.find(
       listener => listener === this._playerListenerMap[otherPlayerId],
