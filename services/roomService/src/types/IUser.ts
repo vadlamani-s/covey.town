@@ -1,5 +1,8 @@
 import { Document, Model} from 'mongoose';
 
+/**
+ * Payload sent by the client for user's profile creation
+ */
 export interface IUser {
   name: string;
   emailId: string;
@@ -7,6 +10,9 @@ export interface IUser {
   creationDate: Date;
 }
 
+/**
+ * Response sent after creation of the user profile
+ */
 export interface IUserResponse {
   name: string;
   emailId: string;
@@ -38,6 +44,9 @@ export interface IUserLoginRequest {
   password: string;
 }
 
+/**
+ * Payload sent by client to create login
+ */
 export interface Credentials {
   signedIn: boolean,
   name?: string,
@@ -45,6 +54,9 @@ export interface Credentials {
   creationDate?: Date,
 }
 
+/**
+ * Payload sent by client to update user profile
+ */
 export interface IUserUpdateRequest {
   name: string;
   password: string;

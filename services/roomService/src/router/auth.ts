@@ -67,22 +67,19 @@ export default function addAuthRoutes(app: Express): void {
       };
 
       const token = sign(credentials, JWT_SECRET as string);
-      /* Uncomment below line so that it works on your localhost and comment the line next to it */
-      // res.cookie('jwt', token, { httpOnly: true });
-      /* This following line is critical for production phase, uncomment this line while deploying */
       return { isOk: response.isOK, token, credentials };
     }
     return { isOk: response.isOK, message: response.message };
   }
 
   /*
-   * Login user
+   * Login User
    */
   router.post('/loginUser', json(), async (req, res) => {
     try {
       const response = await validateUser(req.body.emailId, req.body.password);
       if (response.isOk) {
-        res.cookie('jwt', response.token, { httpOnly: true, sameSite: 'none', secure: true }); // Critical line needed in production phase
+        res.cookie('jwt', response.token, { httpOnly: true, sameSite: 'none', secure: true }); 
         const response1 = {
           isOK: true,
           response: {
@@ -102,7 +99,7 @@ export default function addAuthRoutes(app: Express): void {
   });
 
   /*
-   * Logout user
+   * Logout User
    */
   router.post('/logoutUser', json(), async (req, res) => {
     try {
@@ -117,6 +114,9 @@ export default function addAuthRoutes(app: Express): void {
     }
   });
 
+  /*
+   * Update User profile
+   */
   router.patch('/updateUser/:emailId', json(), async (req, res) => {
     try {
       const userCredentials = Validate.validateAPIRequest(req.cookies.jwt) as Credentials;
@@ -142,6 +142,9 @@ export default function addAuthRoutes(app: Express): void {
     }
   });
 
+  /*
+   * Delete User profile
+   */
   router.delete('/deleteUser/:emailId/:password', json(), async (req, res) => {
     try {
       const userCredentials = Validate.validateAPIRequest(req.cookies.jwt) as Credentials;
