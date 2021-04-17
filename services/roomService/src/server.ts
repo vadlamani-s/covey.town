@@ -18,7 +18,6 @@ const server = http.createServer(app);
 let database: mongoose.Connection;
 export default function connect(): void {
   const uri = process.env.MONGODB_URI as string;
-  console.log(uri);
 
   if (database) {
     return;
