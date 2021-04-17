@@ -37,3 +37,18 @@
     message, type your message in the space provided and click on send.
     e) The messages will be sent to the particular user in the town.
     f) If the users replies back, it can be seen in the chat box.
+  
+# Testing
+
+## Automated test details
+
+    CoveyAuthREST.test.ts -> Tests all the REST APIs related to authorization - Epic 1.
+    CoveyTownController.test.ts -> Added test cases for authorization - Epic 1.
+    CoveyTownsSocket.test.ts -> Added test cases for chat features - Epic 2.
+    
+    Modified TestUtils.ts to handle socket connections for Chat feature. 
+    Added DummyDB.ts to imitate a real DB instead of actually connecting to the Mongo DB. This is used by the test cases to run without having to connect to the actual MongoDB.
+    To achieve this, we mocked DBMethods class in coveyDBMethods.ts which will access the mock implementations instead of the real database implementations.
+    
+    Mocked the API validation across all test modules to run the test cases without failing as API validation is a new feature that was introduced into the application.
+    
