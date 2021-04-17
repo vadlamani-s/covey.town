@@ -10,6 +10,11 @@ import {
 import { RoomLogin } from '../types/payloads';
 import User from '../types/User';
 
+/**
+ * The class contains the logic for all the DB operations for the Authorization purposes. The methods are used by the backend
+ * API's for performing operations on the User database and the History databse.
+ */
+
 export default class DBMethods {
   static async newUserRegistration(newUser: User): Promise<IUserResponse> {
     try {

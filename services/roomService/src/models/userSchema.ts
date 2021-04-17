@@ -1,9 +1,7 @@
-/* eslint-disable */
 import bcrypt from 'bcryptjs';
 import { model, Schema } from 'mongoose';
 import { IUserDocument } from '../types/IUser';
 
-const SALT_WORK_FACTOR = 10;
 
 const LoginSchema = new Schema<IUserDocument>({
   name: { type: String, required: true },
